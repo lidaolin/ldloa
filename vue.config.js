@@ -27,10 +27,5 @@ module.exports = {
       },
       // 启用 CSS modules for all css / pre-processor files.
       modules: false
-    },
-    plugins:[new HtmlWebpackPlugin({
-      template:'./index.html',
-      title:'倾行',
-      inject: true
-    })]
+    }
   }
