@@ -17,11 +17,14 @@ export default new Vuex.Store({
     pageHeight:document.documentElement.clientHeight,
     // 控制显示左侧的导航
     stretchNavState:true,
+    haveLabel:true,
   },
   //过滤或者说数据处理类似于computed运算 this.$store.getters.newCount;
   getters:{
     pageHeight:state =>state.pageHeight,
-    stretchNavState:state=>state.stretchNavState
+    stretchNavState:state=>state.stretchNavState,
+    routesList:state=>state.leftNav.routesList,
+    haveLabel:state=>state.haveLabel
   },
   //提交修改state里的值 this.$store.commit("increment", value);
   mutations: {

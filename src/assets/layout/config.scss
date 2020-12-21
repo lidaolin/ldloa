@@ -1,12 +1,15 @@
 $headTop:#3b69ec;
 $layout:#3A71A8;
-$navBackground: #264f96;
+$navBackground: rgb(29,102,212);
+$onNavBackground:rgb(42,118,234);
+$navSubBackground: rgb(40,120,255);
+$onNavSubBackground: rgb(54,134,255);
 $buttonHover:#409EFF;
 $ldl-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-$menuText: #fafafa;
-$menuActiveText:red;
+$menuText: rgba(255,255,255,0.75);
+$menuActiveText:#ffffff;
 $navBarMaxWidth: 160px;
-$navBarMinWidth:80px;
+$navBarMinWidth:65px;
 :export {
   navBackground: $navBackground;
   menuText:$menuText;

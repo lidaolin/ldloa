@@ -1,3 +1,57 @@
 .scrollbar-wrapper .el-menu{
   border-right-color:transparent !important;
 }
+.ldl-logo{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: $ldl-shadow;
+  height: 70px;
+  transition:all 1s;
+  margin-bottom: 5px;
+  background:darken($navBackground,1%);
+}
+.ldl-aside{
+   box-shadow: $ldl-shadow;
+   background: $navBackground;
+   transition:all 1s;
+ }
+.minSubNavItem .el-submenu__icon-arrow{
+   display: none;
+ }
+.subNavItem{
+  .is-active{
+    background-color: $onNavBackground !important;
+    .el-submenu__title{
+      color: $menuActiveText !important;
+      background-color: $onNavBackground !important;
+      i{
+        color: $menuActiveText !important;
+      }
+    }
+  }
+}
+.subNavItem .el-menu{
+  background-color: $navSubBackground !important;
+  .el-menu-item{
+    background-color:$navSubBackground !important;
+  }
+  .is-active{
+    background-color:$onNavSubBackground !important;
+  }
+}
+.el-menu--vertical {
+  opacity: 0.99;
+  .el-menu{
+
+    background-color: $navSubBackground !important;
+  }
+  .el-menu-item{
+     background-color:$navSubBackground !important;
+   }
+
+  .is-active{
+    background-color:$onNavSubBackground !important;
+  }
+}
