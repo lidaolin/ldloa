@@ -2,6 +2,7 @@
 @import '../layout/leftNav';
 @import "layoutTopNav";
 @import "layoutTopLabel";
+@import "layoutView";
 
 .ldl-headerTop{
   display: flex;
@@ -12,7 +13,6 @@
   border-bottom: 1px solid #fafafa;
   box-shadow: $ldl-shadow;
 }
-.ldl-logoImage{
-  width: 60%;
+.ldl-Main{
+  padding: 0;
 }
-

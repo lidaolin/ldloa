@@ -11,13 +11,13 @@ export const routes = [
     name: 'Layout',
     component: Layout,
     redirect: '/index',
-    meta: { title: '控制台', icon: 'icon-gongsi', affix: true },
+    meta: { title: '控制台', icon: 'icon-gongsi', affix: true,keepAlive:true },
     children: [
       {
         path: 'index',
         component: () => import('@/views/page/'),
         name: 'index',
-        meta: { title: '控制台', icon: 'icon-gongsi', affix: true }
+        meta: { title: '控制台', icon: 'icon-gongsi', affix: true,keepAlive:true }
       }
     ]
   },

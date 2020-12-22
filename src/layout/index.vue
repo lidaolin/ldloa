@@ -11,8 +11,8 @@
           <layoutTopNav></layoutTopNav>
           <layoutTopLabel></layoutTopLabel>
         </el-header>
-        <el-main>
-          <router-view v-wechat-title='$route.meta.title'/>
+        <el-main class="ldl-Main">
+          <layoutView></layoutView>
         </el-main>
       </el-container>
     </el-container>
@@ -23,6 +23,7 @@ import leftNav from './leftNav'
 import layoutTopNav from './layoutTopNav'
 import layoutTopLabel from './layoutTopLabel'
 import config from '@/assets/layout/config.scss'
+import layoutView from './layoutView'
 import {mapGetters} from 'vuex'
 export default {
   name: "Layout",
@@ -45,9 +46,8 @@ export default {
   components:{
     leftNav,
     layoutTopNav,
-    layoutTopLabel
-  },
-  methods:{
+    layoutTopLabel,
+    layoutView
   },
   mounted() {
     //注册个时间屏幕

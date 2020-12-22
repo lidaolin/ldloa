@@ -1,18 +1,20 @@
 <template>
-  <div class="layoutTopLabel">
-    <el-tag
-        @click="toPath(item.path)"
-        :effect="item.path==activeMenu?'dark':'plain'"
-        size="mini"
-        :type="item.path==activeMenu?'success':'info'"
-        :class="item.path==activeMenu?'ldl_tag_active':''"
-        :closable="!item.meta.affix"
-        @close="delTag(index)" v-for="(item,index) in tagLabelList"
-        :key="index"
-    >
-      {{item}}
-      {{item.meta.title}}
-    </el-tag>
+  <div class="layoutTopLabel"  ref="scrollWarp">
+      <div class="layoutTopLabelBox" v-on:mouseover="changeActive($event)">
+        <el-tag
+            @click="toPath(item.path)"
+            :effect="item.path==activeMenu?'dark':'plain'"
+            size="mini"
+            :type="item.path==activeMenu?'success':'info'"
+            :class="item.path==activeMenu?'ldl_tag_active':''"
+            :closable="!item.meta.affix"
+            @close="delTag(index)" v-for="(item,index) in tagLabelList"
+            :key="index"
+        >
+          {{item.meta.title}}
+        </el-tag>
+
+      </div>
   </div>
 </template>
 
@@ -41,7 +43,7 @@ export default {
   },
   data(){
     return{
-      tagLabelList:[]
+      tagLabelList:[],
     }
   },
   mounted() {
@@ -106,7 +108,24 @@ export default {
       }else{
         this.$router.push({ path: tagLabelList[e-1].path})
       }
-    }
+    },
+    changeActive(){
+      var that=this
+      let isIE = navigator.userAgent.match(/MSIE (\d)/i);
+      isIE = isIE ? isIE[1] : undefined;
+      let isFF = /FireFox/i.test(navigator.userAgent);
+      if (isIE < 9){
+        that.$refs.scrollWarp.attachEvent("onmousewheel", that.changeG,true)
+      }else if (!isFF){
+        that.$refs.scrollWarp.addEventListener('mousewheel',that.changeG,true)
+      }else{
+        that.$refs.scrollWarp.addEventListener('DOMMouseScroll',that.changeG,true)
+      }
+    },
+    changeG(e){
+      this.$refs.scrollWarp.scrollLeft += e.deltaY
+    },
+
   }
 }
 </script>
