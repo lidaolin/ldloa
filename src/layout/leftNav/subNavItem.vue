@@ -88,9 +88,6 @@ export default {
       }
     }
   },
-  mounted() {
-    console.log(this.item)
-  },
   methods:{
     classFun(iconClass){
       if (iconClass.indexOf("el-") != -1){

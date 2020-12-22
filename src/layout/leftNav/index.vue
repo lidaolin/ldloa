@@ -1,7 +1,7 @@
 <template>
-  <div :style="{'height':height+'px',overflow:'hidden',}">
+  <div :style="{'height':height+'px',overflow:'hidden',}" class="elScrollbarBox">
     <!--element的滑动视图-->
-    <el-scrollbar wrap-class="scrollbar-wrapper" style="height: 100%">
+    <el-scrollbar wrap-class="scrollbar-wrapper"  :style="{'height':height+'px'}">
         <el-menu
             router
             :default-active="activeMenu"
@@ -81,9 +81,6 @@ export default {
       }
       return path
     }
-  },
-  mounted() {
-    this.$store.dispatch('getRouter')
   }
 
 }

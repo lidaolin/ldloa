@@ -13,10 +13,6 @@ const nav = {
     },
     //用于提交类似登录可以写入请求 this.$store.dispatch('getParamSync',{name,age,sex})
     actions: {
-        getRouter(){
-            console.log(routes)
-        }
-
     },
 }
 export  default nav

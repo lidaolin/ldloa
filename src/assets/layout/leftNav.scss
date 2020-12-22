@@ -1,5 +1,15 @@
-.scrollbar-wrapper .el-menu{
-  border-right-color:transparent !important;
+.scrollbar-wrapper{
+  overflow-x: hidden !important;
+  position: relative;
+  //width:calc(100% - 17px);
+  .el-menu{
+    border-right-color:transparent !important;
+  }
+}
+.elScrollbarBox{
+  .is-horizontal{
+    display: none!important;
+  }
 }
 .ldl-logo{
   width: 100%;
@@ -43,8 +53,27 @@
 }
 .el-menu--vertical {
   opacity: 0.99;
+  height: 80%;
+  overflow: auto;
+  &::-webkit-scrollbar-track
+  {
+    background: rgba(0,0,0,.1);
+    border-radius: 0;
+  }
+  &::-webkit-scrollbar
+  {
+    -webkit-appearance: none;
+    width: 5px;
+    height: 5px;
+  }
+  &::-webkit-scrollbar-thumb
+  {
+    cursor: pointer;
+    border-radius: 5px;
+    background: rgba(0,0,0,.15);
+    transition: color .2s ease;
+  }
   .el-menu{
-
     background-color: $navSubBackground !important;
   }
   .el-menu-item{

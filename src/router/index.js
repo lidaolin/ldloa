@@ -26,19 +26,19 @@ export const routes = [
     path: '/b',
     name: 'sss',
     component: Layout,
-    meta: { title: 'sss的控制', icon: 'icon-gongsi', affix: true },
+    meta: { title: 'sss的控制', icon: 'icon-gongsi', affix: false },
     children: [
       {
         path: 'b',
         component: () => import('@/views/page/b'),
         name: 'b',
-        meta: { title: 'bb', icon: 'icon-gongsi', affix: true }
+        meta: { title: 'bb', icon: 'icon-gongsi', affix: false }
       },
       {
         path: 'bb',
         component: () => import('@/views/page/b/bb'),
         name: 'bb',
-        meta: { title: 'bbb', icon: 'icon-gongsi', affix: true }
+        meta: { title: 'bbb', icon: 'icon-gongsi', affix: false }
       }
     ]
   }

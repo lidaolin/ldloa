@@ -4,19 +4,19 @@ const index =   {
         path: '/a',
         name: 'Layout',
         component: Layout,
-        meta: { title: '控制台', icon: 'el-icon-check', affix: true },
+        meta: { title: '控制台', icon: 'el-icon-check', affix: false },
         children: [
             {
                 path: 'aa',
                 component: () => import('@/views/page/a/aa'),
                 name: 'aa',
-                meta: { title: 'aa', icon: 'dashboard', affix: true ,keepAlive:true}
+                meta: { title: 'aa', icon: 'dashboard', affix: false ,keepAlive:true}
             },
             {
                 path: 'ab',
                 component: () => import('@/views/page/a/ab'),
                 name: 'ab',
-                meta: { title: 'ab', icon: 'dashboard', affix: true ,keepAlive:true }
+                meta: { title: 'ab', icon: 'dashboard', affix: false ,keepAlive:true }
             }
         ]
     }
