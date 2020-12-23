@@ -29,7 +29,8 @@
 .ldl-aside{
    box-shadow: $ldl-shadow;
    background: $navBackground;
-   transition:all 1s;
+   transition:width 1s;
+    //overflow: hidden;
  }
 .minSubNavItem .el-submenu__icon-arrow{
    display: none;

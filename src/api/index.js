@@ -12,12 +12,3 @@ export function login(data) {
         data: data
     })
 }
-/*
-    分类
-*/
-export function fl() {
-    return request({
-        url: '/v1/categories',
-        method: 'get',
-    })
-}

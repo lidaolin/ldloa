@@ -13,7 +13,7 @@
             :popper-append-to-body="true"
             mode="vertical"
         >
-          <subNavItem v-for="route in routesListTwo" :key="route.path" :item="route" :pageData="pageData" />
+          <subNavItem v-for="(item,index) in routesListTwo" :key="index" :item="item" :pageData="pageData.path?pageData.path:''" />
         </el-menu>
     </el-scrollbar>
   </div>
@@ -27,7 +27,7 @@ export default {
   name: "leftNav",
   data(){
     return {
-      pageData:this.$router.currentRoute.matched[0]
+      pageData:this.$store.state.leftNav.navHead?this.$router.currentRoute.matched[0]:''
     }
   },
   components:{
@@ -35,38 +35,18 @@ export default {
   },
   watch:{
     $route(){
-      this.pageData=this.$router.currentRoute.matched[0]
+      this.pageData=this.$store.state.leftNav.navHead?this.$router.currentRoute.matched[0]:''
+      this.$store.commit("changePageData", this.$router.currentRoute.matched[0]);
     }
+  },
+  mounted() {
+    console.log(this.routesListTwo)
   },
   computed:{
     ...mapGetters([
       'stretchNavState',
+      'routesListTwo'
     ]),
-    //获取路由进行一级路由的判断筛选形成新的路由机构模式
-    routesListTwo(){
-      let pageData=this.pageData
-      let routes=this.$store.getters.routesList
-      var datas={
-        path: 'index',
-        component: () => import('@/views/page/'),
-        name: 'index',
-        meta: { title: '控制台', icon: 'icon-gongsi', affix: true }
-      }
-      if (this.$store.state.leftNav.navHead){
-        for (var i=0;i<routes.length;i++){
-          if (routes[i].path==pageData.path){
-            if (routes[i].children){
-              var routesData= routes[i].children
-              // routesData.splice(0,0,datas)
-              return routesData
-            }
-          }
-        }
-        return [datas]
-      }else{
-        return routes
-      }
-    },
     height(){
       return this.$store.state.pageHeight - (this.$store.state.layout.openLogo? 80:0)
     },

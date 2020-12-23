@@ -12,7 +12,7 @@
           <layoutTopLabel></layoutTopLabel>
         </el-header>
         <el-main class="ldl-Main">
-          <layoutView></layoutView>
+          <layoutView :pageHeight="pageHeight-(haveLabel?70:40)"></layoutView>
         </el-main>
       </el-container>
     </el-container>

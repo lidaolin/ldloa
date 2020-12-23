@@ -12,9 +12,9 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // Do something before request is sent
-    if (store.getters.token) {
-      config.headers["token"] = store.getters.token
-    }
+    // if (store.getters.token) {
+    //   config.headers["token"] = store.getters.token
+    // }
     return config;
   },
   error => {
@@ -26,24 +26,27 @@ service.interceptors.request.use(
 
 // response 拦截器
 service.interceptors.response.use(
-  // response => response,
   response => {
     const res = response.data;
     /*  200	成功
-     *  110101	账号异常
-     *  110102	密码错误
-     *  110103	参数不合法
-     *  110104	程序异常
-     *  110105	无效token
-     *  110106	登录失效
-     *  110108	无权访问
-     *  110109	唯一性冲突
-     *  110110	操作失败
-     *  110111	请求不合法
-     *  110113	异地登录
-     *  110114	session异常
-     *  500	服务端异常
-     *  404	地址出错  */
+     *   110101 账号异常
+     * 110102	密码错误
+     * 110103	参数不合法
+     * 110104	程序异常
+     * 110105	无效token
+     * 110106	登录失效
+     * 110108	无权访问
+     * 110109	唯一性冲突
+     * 110110	操作失败
+     * 110111	请求不合法
+     * 110112	其他返回
+     * 110113	账号已在别的地方登陆
+     * 110114	session异常
+     * 110115	验证码错误
+     * 110116	弹出提示框
+     * 500	服务端异常
+     * 404	地址出错
+     */
     if (res.code === 200) {
       return response;
     } else if (
@@ -60,7 +63,6 @@ service.interceptors.response.use(
         message: res.msg,
         type: "warning"
       });
-      console.log(999)
       return Promise.reject(res.msg);
     } else if (res.code === 110103 || res.code === 110104) {
       Message.error(res.msg);

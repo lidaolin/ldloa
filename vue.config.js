@@ -3,7 +3,7 @@ module.exports = {
     devServer: {
       proxy: {
         '/api': {
-          target: 'http://api.lidaolin.com',
+          target: 'https://erp.sportqx.com',
           changeOrigin: true,
           ws: true,
           pathRewrite: {

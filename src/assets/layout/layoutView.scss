@@ -1,3 +1,23 @@
+.layoutViewBox{
+  overflow: auto;
+  &::-webkit-scrollbar-track
+  {
+    background: rgba(0,0,0,0.1);
+    border-radius: 0;
+  }
+  &::-webkit-scrollbar
+  {
+    -webkit-appearance: none;
+    //display: none;
+  }
+  &::-webkit-scrollbar-thumb
+  {
+    cursor: pointer;
+    border-radius: 5px;
+    background: rgba(0,0,0,0.1);
+    transition: color .2s ease;
+  }
+}
 /* fade-transform 动画 */
 .fade-transform-leave-active,
 .fade-transform-enter-active {
