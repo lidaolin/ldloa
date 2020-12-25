@@ -1,8 +1,8 @@
-import {login} from '@/api/index'
+import {get_menu} from '@/api/index'
 
 export function inteRouter(){
     return new Promise((resolve) => {
-        login().then(res=>{
+        get_menu().then(res=>{
             console.log(res,'ddd')
             return resolve(res)
         })

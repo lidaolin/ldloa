@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie'
 import { Loading, Message, MessageBox } from 'element-ui'
+import router from '@/router'
 import { login } from '@/api'
 const TokenKey = 'Admin-Tokens'
 const user = {
@@ -8,6 +9,9 @@ const user = {
         userSidebarData: [],
         screenHeight: document.documentElement.clientHeight,
         userEchartsInfo: Cookies.get('ChilckInfo') ? JSON.parse(Cookies.get('ChilckInfo')) : {}
+    },
+    getters:{
+        token:state=>state.userInfo.token
     },
     mutations: {
         changeScreenHeight(state) {
@@ -37,21 +41,25 @@ const user = {
     },
     actions: {
         getLogin(context, data) {
-            // Loading.service({
-            //     text: '正在登录,请稍后.....'
-            // })
+            Loading.service({
+                text: '正在登录,请稍后.....'
+            })
             return new Promise((resolve, reject) => {
                 login(data).then(res => {
                     Message({
                         message: '登录成功,正在跳转......',
                         type: "success"
                     });
-                    Cookies.set(TokenKey, res.data.data)
-                    context.commit('saveToken', res.data.data)
+                    Cookies.set(TokenKey, res.data)
+                    context.commit('saveToken', res.data)
                     Loading.service().close()
-                    location.reload(); // 为了重新实例化vue-router对象 避免bug
+                    //location.reload(); // 为了重新实例化vue-router对象 避免bug
+
+                    console.log(res.data)
                     resolve(res)
                 }).catch(err => {
+
+                    Loading.service().close()
                     reject(err)
                 })
 
@@ -70,7 +78,9 @@ const user = {
             }).then(() => {
                 Cookies.remove(TokenKey)
                 context.commit('removeToken')
-                location.reload(); // 为了重新实例化vue-router对象 避免bug
+
+                router.push({path: '/login', query: '' })
+                //location.reload(); // 为了重新实例化vue-router对象 避免bug
             });
         }
     }

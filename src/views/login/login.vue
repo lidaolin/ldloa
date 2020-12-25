@@ -1,192 +1,229 @@
 <template>
-  <div id="login">
-    <div class="login_bg">
-      <div class="login_box clearfix">
-        <div class="login_left">
-          <img src="../../assets/image/login_coverImage.png" alt />
+  <div id="login" :style="{height:pageHeight+'px'}">
+    <el-image class="loginBgImg" fit="cover" :src="require('@/assets/image/login_bg.png')"/>
+    <div class="loginCenter">
+      <el-image class="loginLeftImg" fit="cover" :src="require('@/assets/image/login_coverImage.png')"></el-image>
+      <div class="loginRightBox">
+        <div class="loginRightTop">
+          <div class="loginRightTopTitle">倾行ERP系统</div>
+          <div class="loginRightTopSubtitle">家庭轻运动倡导品牌，轻运动，毅起行</div>
         </div>
-        <div class="login_right">
-          <div class="login_right_box">
-            <h1 class="title">倾行ERP管理系统系统</h1>
-            <p class="slogan">家庭轻运动倡导品牌，轻运动，毅起行</p>
-            <div class="login_form">
-              <el-form
-                :model="ruleForm"
-                status-icon
-                ref="ruleForm"
-                label-width="100px"
-                class="demo-ruleForm"
-              >
-                <div class="login_input">
-                  <el-form-item>
-                    <el-input type="text" v-model="ruleForm.account" placeholder="请输入账号"></el-input>
-                  </el-form-item>
-                  <i class="login_icon el-icon-edit"></i>
-                </div>
-                <div class="login_input">
-                  <el-form-item>
-                    <el-input
-                      type="password"
-                      v-model.number="ruleForm.password"
-                      placeholder="请输入密码"
-                      @keyup.enter.native="submitForm('ruleForm')"
-                    ></el-input>
-                  </el-form-item>
-                  <i class="login_icon el-icon-edit"></i>
-                </div>
-                <div class="login_input login_captcha">
-                  <el-form-item>
-                    <el-input
-                      type="text"
-                      maxlength="4"
-                      v-model.number="ruleForm.captcha"
-                      placeholder="请输入验证码"
-                      @keyup.enter.native="submitForm('ruleForm')"
-                    ></el-input>
-                  </el-form-item>
-                  <div class="checkbutton">
-                    <img :src="checkPassSrc" @click="getcheckPassSrc" />
-                  </div>
-                  <i class="login_icon el-icon-edit"></i>
-                </div>
-                <div class="login_btn">
-                  <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">立即登录</el-button>
-                  </el-form-item>
-                </div>
-              </el-form>
+        <div class="loginRightBottom">
+          <el-form
+              :model="form"
+              status-icon
+              ref="form"
+              label-width="50px"
+          >
+            <el-form-item class="loginInputRow">
+              <span slot="label" class="loginIconBox">
+                <img :src="require('@/assets/image/login-1.png')" class="loginIcon">
+              </span>
+              <el-input
+                  v-model="form.account"
+                  placeholder="请输入用户名/手机号"
+                  @keyup.enter.native="submitForm"
+              ></el-input>
+            </el-form-item>
+            <el-form-item class="loginInputRow">
+              <span slot="label" class="loginIconBox">
+                <img :src="require('@/assets/image/login-2.png')" class="loginIcon">
+              </span>
+              <el-input
+                  v-model="form.password"
+                  placeholder="请输入密码"
+                  type="password"
+                  @keyup.enter.native="submitForm"
+              ></el-input>
+            </el-form-item>
+            <el-form-item class="loginInputRow">
+              <span slot="label" class="loginIconBox">
+                <img :src="require('@/assets/image/login-3.png')" class="loginIcon">
+              </span>
+              <el-input
+                  v-model="form.captcha"
+                  maxlength="4"
+                  @keyup.enter.native="submitForm"
+                  placeholder="请输入验证码">
+                <img slot="append" class="captchaImg" :src="checkPassSrc" @click="getcheckPassSrc" />
+              </el-input>
+            </el-form-item>
+            <div class="login_btn">
+                <el-button type="primary" @click="submitForm">立即登录</el-button>
             </div>
-          </div>
+          </el-form>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import {mapGetters} from "vuex";
 export default {
   name: "login",
   data() {
     return {
-      ruleForm: {},
+      form: {},
+      otherQuery:{},
+      redirect:false,
       checkPassSrc: "https://xoa.smxos.com/admin/login/checkVerify",
     };
   },
+  computed:{
+    ...mapGetters([
+      'pageHeight',
+    ]),
+  },
+  mounted() {
+    let that=this
+    window.onresize = () => {
+      return (() => {
+        that.$store.commit('getPageInfo');
+      })();
+    }
+    if (that.$store.state.user.userInfo.token){
+      that.$router.push({path: that.redirect || '/a', query: that.otherQuery })
+    }
+  },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+    submitForm() {
+      if (!this.form.account||!this.form.password||!this.form.captcha){
+        this.$message.error(this.form.account?(this.form.password?'验证码不能为空':'密码不能为空'):'账号或手机号不能为空')
+      }else{
+        let that=this
+        this.$store.dispatch('getLogin', this.form).then(()=>{
+          that.$router.push({path: that.redirect || '/a', query: that.otherQuery })
+        }).catch((err) => {console.log(err)})
+      }
     },
     getcheckPassSrc() {
       const id = Math.random() * 10;
       this.checkPassSrc =
-        "http://contract.smxos.com/api/login/checkVerify?" + id;
+        "https://erp.sportqx.com/api/login/checkVerify?" + id;
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-.clearfix:after {
-  content: ".";
-  height: 0;
-  display: block;
-  visibility: hidden;
-  clear: both;
-}
-
-.clearfix {
-  *zoom: 1;
-}
 #login {
   width: 100%;
-  min-width: 1560px;
-  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
-.login_bg {
+.loginBgImg{
   width: 100%;
   height: 100%;
-  background: url("../../assets/image/login_bg.png") no-repeat;
-  background-size: 100% 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.loginCenter{
+  width: 70%;
+  height: 80%;
+  background: #ffffff;
+  box-shadow: 0px 3px 40px 0px rgba(171, 167, 167, 0.35);
+  position: absolute;
+  top:10%;
+  left: 15%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  .login_box {
-    width: 80%;
-    margin: 0 auto;
-    background: #fdfdfd;
-    box-shadow: 0px 3px 40px 0px rgba(171, 167, 167, 0.35);
-    .login_left {
-      float: left;
-      img {
-        vertical-align: bottom;
-      }
-    }
-    .login_right {
-      float: left;
-      width: calc(100% - 596px);
-      height: 788px;
-      position: relative;
-      .login_right_box {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-top: -231px;
-        margin-left: -241px;
-        .title {
-          color: #d9a460;
-          font-size: 48px;
-          margin: 0;
-          margin-bottom: 26px;
-        }
-        .slogan {
-          color: #a9a9a9;
-          font-size: 24px;
-          margin: 0;
-          text-align: left !important;
-          margin-bottom: 90px !important;
-        }
-        .login_form {
-          width: 390px;
-          .login_input {
-            position: relative;
-            .login_icon {
-              font-size: 20px;
-              position: absolute;
-              top: 25%;
-              left: 3%;
-            }
-          }
-          .login_captcha {
-            .checkbutton {
-              position: absolute;
-              top: 0%;
-              right: 0%;
-              cursor: pointer;
-            }
-          }
-        }
-      }
-    }
+  justify-content: space-between;
+}
+.loginLeftImg{
+  width: 40%;
+  height: 100%;
+  display: block;
+}
+.loginRightBox{
+  width: 44%;
+  padding:0 8%;
+  height: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.loginRightTop{
+  padding: 15% 0;
+}
+.loginRightTopTitle{
+  font-size: 48px;
+  font-family: Microsoft YaHei;
+  font-weight: bold;
+  color: #D9A460;
+  text-align: left;
+}
+.loginRightTopSubtitle{
+  font-size: 24px;
+  text-align: left;
+  font-weight: 400;
+  color: #A9A9A9;
+}
+
+.loginIconBox{
+  display: inline-block;
+  //display: flex;
+  //align-items: center;
+  //justify-content: center;
+  padding-left: 10px;
+}
+.loginIcon{
+  width: 25px;
+  height: auto;
+  margin-top: 5px;
+  display: inline-block;
+}
+.loginInputRow{
+  margin-top: 15px;
+  border-bottom: 2px solid #EEEEEE;
+  .el-input{
+    border-color: transparent;
+  }
+  .el-input__inner{
+    border-color: transparent !important;
   }
 }
-</style>
-<style>
-.login_form .el-input__inner {
-  font-size: 16px !important;
-  height: 45px !important;
-  border: none !important;
-  border-radius: 0 !important;
-  background: #fdfdfd !important;
-  border-bottom: 2px solid #eee !important;
-  padding: 0 15px 0px 45px;
+.captchaImg{
+  width: 120px;
 }
-.login_form .el-form-item__content {
-  margin-left: 0 !important;
+.login_btn{
+  margin-top: 10%;
+}
+@mixin fontChange($loginLeftImg,$loginRightBoxWidth) {
+  .loginLeftImg{
+    display: $loginLeftImg;
+  }
+  .loginRightBox{
+    width:$loginRightBoxWidth
+  }
+}
+@media screen and (max-width: 1024px) {
+  @include fontChange(
+      $loginLeftImg:none,
+      $loginRightBoxWidth:100%
+  );
+}
+
+</style>
+<style lang="scss">
+.loginInputRow{
+  border-bottom: 2px solid #EEEEEE;
+  .el-input{
+    border-color: transparent;
+  }
+  .el-input__inner{
+    border-color: transparent !important;
+  }
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-transition-delay: 111111s;
+    -webkit-transition: color 11111s ease-out, background-color 111111s ease-out;
+  }
+  .el-input-group__append, .el-input-group__prepend{
+    border:0;
+    background-color:transparent;
+    padding: 0;
+  }
 }
 .login_btn .el-button {
   height: 45px;
@@ -195,5 +232,6 @@ export default {
   border-radius: 0 !important;
   background-color: #d9a460 !important;
   border: 1px solid #d9a460 !important;
+  margin: 0 auto;
 }
 </style>

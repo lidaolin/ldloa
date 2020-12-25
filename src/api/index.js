@@ -12,3 +12,13 @@ export function login(data) {
         data: data
     })
 }
+/*
+    获取账号权限内菜单
+*/
+export function get_menu(data) {
+    return request({
+        url: '/admin/Menu/get_menu',
+        method: 'post',
+        data: data
+    })
+}
