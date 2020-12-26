@@ -1,0 +1,39 @@
+.ldlPagination{
+  .el-pagination__total,.el-pagination__sizes{
+    height: 22px !important;
+    line-height: 22px !important;
+    .el-input--mini .el-input__inner{
+      height: 22px !important;
+      line-height: 22px !important;
+    }
+    .el-input--mini .el-input__icon{
+      height: 22px !important;
+      line-height: 22px !important;
+    }
+  }
+    button, span:not([class*=suffix]){
+    height: 22px !important;
+    line-height: 22px !important;
+    min-width: 22px !important;
+  }
+  .el-pager li{
+    min-width: 22px !important;
+    height: 22px !important;
+    line-height: 22px !important;
+  }
+  .el-pager .more::before{
+    line-height: 22px !important;
+  }
+  .el-pagination__editor{
+    line-height: 22px !important;
+    height: 22px !important;
+  }
+  .el-pagination__editor.el-input{
+    width: 40px;
+  }
+  .el-pagination__editor.el-input .el-input__inner{
+
+    line-height: 22px !important;
+    height: 22px !important;
+  }
+}

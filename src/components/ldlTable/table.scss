@@ -1,0 +1,13 @@
+.ldlTableWrap{
+  .el-table--mini td, .el-table--mini th {
+    padding:4px 0 !important;
+  }
+  .el-table .cell, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell{
+    padding: 0 !important;
+  }
+  .tableAvatarBox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
