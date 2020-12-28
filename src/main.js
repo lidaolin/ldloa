@@ -3,7 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import ElementUI from 'element-ui';
+import ElDragDialog from '@/directives/el-dragDialog'
 import {inteRouter} from '@/router/inteRouter'
+Vue.use(ElDragDialog)
 inteRouter().then(res=>{
   console.log(res)
 })

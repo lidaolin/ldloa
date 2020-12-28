@@ -1,19 +1,25 @@
 <template>
-  <div style="height: 100%">
-
-    <ldl-table-pagination @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+  <div class="pageWrap" >
+    <button-box></button-box>
+    <ldl-table-pagination :style="{height:'calc(100% - '+ bottomHeight+' - 35px)'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+    <ldlControlWindow :bottomHeight.sync="bottomHeight" ref="bottomHeight"></ldlControlWindow>
   </div>
 </template>
 
 <script>
 import ldlTablePagination from '@/components/ldlTablePagination'
+import ldlControlWindow from '@/components/ldlControlWindow'
+import buttonBox from '@/components/buttonBox'
 export default {
   name: "ab",
   components:{
-    ldlTablePagination
+    ldlControlWindow,
+    ldlTablePagination,
+    buttonBox,
   },
   data(){
     return{
+      bottomHeight: '30%',
       tableDataInfo:{
         dataListInfo:[
           {prop:'name',label:'姓名',},
@@ -29,6 +35,7 @@ export default {
                 {type:'danger',key:5,name:'呀'}
             ],
           },
+          {prop: 'name',label:'拖动',type:'derk',width:'40'}
           // {prop:'avatar',label:'头像',type:'avatar',size:30},
           // {prop: 'img',label: '图片',type:'image',imgProp:'src',fit:'',imgStyle:{width:'100px',height:'50px'}}
         ],

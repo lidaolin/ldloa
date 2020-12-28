@@ -1,12 +1,12 @@
 <template>
-  <div class="ldlTableWrap" ref="table">
+  <div class="ldlTableWrap">
     <el-table
         @row-dblclick="dblclick"
         @row-click="listClick"
         @sort-change="sortChanges"
         v-loading="tableDataInfos.loading"
         :data="tableDataInfos.dataList"
-        :height="tableDataInfos.height!==undefined? tableDataInfos.height:'calc(100% - 5px)'"
+        :height="tableDataInfos.height!==undefined? tableDataInfos.height:'100%'"
         :max-height="tableDataInfos.maxHeight!==undefined? tableDataInfos.maxHeight:'100%'"
         :border="tableDataInfos.border!==undefined? tableDataInfos.border:true"
         :stripe="tableDataInfos.stripe!==undefined?tableDataInfos.stripe:false"
@@ -41,7 +41,8 @@
                 v-else
             >
               <template slot-scope="scope">
-                <span v-if="item.type=='date'" class="handle" >{{ scope.row[item.prop] | parseTime(item.dateFormat) }}</span>
+                <span class="el-icon-rank handle" :scope="scope.row" v-if="item.type=='derk'"></span>
+                <span v-if="item.type=='date'" >{{ scope.row[item.prop] | parseTime(item.dateFormat) }}</span>
                 <div v-if="item.type=='tag'" class="tagWrap">
                   <template v-for="(tagItem,tagIndex) in (scope.row[item.prop] instanceof Array? scope.row[item.prop]:[scope.row[item.prop]])">
                     <template v-for="(tagTypeItems,tagTypeIndex) in item.data">
@@ -69,10 +70,6 @@
             </el-table-column>
           </template>
     </el-table>
-    <div ref="lineDiv" class="lineDiv">
-      <div style="background-color:#DCDCDC;height:2px;width:100%" />
-      <div style="background-color:#DCDCDC;height:2px;width:100%" />
-    </div>
   </div>
 </template>
 <script>
@@ -104,43 +101,9 @@ export default {
     this.$nextTick(()=>{
       this.rowDrop()
       this.columnDrop()
-      this.drag()
     })
   },
   methods:{
-    drag(){
-      let tableDiv = this.$refs.table
-      let oDiv = this.$refs.lineDiv
-      oDiv.onmousedown = function(ev) {
-        document.onselectstart=()=>{return false}
-        let height = parseInt(tableDiv.offsetHeight)
-        oDiv.style.cursor = 's-resize'
-        let evs = ev || event
-        // let mouseDownX = evs.clientX
-        let mouseDownY = evs.clientY
-        // IE8 取消默认行为-设置全局捕获
-        if (oDiv.setCapture) {
-          oDiv.setCapture()
-        }
-        document.onmousemove = function(evs) {
-          // 鼠标移动时的鼠标位置
-          // let mouseMoveX = evs.clientX
-          let mouseMoveY = evs.clientY
-          tableDiv.style.height = height + (mouseMoveY - mouseDownY) + 'px'
-        }
-      }
-      document.onmouseup = function() {
-
-
-        document.onselectstart=()=>{return true}
-        document.onmousemove = null
-        // 释放全局捕获
-        if (oDiv.releaseCapture) {
-          oDiv.releaseCapture()
-        }
-      }
-      return false
-    },
     //大图处理
     bigImage(res,key){
       console.log(res)
@@ -222,7 +185,7 @@ export default {
 
 <style scoped>
 .ldlTableWrap{
-  max-height: calc(100% - 5px);
+  max-height: 100%;
 }
 .tagWrap{
   display: flex;
@@ -235,9 +198,6 @@ export default {
 }
 .ldlTableTag:nth-child(1){
   margin-left: 0;
-}
-.lineDiv:hover {
-  cursor: s-resize;
 }
 </style>
 <style lang="scss">

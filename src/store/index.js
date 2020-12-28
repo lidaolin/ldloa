@@ -31,8 +31,14 @@ export default new Vuex.Store({
     getPageInfo(state){
       state.pageHeight=document.documentElement.clientHeight
     },
-    stretchNav(state){
-      state.stretchNavState=!state.stretchNavState
+    stretchNav(state,data){
+      if(data){
+        if (data=='false'){
+          state.stretchNavState=false
+        }
+      }else{
+        state.stretchNavState=!state.stretchNavState
+      }
     }
   },
   //用于提交类似登录可以写入请求 this.$store.dispatch('getParamSync',{name,age,sex})

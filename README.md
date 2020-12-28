@@ -38,6 +38,8 @@ npm run lint
             ---- *.scss 框架的scss
     -- components/ 组件存放
         --- filters/ filters函数存放
+    -- directives/ 自定义指令
+        --- el-dragDialog弹窗拖动
     -- layout/ oa框架存放
         --- leftNav 左边导航栏
         --- layoutTopLabel 框架吸顶的tag标签

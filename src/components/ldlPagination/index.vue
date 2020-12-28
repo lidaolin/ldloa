@@ -3,6 +3,7 @@
       class="ldlPagination"
       background
       size="mini"
+      :pager-count="5"
       :page-sizes="[10,20,50,80,100, 200, 300,400]"
       :page-size="pagingData.limit"
       @size-change="handleSizeChange"

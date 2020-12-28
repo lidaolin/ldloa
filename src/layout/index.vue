@@ -52,8 +52,14 @@ export default {
   mounted() {
     //注册个时间屏幕
     let that=this
+    if(document.documentElement.clientWidth<1000){
+      this.$store.commit('stretchNav','false')
+    }
     window.onresize = () => {
       return (() => {
+        if(document.documentElement.clientWidth<1000){
+            this.$store.commit('stretchNav','false')
+        }
         that.$store.commit('getPageInfo');
       })();
     }

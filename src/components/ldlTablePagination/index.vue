@@ -1,9 +1,12 @@
 <template>
   <div class="ldlTablePaginationWrap">
+    
     <ldl-table :style="{height:'calc(100% - '+dd+')'}" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingDataS"  @getList="getList"></ldl-table>
     <div class="ldlTablePaginationBox">
+      <div>
+        <searchBox></searchBox>
+      </div>
       <ldl-pagination :pagingData.sync="pagingDataS" @getList="getList"></ldl-pagination>
-
     </div>
   </div>
 </template>
@@ -11,6 +14,7 @@
 <script>
 import ldlTable from '@/components/ldlTable'
 import ldlPagination from '@/components/ldlPagination'
+import searchBox from '@/components/searchBox'
 export default {
   name: "ldlTablePagination",
   props:{
@@ -37,7 +41,8 @@ export default {
   },
   components:{
     ldlTable,
-    ldlPagination
+    ldlPagination,
+    searchBox
   },
   methods:{
     getList(){
@@ -51,14 +56,14 @@ export default {
 
 <style scoped>
 .ldlTablePaginationWrap{
-  height: 100%;
-
+  /*height: 100%;*/
+  width:calc(100% - 20px);
   padding: 0 10px;
 }
 .ldlTablePaginationBox{
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding:5px 10px;
 }
 </style>
