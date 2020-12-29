@@ -1,24 +1,9 @@
-import {routes} from "@/router";
+// import {routes} from "@/router";
 import router from "@/router";
-export function ifHidden(e){
-    return new Promise((resolve) => {
-        for (let i = 0; i < e.length; i++) {
-            if(e[i].isHidden){
-                delete e[i]
-            }
-            for (let j = 0; j < e[i].children.length; j++) {
-                if(e[i].children[j].isHidden){
-                    delete e[i].children[j]
-                }
-            }
-        }
-        resolve(e)
-    })
-}
 const nav = {
     state: {
         openLogo:true,
-        routesList:routes,
+        routesList:router.options.routes,
         //是否开启头部一级导航
         navHead:false,
         //当前的页面
@@ -50,6 +35,9 @@ const nav = {
     mutations: {
         changePageData(state,data){
             state.pageData=data
+        },
+        changeRoutesList(state){
+            state.routesList=router.options.routes
         }
     },
     //用于提交类似登录可以写入请求 this.$store.dispatch('getParamSync',{name,age,sex})

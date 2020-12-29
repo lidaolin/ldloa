@@ -48,8 +48,7 @@ export default {
     toIndex(){
       return function (e){
         let indexInfo=e.path
-        console.log(this.pageData+indexInfo,'page1')
-        return (this.pageData?this.pageData+'/':'')+indexInfo
+        return  ((this.pageData?this.pageData+'/':'')+indexInfo).replace(/\/\//g, "/")
       }
     },
   },

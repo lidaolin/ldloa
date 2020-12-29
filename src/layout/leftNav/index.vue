@@ -40,7 +40,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.routesListTwo)
+    console.log(this.pageData,'pageData')
   },
   computed:{
     ...mapGetters([

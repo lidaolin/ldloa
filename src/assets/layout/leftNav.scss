@@ -38,12 +38,18 @@
 .subNavItem{
   .is-active{
     background-color: $onNavBackground !important;
-    .el-submenu__title{
-      color: $menuActiveText !important;
-      background-color: $onNavBackground !important;
-      i{
+    .is-active{
+      .el-submenu__title{
         color: $menuActiveText !important;
       }
+      .is-active{
+        color: $menuActiveText !important;
+        background-color: $onNavBackground !important;
+        i{
+          color: $menuActiveText !important;
+        }
+      }
+
     }
   }
 }
