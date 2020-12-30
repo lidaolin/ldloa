@@ -16,7 +16,21 @@
     >
       <el-menu-item :index="item.path=='/'?'/index':item.path" v-for="(item,index) in routesList" :key="index">{{ item.meta.title }}</el-menu-item>
     </el-menu>
-    <div class="ldl-info"></div>
+    <el-dropdown @command="overLogin">
+      <div class="ldl-info">
+
+        <div>
+          <el-avatar shape="square" :size="30" :src="getInfo.avatar"></el-avatar>
+        </div>
+        <div class="ldl-infoName">
+            {{getInfo.account}}
+        </div>
+        <i class="el-icon-arrow-down el-icon--right"></i>
+      </div>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>退出登录</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
   </div>
 </div>
 </template>
@@ -36,6 +50,9 @@ export default {
       'stretchNavState',
       'routesList'
     ]),
+    getInfo(){
+      return this.$store.state.user.userInfo
+    },
     navHead(){
       return this.$store.state.leftNav.navHead
     },
@@ -48,7 +65,13 @@ export default {
       return this.$router.currentRoute.matched[0].path
     }
   },
+  mounted() {
+    console.log(this.$store.state)
+  },
   methods:{
+    overLogin(){
+      this.$store.dispatch('outLogin')
+    },
     stretchNav(){
       this.$store.commit('stretchNav')
     }

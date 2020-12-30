@@ -1,7 +1,7 @@
 <template>
-  <div class="pageWrap" >
-    <button-box></button-box>
-    <ldl-table-pagination :style="{height:'calc(100% - '+ bottomHeight+' - 35px)'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+  <div class="pageWrap">
+    <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
+    <ldl-table-pagination :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
     <ldlControlWindow :bottomHeight.sync="bottomHeight" ref="bottomHeight"></ldlControlWindow>
   </div>
 </template>
@@ -19,6 +19,7 @@ export default {
   },
   data(){
     return{
+      buttonBoxState:true,
       bottomHeight: '30%',
       tableDataInfo:{
         dataListInfo:[
@@ -105,6 +106,13 @@ export default {
     }
   },
   methods:{
+    functionCall(name) {
+      if (name.length == 1) {
+        this[name[0]]();
+      } else {
+        this[name[0]](name[1]);
+      }
+    },
     getList(){
       console.log(this.pagingData)
     }

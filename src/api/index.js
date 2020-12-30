@@ -22,3 +22,13 @@ export function get_menu(data) {
         data: data
     })
 }
+/*
+    获取账号权限内菜单
+*/
+export function bu_list(data) {
+    return request({
+        url: '/admin/Button/bu_list',
+        method: 'post',
+        data: data
+    })
+}

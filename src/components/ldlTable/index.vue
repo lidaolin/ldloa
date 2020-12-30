@@ -58,8 +58,8 @@
                         :key="imgIndex"
                         :fit="item.fit?item.fit:'contain'"
                         :style="item.imgStyle"
-                        :src="imgItem[item.imgProp]"
-                        :preview-src-list="item.imgProp?bigImage(scope.row[item.prop],item.imgProp):imgItem">
+                        :src="item.imgProp?imgItem[item.imgProp]:imgItem"
+                        :preview-src-list="item.imgProp?bigImage(scope.row[item.prop],item.imgProp):[imgItem]">
                     </el-image>
                   </template>
                 </div>
@@ -98,10 +98,10 @@ export default {
   mounted() {
 
     this.tableDataInfos= {... this.tableDataInfo}
-    this.$nextTick(()=>{
+    // this.$nextTick(()=>{
       this.rowDrop()
       this.columnDrop()
-    })
+    // })
   },
   methods:{
     //大图处理

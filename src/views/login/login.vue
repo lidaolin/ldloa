@@ -92,6 +92,7 @@ export default {
       }else{
         let that=this
         this.$store.dispatch('getLogin', this.form).then(()=>{
+
           that.$router.push({path: that.redirect || '/a', query: that.otherQuery })
         }).catch((err) => {console.log(err)})
       }

@@ -25,3 +25,13 @@
     line-height: 30px;
   }
 }
+.ldl-info{
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  .ldl-infoName{
+    margin:0 0px 0 10px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+}

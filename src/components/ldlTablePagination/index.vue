@@ -1,7 +1,6 @@
 <template>
   <div class="ldlTablePaginationWrap">
-    
-    <ldl-table :style="{height:'calc(100% - '+dd+')'}" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingDataS"  @getList="getList"></ldl-table>
+    <ldl-table :style="{height:'calc(100% - '+dd+')'}" v-if="tableDataInfoS&&tableDataInfoS.dataList" :tableDataInfo="tableDataInfoS" :pagingData.sync="pagingDataS"  @getList="getList"></ldl-table>
     <div class="ldlTablePaginationBox">
       <div>
         <searchBox></searchBox>
@@ -24,6 +23,7 @@ export default {
   data(){
     return{
       dd:'36px',
+      tableDataInfoS:false,
       pagingDataS:undefined
     }
   },
@@ -34,9 +34,18 @@ export default {
       },
       immediate: true,
       deep: true
+    },
+    tableDataInfo:{
+      handler() {
+        console.log(this.tableDataInfo,'datalist')
+        this.tableDataInfoS=this.tableDataInfo
+      },
+      immediate: true,
+      deep: true
     }
   },
   mounted() {
+    this.tableDataInfoS=this.pagingData
     this.pagingDataS=this.pagingData
   },
   components:{

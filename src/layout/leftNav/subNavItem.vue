@@ -1,5 +1,5 @@
 <template>
-  <div class="subNavItem" :class="stretchNavState?'':'minSubNavItem'" v-if="!item.meta.isHidden">
+  <div class="subNavItem" v-if="!item.meta.isHidden">
     <el-menu-item :index="toIndex(item)" v-if="(item.children?item.children.length===1:true)">
       <div class="navDiv" v-if="stretchNavState">
         <i :class="classFun(item.meta.icon)"></i>
@@ -11,15 +11,16 @@
       </template>
     </el-menu-item>
     <el-submenu :index="toIndex(item)" v-else>
-      <template slot="title">
+      <template slot="title" v-if="stretchNavState">
         <div class="navDiv"  v-if="stretchNavState">
           <i :class="classFun(item.meta.icon)"></i>
-          <span>{{item.meta.title}}</span>
+          <span slot="title">{{item.meta.title}}</span>
         </div>
-        <template v-else>
-          <i :class="classFun(item.meta.icon)"></i>
-        </template>
       </template>
+      <div slot="title" v-if="!stretchNavState">
+        <i  v-if="!stretchNavState" :class="classFun(item.meta.icon)"></i>
+        <span v-if="!stretchNavState" slot="title">{{item.meta.title}}</span>
+      </div>
       <subNavItem v-for="(items,index) in item.children" :key="index" :item="items" :pageData="toIndex(item)" />
     </el-submenu>
   </div>

@@ -4,8 +4,10 @@ import router from './router'
 import store from './store'
 import ElementUI from 'element-ui';
 import ElDragDialog from '@/directives/el-dragDialog'
-import {inteRouter} from '@/router/inteRouter'
+import waves from '@/directives/waves'
 Vue.use(ElDragDialog)
+Vue.use(waves)
+import {inteRouter} from '@/router/inteRouter'
 inteRouter().then(res=>{
   // 动态添加路由
   router.options.routes=router.options.routes.concat(res)

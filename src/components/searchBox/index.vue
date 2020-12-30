@@ -5,7 +5,7 @@
         v-el-drag-dialog
         width="80%"
         minWidth="600px"
-        custom-class="minWidth"
+        custom-class="minWidth600"
         :visible.sync="openSearchState"
         :destroy-on-close="false"
         :close-on-click-modal="false"
@@ -35,5 +35,7 @@ name: "searchBox",
 </script>
 
 <style scoped>
-
+.searchBox{
+  height: 25px;
+}
 </style>

@@ -13,7 +13,7 @@
             :popper-append-to-body="true"
             mode="vertical"
         >
-          <subNavItem v-for="(item,index) in routesListTwo" :key="index" :item="item" :pageData="pageData.path?pageData.path:''" />
+          <subNavItem v-for="(item,index) in routesListTwo" :routesListTwo="routesListTwo" :key="index" :item="item" :pageData="pageData.path?pageData.path:''" />
         </el-menu>
     </el-scrollbar>
   </div>

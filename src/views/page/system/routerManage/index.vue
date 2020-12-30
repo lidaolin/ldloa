@@ -188,7 +188,7 @@
 <script>
 import {menuRouteAll, add, edit, setStatus, btnAll, addBtn, editBtn, setBtnStatus} from "@/api/root/root"
 export default {
-  name: "MenuManage",
+  name: "RouterManage",
   data(){
     return {
       menuList:[],
@@ -223,6 +223,21 @@ export default {
       }, {
         value: 'danger',
         label: '危险颜色(红)'
+      },{
+        value: 'primary/plain',
+        label: '主要颜色(蓝)/镂空'
+      }, {
+        value: 'success/plain',
+        label: '成功颜色(绿)/镂空'
+      }, {
+        value: 'info/plain',
+        label: '信息颜色(暗灰)/镂空'
+      }, {
+        value: 'warning/plain',
+        label: '警告颜色(土黄)/镂空'
+      }, {
+        value: 'danger/plain',
+        label: '危险颜色(红)/镂空'
       }],
       id:"",
       //按钮新增/编辑

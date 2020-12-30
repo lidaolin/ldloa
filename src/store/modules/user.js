@@ -3,9 +3,12 @@ import { Loading, Message, MessageBox } from 'element-ui'
 import router from '@/router'
 import { login } from '@/api'
 const TokenKey = 'Admin-Tokens'
+import  store from '@/store'
+import {inteRouter} from '@/router/inteRouter'
 const user = {
     state: {
         userInfo: Cookies.get(TokenKey) ? JSON.parse(Cookies.get(TokenKey)) : {},
+        user:{},
         userSidebarData: [],
         screenHeight: document.documentElement.clientHeight,
         userEchartsInfo: Cookies.get('ChilckInfo') ? JSON.parse(Cookies.get('ChilckInfo')) : {}
@@ -53,9 +56,14 @@ const user = {
                     Cookies.set(TokenKey, res.data)
                     context.commit('saveToken', res.data)
                     Loading.service().close()
+                    inteRouter().then(ress=>{
+                        // 动态添加路由
+                        router.options.routes=router.options.routes.concat(ress)
+                        router.addRoutes(ress)
+                        store.commit('changeRoutesList')
+                        console.log(router.options)
+                    })
                     //location.reload(); // 为了重新实例化vue-router对象 避免bug
-
-                    console.log(res.data)
                     resolve(res)
                 }).catch(err => {
 
@@ -71,7 +79,7 @@ const user = {
             context.commit('chilckInfoData', data)
         },
         outLogin(context) {
-            MessageBox.confirm('登录异常', "确定登出", {
+            MessageBox.confirm('是否登出', "确定登出", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning"

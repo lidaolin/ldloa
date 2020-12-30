@@ -32,66 +32,93 @@
    transition:width 1s;
     //overflow: hidden;
  }
-.minSubNavItem .el-submenu__icon-arrow{
-   display: none;
- }
+//.minSubNavItem .el-submenu__icon-arrow{
+//   display: none;
+// }
+.el-menu--collapse  .el-submenu__title span{
+  display: none;
+}
+.el-menu--collapse  .el-submenu__title .el-submenu__icon-arrow{
+  display: none;
+}
 .subNavItem{
-  .is-active{
-    background-color: $onNavBackground !important;
-    .is-active{
+  .el-menu{
+    .subNavItem{
+      .subNavItem{
+        .el-menu-item{
+          padding:0 20px 0 40px !important;
+        }
+
+      }
+      .el-menu-item{
+        padding:0 20px 0 30px !important;
+      }
       .el-submenu__title{
-        color: $menuActiveText !important;
+        padding:0 20px 0 30px !important;
+      }
+
+    }
+
+  }
+  i{
+    color:$menuText;
+  }
+  .el-menu{
+    //background-color: rgba(255,255,255,0) !important;
+    .el-menu-item,.el-submenu__title{
+      background-color: rgba(255,255,255,0.1) !important;
+      .el-menu-item,.el-submenu__title{
+        background-color: rgba(255,255,255,0.2) !important;
       }
       .is-active{
-        color: $menuActiveText !important;
-        background-color: $onNavBackground !important;
-        i{
-          color: $menuActiveText !important;
-        }
+        background-color: rgba(255,255,255,0.3) !important;
       }
+    }
+    .is-active{
+      background-color: rgba(255,255,255,0.2) !important;
 
     }
   }
 }
-.subNavItem .el-menu{
-  background-color: $navSubBackground !important;
-  .el-menu-item{
-    background-color:$navSubBackground !important;
-  }
-  .is-active{
-    background-color:$onNavSubBackground !important;
-  }
-}
+//.subNavItem .el-menu{
+//  background-color: $navSubBackground !important;
+//  .el-menu-item{
+//    background-color:$navSubBackground !important;
+//  }
+//  .is-active{
+//    background-color:$onNavSubBackground !important;
+//  }
+//}
 .el-menu--vertical {
-  opacity: 0.99;
-  height: 80%;
-  overflow: auto;
-  &::-webkit-scrollbar-track
-  {
-    background: rgba(0,0,0,.1);
-    border-radius: 0;
-  }
-  &::-webkit-scrollbar
-  {
-    -webkit-appearance: none;
-    width: 5px;
-    height: 5px;
-  }
-  &::-webkit-scrollbar-thumb
-  {
-    cursor: pointer;
-    border-radius: 5px;
-    background: rgba(0,0,0,.15);
-    transition: color .2s ease;
-  }
-  .el-menu{
-    background-color: $navSubBackground !important;
-  }
-  .el-menu-item{
-     background-color:$navSubBackground !important;
-   }
-
-  .is-active{
-    background-color:$onNavSubBackground !important;
-  }
+  //opacity: 0.99;
+  //height: 80%;
+  //overflow: auto;
+  //&::-webkit-scrollbar-track
+  //{
+  //  background: rgba(0,0,0,.1);
+  //  border-radius: 0;
+  //}
+  //&::-webkit-scrollbar
+  //{
+  //  -webkit-appearance: none;
+  //  width: 5px;
+  //  height: 5px;
+  //}
+  //&::-webkit-scrollbar-thumb
+  //{
+  //  cursor: pointer;
+  //  border-radius: 5px;
+  //  background: rgba(0,0,0,.15);
+  //  transition: color .2s ease;
+  //}
+  //.el-menu{
+  //  background-color: $navSubBackground !important;
+  //}
+  //.el-menu-item{
+  //   background-color:$navSubBackground !important;
+  // }
+  //
+  //.is-active{
+  //  background-color:$onNavSubBackground !important;
+  //}
 }
