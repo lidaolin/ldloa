@@ -75,3 +75,14 @@ export function a_add(data) {
         data: data
     })
 }
+/** 添加erp员工
+ * id	是	int	员工id
+ * password	是	string	密码 （必须是数字和字母组合）
+ */
+export function up_pass(data) {
+    return request({
+        url: '/admin/user/up_pass',
+        method: 'post',
+        data: data
+    })
+}

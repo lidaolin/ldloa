@@ -1,11 +1,11 @@
 <template>
 <div class="pageWrap">
   <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
-  <ldl-table-pagination :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+  <ldl-table-pagination :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
 <!--  <ldlControlWindow :bottomHeight.sync="bottomHeight" ref="bottomHeight"></ldlControlWindow>-->
   <el-dialog
       v-el-drag-dialog
-      width="40%"
+      width="30%"
       custom-class="minWidth300"
       :visible.sync="adduserState"
       :destroy-on-close="false"
@@ -14,8 +14,8 @@
       size="mini"
       center
   >
-    <el-form ref="form" :model="form" label-width="100px" size="mini">
-      <el-form-item label="管理组名称:">
+    <el-form ref="form" :model="form" label-width="100px" size="mini" >
+      <el-form-item label="管理组名称:" :rules="{ required: true, message: '请选择管理组名称', trigger: 'blur' }">
         <el-select
             v-model="form.groupId"
             filterable
@@ -32,8 +32,9 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="员工名称:">
+      <el-form-item label="员工名称:" :rules="{ required: true, message: '请选择员工名称', trigger: 'blur' }">
         <el-select
+            :disabled="changeGroupState"
             v-model="form.userId"
             filterable
             remote
@@ -49,13 +50,17 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        <el-button @click="adduserState=false">取消</el-button>
+      </el-form-item>
     </el-form>
   </el-dialog>
 </div>
 </template>
 
 <script>
-import {a_list,add_user_group_list,s_list} from "@/api/root/userInfo";
+import {a_list,add_user_group_list,s_list,a_add,enable_user,prohibit_user,up_user,up_pass} from "@/api/root/userInfo";
 
 import ldlTablePagination from '@/components/ldlTablePagination'
 // import ldlControlWindow from '@/components/ldlControlWindow'
@@ -66,14 +71,16 @@ export default {
     return{
       groupArray:[],
       userArray:[],
-
+      changeGroupState:false,
       loading:false,
       form:{},
+      adduserState:false,
       /**必要参数*/
-      pagingData:undefined,
-      bottomHeight: '0%',
-      buttonBoxState:true,
-      tableDataInfo:{
+      selectRow:undefined, //选中行
+      pagingData:undefined,//getList的传参
+      bottomHeight: '0%',//底部高度
+      buttonBoxState:true,//开启按钮行的状态
+      tableDataInfo:{ //表格信息
         dataListInfo:[
           {prop:'account',label:'账号',},
           {prop:'status',type:'tag',label:'状态',data:[{type:'success',key:1,name:'启用'},{type:'danger',key:2,name:'禁用'}],},
@@ -86,14 +93,107 @@ export default {
           {prop:'companyName',label:'单位名称'},
           {prop: 'avatar',label: '图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
           {prop: 'id',label:'拖动',type:'derk',width:'40'},
-        ],
-        dataList:[]
+        ],//表格列信息
+        dataList:[]//表格行信息
       },
-      adduserState:false
       /**必要参数*/
     }
   },
   methods:{
+    changePassword(){
+      if(this.selectRow){
+        this.$prompt('请输入新密码必须是密码和数字组合', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+          up_pass({id:this.selectRow.id,password:value}).then(()=>{
+            this.$message({
+              type: 'success',
+              message: '修改成功你的密码是: ' + value
+            });
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消修改'
+          });
+        });
+      }else{
+        this.$message.error('请选中一行')
+      }
+    },
+    changeGroup(){
+      if(this.selectRow){
+        this.userArray=[{
+          account:this.selectRow.account,
+          id:this.selectRow.id
+        }]
+        this.changeGroupState=true
+        this.groupMethod(this.selectRow.groupName)
+        this.form={
+          userId:this.selectRow.id,
+          groupId:this.selectRow.groupId
+        }
+        this.adduserState=true
+        this.groupMethod()
+      }else{
+        this.$message.error('请选中一行')
+      }
+    },
+    //禁用员工和启用员工
+    changeState(e){
+      if(this.selectRow){
+        this.$confirm(e==='over'?'是否禁止此员工':'是否启用此员工', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: e==='over'?'error':'warning'
+        }).then(() => {
+          console.log(this.selectRow)
+          if(e==='over'){
+            prohibit_user({id:this.selectRow.id}).then(()=>{
+              this.getList()
+              this.$message({
+                type: 'success',
+                message: '禁用成功!'
+              });
+            })
+          }else{
+            enable_user({id:this.selectRow.id}).then(()=>{
+              this.getList()
+              this.$message({
+                type: 'success',
+                message: '开启成功!'
+              });
+            })
+          }
+
+        }).catch(() => {});
+      }else{
+        this.$message.error('请选中一行')
+      }
+
+    },
+    onSubmit(){
+      this.$refs.form.validate((valid) => {
+        if(valid){
+          if (this.changeGroupState){
+            up_user(this.form).then(res=>{
+              this.form={}
+              this.adduserState=false
+              this.$message.success(res.msg)
+              this.getList()
+            })
+          }else{
+            a_add(this.form).then(res=>{
+              this.form={}
+              this.adduserState=false
+              this.$message.success(res.msg)
+              this.getList()
+            })
+          }
+        }
+      })
+    },
     // 搜索组id
     groupMethod(e){
       this.loading=true
@@ -112,7 +212,12 @@ export default {
     },
     //打开新增的弹窗
     addUser(){
-        this.adduserState=true
+      this.form={
+        userId:'',
+        groupId:''
+      }
+      this.changeGroupState=false
+      this.adduserState=true
       this.groupMethod()
       this.userMethod()
     },

@@ -4,20 +4,20 @@
         @row-dblclick="dblclick"
         @row-click="listClick"
         @sort-change="sortChanges"
-        v-loading="tableDataInfos.loading"
-        :data="tableDataInfos.dataList"
-        :height="tableDataInfos.height!==undefined? tableDataInfos.height:'100%'"
-        :max-height="tableDataInfos.maxHeight!==undefined? tableDataInfos.maxHeight:'100%'"
-        :border="tableDataInfos.border!==undefined? tableDataInfos.border:true"
-        :stripe="tableDataInfos.stripe!==undefined?tableDataInfos.stripe:false"
-        :size="tableDataInfos.size !== undefined? tableDataInfos.size:'mini'"
-        :fit="tableDataInfos.fit!==undefined?tableDataInfos.fit:true"
-        :show-header="tableDataInfos.fit!==undefined?tableDataInfos.fit:true"
-        :highlight-current-row="tableDataInfos.highlightCurrentRow!==undefined?tableDataInfos.highlightCurrentRow:true"
-        :show-summary="tableDataInfos.showSummary!==undefined?tableDataInfos.showSummary:false"
+        v-loading="tableDataInfo.loading"
+        :data="tableDataInfo.dataList"
+        :height="tableDataInfo.height!==undefined? tableDataInfo.height:'100%'"
+        :max-height="tableDataInfo.maxHeight!==undefined? tableDataInfo.maxHeight:'100%'"
+        :border="tableDataInfo.border!==undefined? tableDataInfo.border:true"
+        :stripe="tableDataInfo.stripe!==undefined?tableDataInfo.stripe:false"
+        :size="tableDataInfo.size !== undefined? tableDataInfo.size:'mini'"
+        :fit="tableDataInfo.fit!==undefined?tableDataInfo.fit:true"
+        :show-header="tableDataInfo.fit!==undefined?tableDataInfo.fit:true"
+        :highlight-current-row="tableDataInfo.highlightCurrentRow!==undefined?tableDataInfo.highlightCurrentRow:true"
+        :show-summary="tableDataInfo.showSummary!==undefined?tableDataInfo.showSummary:false"
         style="width: 100%">
           <template
-              v-for="(item,index) in tableDataInfos.dataListInfo"
+              v-for="(item,index) in tableDataInfo.dataListInfo"
           >
             <el-table-column
                 align="center"
@@ -92,12 +92,22 @@ export default {
   data(){
     return{
       clickRow:{},
-      tableDataInfos: {}
+      // tableDataInfo: {}
     }
+  },
+  watch:{
+
+    // tableDataInfo:{
+    //   handler() {
+    //     this.tableDataInfo=this.tableDataInfo
+    //   },
+    //   immediate: true,
+    //   deep: true
+    // }
   },
   mounted() {
 
-    this.tableDataInfos= {... this.tableDataInfo}
+    // this.tableDataInfo= {... this.tableDataInfo}
     // this.$nextTick(()=>{
       this.rowDrop()
       this.columnDrop()
@@ -137,17 +147,17 @@ export default {
         animation: 180,
         delay: 0,
         onEnd: evt => {
-          let tableDataInfos={... that.tableDataInfos}
-          console.log(tableDataInfos.dataListInfo,'old')
-          let dataListInfo=[... tableDataInfos.dataListInfo]
+          let tableDataInfo={... that.tableDataInfo}
+          console.log(tableDataInfo.dataListInfo,'old')
+          let dataListInfo=[... tableDataInfo.dataListInfo]
           console.log(dataListInfo)
           const oldItem= {... dataListInfo[evt.oldIndex]}
           dataListInfo.splice(evt.oldIndex, 1)
           dataListInfo.splice(evt.newIndex,0,oldItem)
-          tableDataInfos.dataListInfo= [... dataListInfo]
-          that.tableDataInfos={}
-          that.tableDataInfos= JSON.parse(JSON.stringify(tableDataInfos))
-          console.log(tableDataInfos.dataListInfo,'new')
+          tableDataInfo.dataListInfo= [... dataListInfo]
+          that.tableDataInfo={}
+          that.tableDataInfo= JSON.parse(JSON.stringify(tableDataInfo))
+          console.log(tableDataInfo.dataListInfo,'new')
         }
       })
     },
@@ -164,6 +174,7 @@ export default {
     },
     //单选
     listClick(e){
+      this.$emit('listClick',e)
       this.clickRow=e
     },
     //排序

@@ -1,18 +1,23 @@
 import {get_menu} from '@/api/index'
 import Layout from '@/layout'
 import twoLayout from '@/layout/twoLayout'
+import store from "@/store";
 export function inteRouter(){
-    return new Promise((resolve) => {
-        get_menu().then(res=>{
-            console.log(res.data,'ddd')
-            // let newRouterList=[]
-            let intRouterList=res.data
-            addInteRouter(intRouterList,0).then(res=>{
-                // newRouterList.push(res)
-                return resolve(res)
-            })
+    return new Promise((resolve,reject) => {
+        if(store.getters.token){
+            get_menu().then(res=>{
+                console.log(res.data,'ddd')
+                // let newRouterList=[]
+                let intRouterList=res.data
+                addInteRouter(intRouterList,0).then(res=>{
+                    // newRouterList.push(res)
+                    return resolve(res)
+                })
 
-        })
+            })
+        }else{
+            reject()
+        }
     })
 }
 export function addInteRouter(data,pagePath){

@@ -88,7 +88,7 @@ const user = {
                 context.commit('removeToken')
 
                 router.push({path: '/login', query: '' })
-                //location.reload(); // 为了重新实例化vue-router对象 避免bug
+                location.reload(); // 为了重新实例化vue-router对象 避免bug
             });
         }
     }

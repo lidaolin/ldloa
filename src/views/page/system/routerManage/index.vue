@@ -131,7 +131,7 @@
             <el-tag v-if="row.status==1" size="mini" type="success">开启</el-tag>
           </template>
         </el-table-column>
-        <el-table-column property="colour" label="颜色" align='center'></el-table-column>
+        <el-table-column property="color" label="颜色" align='center'></el-table-column>
         <el-table-column property="sort" label="排序" align='center'></el-table-column>
         <el-table-column
             label="操作"
@@ -157,8 +157,12 @@
           <el-input v-model="btnFrom.event" ></el-input>
           <div class="tipsText">事件名称如果携带参数使用“/”分开。eg:add/id</div>
         </el-form-item>
-        <el-form-item label="按钮颜色" prop="colour" :rules="[{ required: true, message: '按钮颜色不能为空'},]">
-          <el-select v-model="btnFrom.colour" placeholder="请选择颜色">
+
+        <el-form-item prop="icon" label="图标">
+          <el-input v-model="btnFrom.icon"></el-input>
+        </el-form-item>
+        <el-form-item label="按钮颜色" prop="color" :rules="[{ required: true, message: '按钮颜色不能为空'},]">
+          <el-select v-model="btnFrom.color" placeholder="请选择颜色">
             <el-option
                 v-for="(item,index) in colorData"
                 :key="index"
