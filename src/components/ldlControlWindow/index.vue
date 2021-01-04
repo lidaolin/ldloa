@@ -4,8 +4,8 @@
       <div style="background-color:#DCDCDC;height:2px;width:100%" />
       <div style="background-color:#DCDCDC;height:2px;width:100%" />
     </div>
-    <div style="background: red;height:calc(100% - 4px)">
-      11111
+    <div style="height:calc(100% - 4px)">
+      <slot :data="Path"/>
     </div>
   </div>
 </template>
@@ -14,7 +14,13 @@
 export default {
   name: "ldlControlWindow",
   props:{
-    bottomHeight:String
+    bottomHeight:String,
+    Path:{
+      type: String,
+      default(){
+        return null
+      }
+    },
   },
   mounted() {
     this.drag()

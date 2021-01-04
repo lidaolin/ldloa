@@ -233,6 +233,8 @@ export default {
     getList(){
       a_list(this.pagingData).then(res=>{
         this.pagingData={
+          ...
+          this.pagingData,
           page:res.data.current_page,
           limit:res.data.per_page,
           total:res.data.total,

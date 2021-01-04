@@ -6,6 +6,8 @@
         @sort-change="sortChanges"
         v-loading="tableDataInfo.loading"
         :data="tableDataInfo.dataList"
+        :row-key="tableDataInfo.rowKey!==undefined?tableDataInfo.rowKey:''"
+        :tree-props="tableDataInfo.treeProps!==undefined?tableDataInfo.treeProps:{}"
         :height="tableDataInfo.height!==undefined? tableDataInfo.height:'100%'"
         :max-height="tableDataInfo.maxHeight!==undefined? tableDataInfo.maxHeight:'100%'"
         :border="tableDataInfo.border!==undefined? tableDataInfo.border:true"

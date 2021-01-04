@@ -5,7 +5,9 @@
     </div>
     <div  style="width:calc(100% - 50px);height:100%;position:relative;overflow: hidden"  ref="buttonBoxWrap" v-if="buttonBoxState">
       <div class="buttonBox" ref="buttonBox" :style="{transform:'translateX('+leftViewWidth+'px)'}">
-        <el-button size="mini" :icon="item.ico" v-for="(item,index) in buttonData" :type="item.color.split('/')[0]" :plain="item.color.split('/').length>1"  v-waves :key="index" @click="Callback(item.event)">{{ item.title }}</el-button>
+
+        <slot :data="Path"></slot>
+        <el-button size="mini" :icon="item.icon" v-for="(item,index) in buttonData" :type="item.color.split('/')[0]" :plain="item.color.split('/').length>1"  v-waves :key="index" @click="Callback(item.event)">{{ item.title }}</el-button>
       </div>
     </div>
     <div class="buttonBoxNavNext buttonBoxNav"  v-if="width>widthWrap&&buttonBoxState" @click="changeView('next')">
@@ -27,6 +29,12 @@ export default {
     }
   },
   props:{
+    Path:{
+      type: String,
+      default(){
+        return null
+      }
+    },
     buttonBoxState:Boolean
   },
   mounted() {
