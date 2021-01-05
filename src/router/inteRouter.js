@@ -6,7 +6,6 @@ export function inteRouter(){
     return new Promise((resolve,reject) => {
         if(store.getters.token){
             get_menu().then(res=>{
-                console.log(res.data,'ddd')
                 // let newRouterList=[]
                 let intRouterList=res.data
                 addInteRouter(intRouterList,0).then(res=>{

@@ -118,12 +118,10 @@ export default {
   methods:{
     //大图处理
     bigImage(res,key){
-      console.log(res)
       const img=[]
       for (let i = 0; i < res.length; i++) {
         img.push(res[i][key])
       }
-      console.log(img)
       return img
     },
     //行拖拽
@@ -150,7 +148,6 @@ export default {
         delay: 0,
         onEnd: evt => {
           let tableDataInfo={... that.tableDataInfo}
-          console.log(tableDataInfo.dataListInfo,'old')
           let dataListInfo=[... tableDataInfo.dataListInfo]
           console.log(dataListInfo)
           const oldItem= {... dataListInfo[evt.oldIndex]}
@@ -159,7 +156,6 @@ export default {
           tableDataInfo.dataListInfo= [... dataListInfo]
           that.tableDataInfo={}
           that.tableDataInfo= JSON.parse(JSON.stringify(tableDataInfo))
-          console.log(tableDataInfo.dataListInfo,'new')
         }
       })
     },

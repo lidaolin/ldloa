@@ -37,7 +37,6 @@ export default {
     },
     tableDataInfo:{
       handler() {
-        console.log(this.tableDataInfo,'datalist')
         this.tableDataInfoS=this.tableDataInfo
       },
       immediate: true,

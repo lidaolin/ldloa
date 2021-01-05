@@ -33,7 +33,6 @@ export default {
       oDiv.onmousedown = function(ev) {
         document.onselectstart=()=>{return false}
         let height = parseInt(tableDiv.offsetHeight)
-        console.log(height)
         oDiv.style.cursor = 's-resize'
         let evs = ev || event
         // let mouseDownX = evs.clientX
@@ -65,11 +64,7 @@ export default {
 }
 </script>
 
-<style scoped>
-.lineDiv{
-  /*margin: 20px;*/
-  /*margin-top: 5px;*/
-}
+<style scoped lang="scss">
 .lineDiv:hover {
   cursor: s-resize;
 }

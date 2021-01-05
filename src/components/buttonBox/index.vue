@@ -42,7 +42,6 @@ export default {
       this.width=this.$refs.buttonBox.clientWidth
       this.widthWrap=this.$refs.buttonBoxWrap.clientWidth
     })
-    console.log(this.$route.path.split('/'),'pathc')
     const routerData = this.$route.path.split('/')
     bu_list({name:routerData[routerData.length-1]}).then(res=>{
       if(res.data.length>0){
@@ -62,7 +61,6 @@ export default {
       let that=this
       let width=this.$refs.buttonBox.clientWidth
       let widthWrap=this.$refs.buttonBoxWrap.clientWidth
-      console.log((width-widthWrap)%widthWrap)
       if(e==='next'){
         if(width+that.leftViewWidth<widthWrap){
           this.leftViewWidth=that.leftViewWidth

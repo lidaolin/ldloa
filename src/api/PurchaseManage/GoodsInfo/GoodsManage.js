@@ -152,3 +152,14 @@ export function simpleIndex(data) {
         data: data
     })
 }
+
+/** 属性id列表
+ * attr_name 名字
+ */
+export function attributeIndex(data) {
+    return request({
+        url: '/admin/attr/index',
+        method: 'post',
+        data: data
+    })
+}

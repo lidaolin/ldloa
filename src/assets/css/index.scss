@@ -11,6 +11,55 @@ body{
     height: 100%;
     width: 100%;
 }
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+}
+.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+}
+.avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+}
+
+.el-tag {
+    margin-left: 10px;
+}
+.button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+}
+
+.elFormItemFlex{
+    width: 100%;
+    .el-form-item__content{
+        width: calc(100% - 180px);
+    }
+    .el-upload-list--picture .el-upload-list__item.is-success .el-upload-list__item-name{
+        display: none;
+    }
+}
 
 .minWidth200{
     min-width: 200px!important;
@@ -26,6 +75,9 @@ body{
 }
 .minWidth600{
     min-width: 600px!important;
+}
+.minWidth700{
+    min-width: 700px!important;
 }
 .minWidth800{
     min-width: 800px!important;

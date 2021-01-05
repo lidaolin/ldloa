@@ -13,7 +13,6 @@ inteRouter().then(res=>{
   router.options.routes=router.options.routes.concat(res)
   router.addRoutes(res)
   store.commit('changeRoutesList')
-  console.log(router.options)
 })
 import VueWechatTitle from 'vue-wechat-title'//动态修改title
 import 'element-ui/lib/theme-chalk/index.css';
