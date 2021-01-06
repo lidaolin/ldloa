@@ -55,6 +55,7 @@ export default {
   methods:{
     listClick(e){
       this.$emit('update:selectRow',e)
+      this.$emit('listClick',e)
     },
     getList(){
       let pagingData= {... this.pagingDataS}

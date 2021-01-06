@@ -60,6 +60,10 @@ body{
         display: none;
     }
 }
+.ldlTab .el-tabs__content{
+    padding: 5px;
+    height: calc(100% - 50px);
+}
 
 .minWidth200{
     min-width: 200px!important;

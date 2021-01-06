@@ -1,5 +1,5 @@
 <template>
-  <div ref="table" style="width: 100%" :style="{height:bottomHeight}">
+  <div ref="table" style="width:calc(100% - 10px);padding: 0 5px" :style="{height:bottomHeight}">
     <div ref="lineDiv" class="lineDiv">
       <div style="background-color:#DCDCDC;height:2px;width:100%" />
       <div style="background-color:#DCDCDC;height:2px;width:100%" />

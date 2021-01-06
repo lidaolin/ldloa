@@ -1,7 +1,75 @@
 <template>
   <div class="pageWrap">
     <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
-    <ldl-table-pagination :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+    <ldl-table-pagination @listClick="listClick" :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+
+    <el-dialog
+        v-el-drag-dialog
+        top="2.5%"
+        width="50%"
+        custom-class="minWidth700"
+        :visible.sync="changePriceState"
+        :destroy-on-close="false"
+        :close-on-click-modal="false"
+        title="批量修改价格"
+        size="mini"
+        center
+    >
+      <el-table
+          :data="getSku"
+          border
+          size="mini"
+          height="100%">
+        <el-table-column
+            prop="product_attr_val_pash"
+            label="商品规格">
+          <template slot-scope="scope">
+            <span v-for="(item,index) in scope.row.product_attr_val_pash" :key="index">{{item.attr_name}}:{{item.val_name}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="p_status"
+            width="100"
+            align="center"
+            label="商品规格状态">
+          <template slot-scope="{row}">
+            <el-switch
+                size="mini"
+                v-model="row.p_status"
+                :active-value="1"
+                :inactive-value="2"
+                active-color="#13ce66"
+                inactive-color="#ff4949">
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="price"
+            align="center"
+            width="160">
+          <template slot="header">
+            统一修改价格
+            <el-input-number v-model="price" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+          <template slot-scope="{row}">
+            <el-input-number v-model="row.price" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="price"
+            align="center"
+            width="110"
+            label="删除">
+          <template slot-scope="scope">
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="delSku(scope.$index)"> 删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="changePriceState = false">取 消</el-button>
+        <el-button type="primary" @click="onSubmitPrice">确 定</el-button>
+      </div>
+    </el-dialog>
     <el-dialog
         v-el-drag-dialog
         top="2.5%"
@@ -78,6 +146,7 @@
         <el-form-item label="商品视频:" prop="video_link" :rules="{ required: true, message: '请上传商品视频', trigger: 'blur' }">
           <el-upload
               class="avatar-uploader"
+              accept="video/*"
               action="/api/admin/upload_image/upload"
               name="file"
               :show-file-list="false"
@@ -98,7 +167,9 @@
               list-type="picture-card"
               multiple
               show-file-list
+              accept="image/*"
               :file-list.sync="view_text"
+              :on-success="uploadSuccess"
               :on-preview="handlePreview"
               :on-remove="handleRemove">
             <i class="el-icon-plus"></i>
@@ -212,21 +283,110 @@
         <el-button @click="changeGoodsState = false">取 消</el-button>
         <el-button type="primary" @click="onSubmit">确 定</el-button>
       </div>
-
     </el-dialog>
-    <ldlControlWindow :bottomHeight.sync="bottomHeight" ref="bottomHeight"></ldlControlWindow>
+    <ldlControlWindow :bottomHeight.sync="bottomHeight" ref="bottomHeight">
+      <el-tabs type="border-card" v-model="tabPaneValue" class="ldlTab" @tab-click="changeTab" style="height: calc(100% - 4px)">
+        <el-tab-pane label="商品规格" name="getSku" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="product_attr_val_pash"
+                label="商品规格">
+              <template slot-scope="scope">
+                  <span v-for="(item,index) in scope.row.product_attr_val_pash" :key="index">{{item.attr_name}}:{{item.val_name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="p_status"
+                width="120"
+                align="center"
+                label="商品规格状态">
+              <template slot-scope="{row}">
+                <el-tag type="success" size="mini" v-if="row.p_status===1">正常</el-tag>
+                <el-tag type="danger" size="mini" v-if="row.p_status!==1">禁售</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="price"
+                width="120"
+                align="center"
+                label="价格">
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="商品操作日志" name="productLog" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="type"
+                width="100"
+                align="center"
+                label="操作类型">
+              <template slot-scope="{row}">
+                <el-tag size="mini" v-if="row.type===1">新增</el-tag>
+                <el-tag type="success" size="mini" v-if="row.type===2">编辑</el-tag>
+                <el-tag type="danger" size="mini" v-if="row.type===3">删除</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="product_name"
+                align="center"
+                width="220"
+                label="商品名称">
+            </el-table-column>
+            <el-table-column
+                width="450"
+                prop="product_attr_val_pash"
+                label="修改内容">
+              <template slot-scope="scope">
+                <span v-for="(item,index) in scope.row.content" :key="index">{{item}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="user_name"
+                align="center"
+                width="80"
+                label="操作人">
+            </el-table-column>
+            <el-table-column
+                prop="create_time"
+                align="center"
+                width="140"
+                label="时间">
+              <template slot-scope="{row}">
+                {{row.create_time | parseTime('')}}
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
+    </ldlControlWindow>
   </div>
 </template>
 
 <script>
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
-import {index,brandList,status,simpleIndex,attributeIndex,add} from "@/api/PurchaseManage/GoodsInfo/GoodsManage";
+import {index,brandList,status,simpleIndex,attributeIndex,add,edit,getSku,productLog,delSku,changeSkuPrice} from "@/api/PurchaseManage/GoodsInfo/GoodsManage";
 import ldlControlWindow from "@/components/ldlControlWindow";
 export default {
   name: "GoodsManage",
   data(){
     return{
+      price:0,
+      getSku:[],
+      delSkuList:[],
+      changePriceState:false,
+      bottomList:{getSku:[],productLog:[]},
+      tabPaneValue:'getSku',
       view_text:[],
       attreType:'',
       dialogImageUrl: '',
@@ -273,24 +433,69 @@ export default {
       /**必要参数*/
     }
   },
+  watch:{
+    price(){
+      for (let i = 0; i < this.getSku.length; i++) {
+        let getSku=[... this.getSku]
+        getSku[i].price=this.price
+        this.getSku=[... getSku]
+      }
+    }
+  },
   methods:{
-    // 提交
-    onSubmit(){
-      console.log(this.view_text)
-      this.$refs.form.validate((valid) => {
-        if(valid){
-          if (this.form.attr.length<=0){return this.$message.error('你得先填写属性')}
-          let form ={... this.form}
-          console.log(this.form)
-          let view_text=[... form.view_text]
-          form.view_text=[]
-          for (let i = 0; i < view_text.length; i++) {
-            form.view_text.push(view_text[i].url)
-          }
-          add(form).then(res=>{
-            console.log(res)
-          })
-        }
+    //提交批量的价格
+    onSubmitPrice(){
+      console.log(this.delSkuList)
+      delSku({id:this.delSkuList}).then(()=>{
+        changeSkuPrice({id_array:this.getSku}).then(res=>{
+          this.$message.success(res.msg)
+          this.changePriceState=false
+          this.getList()
+          this.changeTab()
+        })
+      })
+    },
+    // 删除价格
+    delSku(e){
+      this.delSkuList.push(this.getSku[e].id)
+        this.getSku.splice(e,1)
+    },
+    //打开价格弹窗
+    changePrice(){
+      this.delSkuList=[]
+      if(this.selectRow){
+        this.getSku=[... this.bottomList.getSku]
+        this.changePriceState=true
+      }else{
+        this.$message.error('请选中一行')
+      }
+    },
+    listClick(e){
+      console.log(e)
+      if(this.tabPaneValue==='getSku'){
+        getSku({product_id:e.id}).then(res=>{
+          console.log(res)
+          this.bottomList.getSku=res.data
+        })
+      }else{
+        this.productLogList({product_id:e.id,limit:10000})
+      }
+      // Expose pussy   closeup  upskirtjerk
+    },
+    changeTab(){
+      let e = this.selectRow
+      if(this.tabPaneValue==='getSku'){
+        getSku({product_id:e.id}).then(res=>{
+          console.log(res)
+          this.bottomList.getSku=res.data
+        })
+      }else{
+        this.productLogList({product_id:e.id,limit:10000})
+      }
+    },
+    productLogList(e){
+      productLog(e).then(res=>{
+        this.bottomList.productLog=res.data.data
       })
     },
     //删除
@@ -324,9 +529,12 @@ export default {
     addAttributeSubmit(){
       if (this.addAttributeData.attr_id){
         let form={...this.form}
+        console.log(this.attreType)
         if (this.attreType>=0){
+          console.log(999)
           form.attr.splice(this.attreType,1,this.addAttributeData)
         }else{
+          console.log(888)
           form.attr.push(this.addAttributeData)
         }
         this.form= {... form}
@@ -367,7 +575,7 @@ export default {
     },
     //新建属性分类的弹窗打开
     addAttribute(){
-      this.attreType=''
+      this.attreType=-1
       this.selectAttributeData=''
       this.addAttributeData={val_name:[]}
       this.attributeMethod()
@@ -376,6 +584,11 @@ export default {
     //多图的删除
     handleRemove(file, fileList) {
       console.log(file, fileList);
+      this.view_text=fileList
+    },
+    //上传成功
+    uploadSuccess(response, file, fileList){
+      this.view_text.push({name:'图片'+fileList.length+1,url:response.data.url})
     },
     //多图的上传完成点击图片的钩子
     handlePreview(file) {
@@ -385,7 +598,6 @@ export default {
     },
     //图片上传成功
     handleSuccess(e,name){
-      console.log(e,name)
       let form= {... this.form}
       form[name]=e.data.url
       this.form={... form}
@@ -421,15 +633,60 @@ export default {
       if(e==='add'){
         this.brandMethod()
         this.classifyMethod()
+
+        this.form={attr:[],status:1}
         this.changeGoodsState=true
       }else{
         if(this.selectRow){
+          console.log(this.selectRow)
           this.form={... this.selectRow}
+          for (let i = 0; i < this.selectRow.view_text.length; i++) {
+            this.view_text.push({name:'图片'+i,url:this.selectRow.view_text[i]})
+          }
+          this.brandMethod()
+          this.classifyMethod()
           this.changeGoodsState=true
         }else{
           this.$message.error('请选中一行')
         }
       }
+    },
+    // 提交
+    onSubmit(){
+      console.log(this.view_text)
+      this.$refs.form.validate((valid) => {
+        if(valid){
+          if (this.form.attr.length<=0){return this.$message.error('你得先填写属性')}
+          let form ={... this.form}
+          console.log(this.form)
+          let view_text=[... this.view_text]
+          form.view_text=[]
+          for (let i = 0; i < view_text.length; i++) {
+            form.view_text.push(view_text[i].url)
+          }
+          if (this.form.id){
+
+            edit(form).then(res=>{
+              console.log(res)
+              this.$message.success(res.msg)
+              this.view_text=[]
+              this.form={attr:[]}
+              this.changeGoodsState=false
+              this.getList()
+            })
+          }else{
+            add(form).then(res=>{
+              this.$message.success(res.msg)
+              console.log(res)
+              this.view_text=[]
+              this.form={attr:[]}
+              this.changeGoodsState=false
+              this.getList()
+            })
+
+          }
+        }
+      })
     },
     /**编辑和新增商品*/
     /** 模糊搜索*/

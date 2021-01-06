@@ -132,6 +132,20 @@ export function simpleList(data) {
         data: data
     })
 }
+/** 商品操作日志
+ * limit	否	int	每页数量默认15
+ * page	否	int	当前页数
+ * key	否	string	搜索条件
+ * dbname	否	string	排序字段
+ * sort	否	string	排序类型(desc or asc)
+ */
+export function productLog(data) {
+    return request({
+        url: '/admin/product/productLog',
+        method: 'post',
+        data: data
+    })
+}
 /** 品牌id列表
  * brand_name 名字
  */
