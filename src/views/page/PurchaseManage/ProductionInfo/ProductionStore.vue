@@ -18,9 +18,9 @@
 import ldlTablePagination from '@/components/ldlTablePagination'
 import ldlControlWindow from '@/components/ldlControlWindow'
 import buttonBox from '@/components/buttonBox'
-import {index} from "@/api/PurchaseManage/ProductionInfo";
+import {index} from "@/api/PurchaseManage/ProductionInfo/ProductionStore";
 export default {
-  name: "ProductionInfo",
+  name: "ProductionStore",
   data(){
     return{
       /**必要参数*/

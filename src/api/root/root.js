@@ -9,7 +9,6 @@ export function menuRouteAll(data) {
       data: data
   })
 }
-
 /*
     菜单新增
     参数名	必选	类型	说明
@@ -122,3 +121,60 @@ export function setBtnStatus(id) {
         data: {id}
     })
 }
+
+/*
+    管理组列表
+    参数名	必选	类型	说明
+      id	是	int	按钮id
+*/
+export function manageGroupList(data) {
+    return request({
+        url: '/admin/group/group_list',
+        method: 'post',
+        data: data
+    })
+}
+
+/*
+    管理组新增
+    参数名	必选	类型	说明
+    groupName	是	string	管理组名称
+    status	是	string	状态（1启用2禁止）
+*/
+export function addManageGroup(data) {
+    return request({
+        url: '/admin/group/group_add',
+        method: 'post',
+        data: data
+    })
+}
+
+/*
+    管理组编辑
+    参数名	必选	类型	说明
+    groupName	是	string	管理组名称
+    status	是	string	状态（1启用2禁止）
+*/
+export function editManageGroup(data) {
+    return request({
+        url: '/admin/group/group_add',
+        method: 'post',
+        data: data
+    })
+}
+
+/*
+    添加/修改管理组权限
+    参数名	必选	类型	说明
+    id	是	int	管理组id
+    erp_function_id	是	string	菜单id列表 格式 1,2,3
+    erp_anniu_id	是	string	按钮id列表 格式 1,2,3
+*/
+export function changeManageGroupRole(data) {
+    return request({
+        url: '/admin/group/add_auth',
+        method: 'post',
+        data: data
+    })
+}
+

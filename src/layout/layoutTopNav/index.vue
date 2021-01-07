@@ -14,7 +14,9 @@
         mode="horizontal"
         v-if="navHead"
     >
-      <el-menu-item :index="item.path=='/'?'/index':item.path" v-for="(item,index) in routesList" :key="index">{{ item.meta.title }}</el-menu-item>
+      <template  v-for="(item,index) in routesList">
+        <el-menu-item :index="item.path=='/'?'/index':item.path"  v-if="!item.meta.isHidden" :key="index">{{ item.meta.title }}</el-menu-item>
+      </template>
     </el-menu>
     <el-dropdown @command="overLogin">
       <div class="ldl-info">

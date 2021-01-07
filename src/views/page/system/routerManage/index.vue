@@ -33,8 +33,8 @@
       </el-table-column>
       <el-table-column prop="status" label="页面禁用" align='center'>
         <template slot-scope="{row}" >
-          <el-tag v-if="row.status==2" size="mini" type="danger">否</el-tag>
-          <el-tag v-if="row.status==1" size="mini" type="success">是</el-tag>
+          <el-tag v-if="row.status==1" size="mini" type="danger">否</el-tag>
+          <el-tag v-if="row.status==2" size="mini" type="success">是</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="lev" label="路由层级" width="80" align='center'>

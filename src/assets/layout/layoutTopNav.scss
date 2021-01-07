@@ -17,8 +17,12 @@
 }
 .ldl-layoutTopNavRight{
   height: 30px;
+  display: flex;
   .el-menu.el-menu--horizontal{
     border-bottom: 0;
+  }
+  .el-menu-item{
+    padding: 0 10px;
   }
   .el-menu--horizontal>.el-menu-item{
     height: 30px;
@@ -29,6 +33,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  margin-left: 20px;
   .ldl-infoName{
     margin:0 0px 0 10px;
     font-size: 15px;
