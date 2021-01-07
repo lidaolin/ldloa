@@ -2,12 +2,38 @@
   <div class="pageWrap">
     <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
     <ldl-table-pagination :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
-    <ldlControlWindow :bottomHeight.sync="bottomHeight" ref="bottomHeight">
+    <ldlControlWindow  class="ldlTab" :bottomHeight.sync="bottomHeight" ref="bottomHeight">
       <el-tabs type="border-card" style="height: calc(100% - 4px)">
-        <el-tab-pane label="用户管理">用户管理</el-tab-pane>
-        <el-tab-pane label="配置管理">配置管理</el-tab-pane>
-        <el-tab-pane label="角色管理">角色管理</el-tab-pane>
-        <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
+        <el-tab-pane label="入库商品规格明细" style="height: calc(100% - 4px)">
+          <el-table
+              :data="selectRow?selectRow.ruku_product:[]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="product_name"
+                label="商品名称">
+            </el-table-column>
+            <el-table-column
+                prop="product_attr_val_pash_array"
+                width="120"
+                align="center"
+                label="商品规格状态">
+              <template slot-scope="{row}">
+                <span v-for="(item,index) in row.product_attr_val_pash_array" :key="index">
+                  {{ item.attr_name }}:{{item.val_name}}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="number"
+                width="120"
+                align="center"
+                label="入库数量">
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
       </el-tabs>
     </ldlControlWindow>
 
