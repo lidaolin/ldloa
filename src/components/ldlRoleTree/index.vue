@@ -213,13 +213,17 @@ ul {
 }
 
 li {
-  margin-bottom: 10px;
+  //margin-bottom: 10px;
   cursor: pointer;
+  border: 1px solid #f5f5f5;
+  border-top: none;
+  //border-right: none;
 }
 
 .ldlRoleTree_title {
+  width: 120px;
   display: inline-block;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   padding: 4px;
   margin-right: 15px;
   border: 1px solid transparent;

@@ -1,16 +1,18 @@
 <template>
-  <div class="rootManageMain">
-    <div class="btnModular">
+  <div class="rootManageMain" style="height: calc(100% - 20px);" >
+    <div class="btnModular" >
       <el-button type="primary" size="mini" @click="visibleform('add')">添加管理组</el-button>
 <!--      <el-button type="primary" size="mini" @click="visibleform('edit')">编辑管理组</el-button>-->
       <el-button type="primary" size="mini" @click="preservation">保存（所选按钮权限）</el-button>
 <!--      <el-button type="danger" size="mini">删除</el-button>-->
     </div>
-    <div class="roleModular">
-      <div class="roleModularBox">
-        <el-tabs tab-position="left" style="height: 100%" @tab-click="listClick" >
-          <el-tab-pane v-for="(item,index) in manageGroupArr" :key="index" :label="item.groupName" :groupInfo="item">
-            <ldlRoleTree :index="index" :info.sync="children"></ldlRoleTree>
+    <div class="roleModular" style="height: calc(100% - 80px);" >
+      <div class="roleModularBox" style="height:100%" >
+        <el-tabs tab-position="left" class="ldlTab" @tab-click="listClick" style="height: 100%;">
+          <el-tab-pane v-for="(item,index) in manageGroupArr" style="height: 100%;" :key="index" :label="item.groupName" :groupInfo="item">
+            <el-scrollbar style="overflow: hidden;height: 100%;">
+            <ldlRoleTree :index="index" :info.sync="children" style="border-right: 1px solid #f5f5f5;border-top: 1px solid #f5f5f5;"></ldlRoleTree>
+            </el-scrollbar>
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -306,5 +308,11 @@ export default {
 }
 .roleModularBox{
   margin-bottom: 30px;
+}
+
+</style>
+<style>
+.el-scrollbar__wrap{
+  overflow-x: hidden !important;
 }
 </style>
