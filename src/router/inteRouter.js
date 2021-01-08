@@ -8,9 +8,9 @@ export function inteRouter(){
             get_menu().then(res=>{
                 // let newRouterList=[]
                 let intRouterList=res.data
-                addInteRouter(intRouterList,0).then(res=>{
+                addInteRouter(intRouterList,0).then(resd=>{
                     // newRouterList.push(res)
-                    return resolve(res)
+                    return resolve(resd)
                 })
 
             })
