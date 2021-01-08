@@ -34,7 +34,6 @@ export default {
       /**必要参数*/
     }
   },
-
   methods:{
     /**这是按钮方法调用*/
     functionCall(name) {
