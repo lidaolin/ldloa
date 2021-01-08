@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Layout from '@/layout'
 import index from './modules/index'
 import login from '@/views/login/login'
+
 Vue.use(VueRouter)
 
 export const routes = [

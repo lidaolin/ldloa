@@ -262,7 +262,6 @@ export default {
     })
   },
   methods:{
-
     //导入快递价格表-->弹出打开
     imporTable(){
       if (this.selectRow) {
@@ -300,7 +299,7 @@ export default {
     // 上传文件到服务器
     uploadSure() {
       uploadKdPriceList(this.fileData)
-          .then((res) => {
+          .then(res => {
             this.$message.success(res.msg)
             this.getList()
             this.uploadShow = false

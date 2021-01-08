@@ -72,3 +72,10 @@ export function del(data) {
         data: data
     })
 }
+export  function  supplierTypeList(data){
+    return request({
+        url:'/admin/supplier_type/index',
+        method:'post',
+        data:data
+    })
+}

@@ -5,6 +5,7 @@ import store from './store'
 import ElementUI from 'element-ui';
 import ElDragDialog from '@/directives/el-dragDialog'
 import waves from '@/directives/waves'
+
 Vue.use(ElDragDialog)
 Vue.use(waves)
 import {inteRouter} from '@/router/inteRouter'
