@@ -243,9 +243,9 @@ export default {
           {prop:'companyName',label:'配送中心名称',},
           {prop:'kdname',label:'快递名称',},
           {prop:'kdnum',label:'快递英文编号',},
-          {prop:'total',label:'总订单数',},
-          {prop:'ps_fee',label:'总快递费用',},
-          {prop:'count',label:'电子面单余量',},
+          {prop:'total',label:'总订单数',sortable:"custom"},
+          {prop:'ps_fee',label:'总快递费用',sortable:"custom"},
+          {prop:'count',label:'电子面单余量',sortable:"custom"},
           {prop:'status',type:'tag',label:'状态',data:[{type:'success',key:1,name:'启用'},{type:'danger',key:2,name:'禁用'}],},
           {prop:'isappoint',type:'tag',label:'是否可指定',data:[{type:'success',key:1,name:'指定'},],},
           {prop:'sort',label:'排序',sortable:"custom",},
@@ -288,9 +288,11 @@ export default {
         message: '请不要上传文件大小超过1M的表格文件！',
         type: 'warning'
       })
+
       return false
     },
     handleSuccess(res) {
+      // console.log(res)
       this.gridData = res.results
       this.tableHeader = res.header
     },
@@ -298,10 +300,9 @@ export default {
     // 上传文件到服务器
     uploadSure() {
       uploadKdPriceList(this.fileData)
-          .then(res => {
-            this.$message.success('导入成功！')
+          .then((res) => {
+            this.$message.success(res.msg)
             this.getList()
-
             this.uploadShow = false
           })
           .catch(err => {
