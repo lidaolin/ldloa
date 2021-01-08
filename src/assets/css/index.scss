@@ -64,6 +64,10 @@ body{
     padding: 5px;
     height: calc(100% - 50px);
 }
+.ldlTabs .el-tabs__content{
+    padding: 5px;
+    height: calc(100% - 10px);
+}
 
 .minWidth200{
     min-width: 200px!important;

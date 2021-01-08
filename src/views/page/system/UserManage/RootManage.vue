@@ -8,7 +8,7 @@
     </div>
     <div class="roleModular" style="height: calc(100% - 80px);" >
       <div class="roleModularBox" style="height:100%" >
-        <el-tabs tab-position="left" class="ldlTab" @tab-click="listClick" style="height: 100%;">
+        <el-tabs tab-position="left" class="ldlTabs" @tab-click="listClick" style="height: 100%;">
           <el-tab-pane v-for="(item,index) in manageGroupArr" style="height: 100%;" :key="index" :label="item.groupName" :groupInfo="item">
             <el-scrollbar style="overflow: hidden;height: 100%;">
             <ldlRoleTree :index="index" :info.sync="children" style="border-right: 1px solid #f5f5f5;border-top: 1px solid #f5f5f5;"></ldlRoleTree>
@@ -312,7 +312,7 @@ export default {
 
 </style>
 <style>
-.el-scrollbar__wrap{
+.rootManageMain .el-scrollbar__wrap{
   overflow-x: hidden !important;
 }
 </style>

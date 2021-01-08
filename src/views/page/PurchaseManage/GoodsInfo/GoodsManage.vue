@@ -47,9 +47,9 @@
             prop="price"
             align="center"
             width="160">
-          <template slot="header">
+          <template slot="header" slot-scope="scope">
             统一修改价格
-            <el-input-number v-model="price" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+            <el-input-number  v-if="scope" v-model="price" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
           </template>
           <template slot-scope="{row}">
             <el-input-number v-model="row.price" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
@@ -139,7 +139,7 @@
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'cover_link_img')}"
               :before-upload="beforeUpload">
-            <img v-if="form.cover_link_img" :src="form.cover_link_img" class="avatar">
+            <img v-if="form.cover_link_img" alt="" :src="form.cover_link_img" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -375,7 +375,7 @@
 <script>
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
-import {index,brandList,status,simpleIndex,attributeIndex,add,edit,getSku,productLog,delSku,changeSkuPrice} from "@/api/PurchaseManage/GoodsInfo/GoodsManage";
+import {index,brandList,status,simpleIndex,attributeIndex,add,edit,getSku,productLog,delSku,changeSkuPrice,del} from "@/api/PurchaseManage/GoodsInfo/GoodsManage";
 import ldlControlWindow from "@/components/ldlControlWindow";
 export default {
   name: "GoodsManage",
@@ -443,6 +443,27 @@ export default {
     }
   },
   methods:{
+    delGoods(){
+      if(this.selectRow){
+        this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'error'
+        }).then(() => {
+          del({id:this.selectRow.id}).then(res=>{
+            this.$message.success(res.msg)
+            this.getList()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }else{
+        this.$message.error('请选中一行')
+      }
+    },
     //提交批量的价格
     onSubmitPrice(){
       console.log(this.delSkuList)
@@ -694,7 +715,7 @@ export default {
     brandMethod(e){
       this.loading=true
       brandList({brand_name:e}).then(res=>{
-        this.brandArray=res.data.data
+        this.brandArray=res.data
         this.loading=false
       })
     },

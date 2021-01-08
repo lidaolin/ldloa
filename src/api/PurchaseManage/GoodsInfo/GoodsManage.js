@@ -132,6 +132,17 @@ export function simpleList(data) {
         data: data
     })
 }
+/** 品牌id列表
+ * brand_name 名字
+ *
+ */
+export function brandList(data) {
+    return request({
+        url: '/admin/brand/simpleList',
+        method: 'post',
+        data: data
+    })
+}
 /** 商品操作日志
  * limit	否	int	每页数量默认15
  * page	否	int	当前页数
@@ -142,16 +153,6 @@ export function simpleList(data) {
 export function productLog(data) {
     return request({
         url: '/admin/product/productLog',
-        method: 'post',
-        data: data
-    })
-}
-/** 品牌id列表
- * brand_name 名字
- */
-export function brandList(data) {
-    return request({
-        url: '/admin/brand/index',
         method: 'post',
         data: data
     })

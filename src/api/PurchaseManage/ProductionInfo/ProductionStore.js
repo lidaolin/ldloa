@@ -77,3 +77,13 @@ export function del(data) {
         data: data
     })
 }
+/** 删除
+ * id	是	int	出入库id
+ */
+export function supplierSimpleList(data) {
+    return request({
+        url: '/admin/supplier/simpleList',
+        method: 'post',
+        data: data
+    })
+}

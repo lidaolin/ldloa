@@ -60,8 +60,8 @@
                         :key="imgIndex"
                         :fit="item.fit?item.fit:'contain'"
                         :style="item.imgStyle"
-                        :src="item.imgProp?imgItem[item.imgProp]:imgItem"
-                        :preview-src-list="item.imgProp?bigImage(scope.row[item.prop],item.imgProp):[imgItem]">
+                        :src="item.imgProp?item.imgProp:imgItem"
+                        :preview-src-list="scope.row[item.prop] instanceof Array?scope.row[item.prop]:[scope.row[item.prop]]">
                     </el-image>
                   </template>
                 </div>
@@ -97,16 +97,6 @@ export default {
       // tableDataInfo: {}
     }
   },
-  watch:{
-
-    // tableDataInfo:{
-    //   handler() {
-    //     this.tableDataInfo=this.tableDataInfo
-    //   },
-    //   immediate: true,
-    //   deep: true
-    // }
-  },
   mounted() {
 
     // this.tableDataInfo= {... this.tableDataInfo}
@@ -117,13 +107,17 @@ export default {
   },
   methods:{
     //大图处理
-    bigImage(res,key){
-      const img=[]
-      for (let i = 0; i < res.length; i++) {
-        img.push(res[i][key])
-      }
-      return img
-    },
+    // bigImage(res,key){
+    //   if(res.length>1){
+    //
+    //   }else{
+    //     const img=[]
+    //     for (let i = 0; i < res.length; i++) {
+    //       img.push(res[i][key])
+    //     }
+    //     return img
+    //   }
+    // },
     //行拖拽
     rowDrop() {
       const tbody = document.querySelector('.el-table__body-wrapper tbody')

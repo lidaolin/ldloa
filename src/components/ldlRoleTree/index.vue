@@ -217,6 +217,7 @@ li {
   cursor: pointer;
   border: 1px solid #f5f5f5;
   border-top: none;
+  padding-left:10px;
   //border-right: none;
 }
 
