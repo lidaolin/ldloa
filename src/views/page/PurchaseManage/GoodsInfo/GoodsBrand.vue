@@ -89,9 +89,9 @@ name: "GoodsBrand",
       }
     },
     //修改状态
-    changeBrandState(){
-
-    },
+    // changeBrandState(){
+    //
+    // },
     //新增还是修改
     changeBrand(e){
       if(e=='edit'){

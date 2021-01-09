@@ -1,6 +1,6 @@
 <template>
   <div class="ldlTablePaginationWrap">
-    <ldl-table @listClick="listClick" :style="{height:'calc(100% - '+dd+')'}" v-if="tableDataInfoS&&tableDataInfoS.dataList" :tableDataInfo="tableDataInfoS" :pagingData.sync="pagingDataS"  @getList="getList"></ldl-table>
+    <ldl-table @listClick="listClick" @selectionChange="selectionChange" :style="{height:'calc(100% - '+dd+')'}" v-if="tableDataInfoS&&tableDataInfoS.dataList" :tableDataInfo="tableDataInfoS" :pagingData.sync="pagingDataS"  @getList="getList"></ldl-table>
     <div class="ldlTablePaginationBox">
       <div>
         <searchBox></searchBox>
@@ -56,6 +56,10 @@ export default {
     listClick(e){
       this.$emit('update:selectRow',e)
       this.$emit('listClick',e)
+    },
+    selectionChange(e){
+      this.$emit('update:selectionList',e)
+      this.$emit('selectionChange',e)
     },
     getList(){
       let pagingData= {... this.pagingDataS}

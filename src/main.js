@@ -6,8 +6,8 @@ import ElementUI from 'element-ui';
 import ElDragDialog from '@/directives/el-dragDialog'
 import waves from '@/directives/waves'
 
-Vue.use(ElDragDialog)
-Vue.use(waves)
+Vue.use( ElDragDialog );
+Vue.use( waves );
 import {inteRouter} from '@/router/inteRouter'
 inteRouter().then(res=>{
   // 动态添加路由

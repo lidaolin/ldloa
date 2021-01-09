@@ -103,7 +103,7 @@
         <el-form-item label="商品名称:" prop="product_name" :rules="{ required: true, message: '请填写商品名称', trigger: 'blur' }">
           <el-input v-model="form.product_name" placeholder="请输入商品名称"></el-input>
         </el-form-item>
-        <el-form-item label="商品分类:" prop="brand_id" :rules="{ required: true, message: '请选择商品分类', trigger: 'blur' }">
+        <el-form-item label="商品分类:" prop="product_classify_id" :rules="{ required: true, message: '请选择商品分类', trigger: 'blur' }">
           <el-select
               v-model="form.product_classify_id"
               filterable
@@ -178,6 +178,25 @@
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
         </el-form-item>
+        <br>
+        <el-form-item label="产品橱窗图:" class="product_carousel_img" prop="product_carousel_img" >
+          <el-upload
+              action="/api/admin/upload_image/upload"
+              list-type="picture-card"
+              multiple
+              show-file-list
+              accept="image/*"
+              :file-list.sync="view_textTwo"
+              :on-success="uploadSuccessTwo"
+              :on-preview="handlePreviewTwo"
+              :on-remove="handleRemoveTwo">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisibleTwo" append-to-body>
+            <img width="100%" :src="dialogImageUrlTwo" alt="">
+          </el-dialog>
+        </el-form-item>
+        <br>
         <el-form-item label="商品重量:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">
           <el-input-number size="mini" v-model="form.weight" placeholder="商品重量" :precision="2" :step="0.1"></el-input-number>
         </el-form-item>
@@ -388,9 +407,12 @@ export default {
       bottomList:{getSku:[],productLog:[]},
       tabPaneValue:'getSku',
       view_text:[],
+      view_textTwo:[],
       attreType:'',
       dialogImageUrl: '',
+      dialogImageUrlTwo:'',
       dialogVisible: false,
+      dialogVisibleTwo:false,
       selectAttributeData:'',
       inputVisible: false,//属性弹窗里控制input出现
       inputValue: '',//属性弹窗里的输入框值
@@ -417,12 +439,16 @@ export default {
           {prop:'brand_name',label:'品牌名称',},
           {prop:'classify_name',label:'商品分类名称',},
           {prop: 'cover_link_img',label: '封面图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
+          {prop: 'video_link',label: '视频',type:'video',imgStyle:{width:'50px',height:'50px'}},
           {prop: 'view_text',label: '详情图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
+          {prop: 'product_carousel_img',label: '轮播图',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
+          {prop:'explain',label:'商品说明',width:250,showOverflowTooltip:true,},
           {prop:'weight',label:'商品重量',sortable:"custom"},
           {prop:'long_size',label:'商品长度',unit:'cm',sortable:"custom"},
           {prop:'wide_size',label:'商品宽度',unit:'cm',sortable:"custom"},
           {prop:'high_size',label:'商品高度',unit:'cm',sortable:"custom"},
           {prop:'volume_size',label:'商品体积',unit:'cm³',sortable:"custom"},
+          {prop:'product_lock_fee',label:'进货锁定价格',unit:'￥',width:100,},
           {prop:'status',type:'tag',label:'状态',data:[{type:'success',key:1,name:'在售'},{type:'danger',key:2,name:'下架'}],},
           {prop:'is_delete',type:'tag',label:'是否删除',data:[{type:'danger',key:2,name:'已删除'}],width:'80'},
           {prop:'create_time',label:'创建时间',type:"date",sortable:"custom",width:'140'},
@@ -492,7 +518,6 @@ export default {
       }
     },
     listClick(e){
-      console.log(e)
       if(this.tabPaneValue==='getSku'){
         getSku({product_id:e.id}).then(res=>{
           console.log(res)
@@ -550,12 +575,9 @@ export default {
     addAttributeSubmit(){
       if (this.addAttributeData.attr_id){
         let form={...this.form}
-        console.log(this.attreType)
         if (this.attreType>=0){
-          console.log(999)
           form.attr.splice(this.attreType,1,this.addAttributeData)
         }else{
-          console.log(888)
           form.attr.push(this.addAttributeData)
         }
         this.form= {... form}
@@ -607,6 +629,11 @@ export default {
       console.log(file, fileList);
       this.view_text=fileList
     },
+    //多图的删除
+    handleRemoveTwo(file, fileList) {
+      console.log(file, fileList);
+      this.view_textTwo=fileList
+    },
     //上传成功
     uploadSuccess(response, file, fileList){
       this.view_text.push({name:'图片'+fileList.length+1,url:response.data.url})
@@ -616,6 +643,15 @@ export default {
       console.log(file);
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
+    },
+    //上传成功
+    uploadSuccessTwo(response, file, fileList){
+      this.view_textTwo.push({name:'图片'+fileList.length+1,url:response.data.url})
+    },
+    //多图的上传完成点击图片的钩子
+    handlePreviewTwo(file) {
+      this.dialogImageUrlTwo = file.url;
+      this.dialogVisibleTwo = true;
     },
     //图片上传成功
     handleSuccess(e,name){
@@ -655,6 +691,8 @@ export default {
         this.brandMethod()
         this.classifyMethod()
 
+        this.view_text=[]
+        this.view_textTwo=[]
         this.form={attr:[],status:1}
         this.changeGoodsState=true
       }else{
@@ -663,6 +701,9 @@ export default {
           this.form={... this.selectRow}
           for (let i = 0; i < this.selectRow.view_text.length; i++) {
             this.view_text.push({name:'图片'+i,url:this.selectRow.view_text[i]})
+          }
+          for (let i = 0; i < this.selectRow.product_carousel_img.length; i++) {
+            this.view_textTwo.push({name:'图片'+i,url:this.selectRow.product_carousel_img[i]})
           }
           this.brandMethod()
           this.classifyMethod()
@@ -674,16 +715,19 @@ export default {
     },
     // 提交
     onSubmit(){
-      console.log(this.view_text)
       this.$refs.form.validate((valid) => {
         if(valid){
           if (this.form.attr.length<=0){return this.$message.error('你得先填写属性')}
           let form ={... this.form}
-          console.log(this.form)
           let view_text=[... this.view_text]
           form.view_text=[]
           for (let i = 0; i < view_text.length; i++) {
             form.view_text.push(view_text[i].url)
+          }
+          let view_textTwo=[... this.view_textTwo]
+          form.product_carousel_img=[]
+          for (let i = 0; i < view_textTwo.length; i++) {
+            form.product_carousel_img.push(view_textTwo[i].url)
           }
           if (this.form.id){
 
@@ -691,6 +735,7 @@ export default {
               console.log(res)
               this.$message.success(res.msg)
               this.view_text=[]
+              this.view_textTwo=[]
               this.form={attr:[]}
               this.changeGoodsState=false
               this.getList()
@@ -700,6 +745,7 @@ export default {
               this.$message.success(res.msg)
               console.log(res)
               this.view_text=[]
+              this.view_textTwo=[]
               this.form={attr:[]}
               this.changeGoodsState=false
               this.getList()

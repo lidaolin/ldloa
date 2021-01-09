@@ -3,7 +3,9 @@
     <el-table
         @row-dblclick="dblclick"
         @row-click="listClick"
+        @selection-change="selectionChange"
         @sort-change="sortChanges"
+        tooltip-effect="light"
         v-loading="tableDataInfo.loading"
         :data="tableDataInfo.dataList"
         :row-key="tableDataInfo.rowKey!==undefined?tableDataInfo.rowKey:''"
@@ -30,7 +32,15 @@
                 :sortable="item.sortable"
                 :formatter="(row, column,)=>{return formatter(row, column,item.unit)}"
                 v-if="item.type==undefined"
+                :show-overflow-tooltip="item.showOverflowTooltip"
             >
+            </el-table-column>
+            <el-table-column
+                v-else-if="item.type=='selection'"
+                :key="index"
+                type="selection"
+                align="center"
+                :width="item.width?item.width:35">
             </el-table-column>
             <el-table-column
                 :key="index+Math.random()"
@@ -64,6 +74,9 @@
                         :preview-src-list="scope.row[item.prop] instanceof Array?scope.row[item.prop]:[scope.row[item.prop]]">
                     </el-image>
                   </template>
+                </div>
+                <div v-if="item.type=='video'">
+                  <video :src="scope.row[item.prop]" controls :style="item.imgStyle"></video>
                 </div>
                 <div v-if="item.type=='avatar'" class="tableAvatarBox">
                   <el-avatar icon="el-icon-user-solid" style="display: block" :size="item.size" :src="scope.row[item.prop]"></el-avatar>
@@ -118,6 +131,9 @@ export default {
     //     return img
     //   }
     // },
+    selectionChange(e){
+      this.$emit('selectionChange',e)
+    },
     //行拖拽
     rowDrop() {
       const tbody = document.querySelector('.el-table__body-wrapper tbody')

@@ -20,6 +20,18 @@
       <el-form-item :label="form.pid?'子分类名称':'分类名称'" prop="classify_name" :rules="{ required: true, message: '请填写分类名称', trigger: 'blur' }">
         <el-input v-model="form.classify_name" placeholder="请输入分类名字"></el-input>
       </el-form-item>
+      <el-form-item label="商品分类封面图:" prop="classify_img" :rules="{ required: true, message: '请上传商品封面图', trigger: 'blur' }">
+        <el-upload
+            class="avatar-uploader"
+            action="/api/admin/upload_image/upload"
+            name="file"
+            :show-file-list="false"
+            :on-success="(e)=>{handleSuccess(e,'classify_img')}"
+            :before-upload="beforeUpload">
+          <img v-if="form.classify_img" alt="" :src="form.classify_img" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
       <el-form-item label="分类状态" prop="status">
         <el-switch
             v-model="form.status"
@@ -66,6 +78,7 @@ export default {
           {prop:'classify_name',label:'男装',},
           {prop:'status',type:'tag',label:'状态',data:[{type:'success',key:1,name:'启用'},{type:'danger',key:2,name:'禁用'}],},
           {prop:'create_time',label:'创建时间',type:"date",sortable:"custom"},
+          {prop: 'classify_img',label: '封面图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
         ],//表格列信息
         dataList:[]//表格行信息
       },
@@ -132,7 +145,8 @@ export default {
             classify_name:this.selectRow.classify_name,
             status:this.selectRow.status,
             pid:this.selectRow.pid,
-            sort:this.selectRow.sort
+            sort:this.selectRow.sort,
+            classify_img:this.selectRow.classify_img
           }
           this.addClassifyState=true
         }else{
@@ -162,6 +176,16 @@ export default {
       } else {
         this[name[0]](name[1]);
       }
+    },
+    //图片上传成功
+    handleSuccess(e,name){
+      let form= {... this.form}
+      form[name]=e.data.url
+      this.form={... form}
+    },
+    //限制图片上传的限制
+    beforeUpload(e){
+      console.log(e)
     },
     /**这是按钮方法调用*/
     getList(){
