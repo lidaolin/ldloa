@@ -51,15 +51,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="省市区" prop="province" :rules="[{ required: true, message: '省市区不能为空'}]">
-<!--          <el-input v-model="form.province" v-show="1==2"></el-input>-->
-          <el-input v-model="form.province"></el-input>
-<!--          <el-cascader-->
-<!--              size="mini"-->
-<!--              v-model="selectedOptions"-->
-<!--              :options="cityList"-->
-<!--              @change="addressChange"-->
-<!--              clearable-->
-<!--          ></el-cascader>-->
+          <el-input v-model="form.province" v-show="1==2"></el-input>
+          <el-cascader
+              v-if="isShow"
+              size="mini"
+              v-model="value"
+              :props="props"
+              :options="cityList"
+              @change="addressChange"
+              clearable
+          ></el-cascader>
         </el-form-item>
         <el-form-item label="是否送达">
           <el-switch
@@ -89,6 +90,14 @@ import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
 import {add, del, edit, areaServiceList,distributCompany} from "@/api/DeliveryManage/DeliverySettings/AreaMaintenance";
 import {searchKdManageList} from "@/api/DeliveryManage/DeliverySettings/ExpressManage";
+import {
+  // provinceAndCityData,
+  // regionData,
+  // provinceAndCityDataPlus,
+  regionDataPlus,
+  // CodeToText,
+  // TextToCode,
+} from "element-china-area-data";
 export default {
 name: "AreaMaintenance",
   components:{
@@ -97,6 +106,12 @@ name: "AreaMaintenance",
   },
   data(){
     return{
+      isShow:false,
+      value:[],
+      cityList: regionDataPlus,
+      props:{
+        value:'label'
+      },
       addAttributeState:false,
       form:{},
       loading:false,//控制搜索加载的
@@ -121,10 +136,6 @@ name: "AreaMaintenance",
         dataList:[]//表格行信息
       },
       /**必要参数*/
-      // add/edit
-      selectedOptions: [],
-      cityList:[],
-      // add/edit
     }
   },
   mounted() {
@@ -134,21 +145,20 @@ name: "AreaMaintenance",
   },
   methods:{
 
-    //选择地区
-    // addressChange(arr) {
-    //   this.selectedOptions = arr;
-    //   this.form = {
-    //     ...this.form,
-    //     province: CodeToText[this.selectedOptions[0]],
-    //     city: CodeToText[this.selectedOptions[1]],
-    //     area: CodeToText[this.selectedOptions[2]],
-    //   };
-    // },
+    // 选择地区
+    addressChange(arr) {
+      this.form = {
+        ...this.form,
+        province: arr[0],
+        city: arr[1],
+        district: arr[2],
+      };
+    },
 
     // 配送搜索
     brandMethod(e){
       this.loading=true
-      distributCompany({name:e}).then(res=>{
+      distributCompany({name:e,type:5}).then(res=>{
         this.companyId_arr=res.data
         this.loading=false
       })
@@ -188,13 +198,16 @@ name: "AreaMaintenance",
 
     //新增还是修改
     changeAttribute(e){
+      //重新加载组件，使数据重新赋值
+      this.isShow = false;
+      setTimeout(() => {
+        this.isShow = true;
+      }, 0);
       if(e==='edit'){
         if(this.selectRow){
-          // this.selectedOptions = this.Common.ToCode(
-          //     this.selectRow.province,
-          //     this.selectRow.city,
-          //     this.selectRow.area
-          // );
+          var arr = []
+              arr.push(this.selectRow.province,this.selectRow.city,this.selectRow.district)
+          this.value = arr
           this.form={
             id:this.selectRow.id,
             companyId:this.selectRow.companyId,
@@ -205,15 +218,18 @@ name: "AreaMaintenance",
             issend:this.selectRow.issend,
             remark:this.selectRow.remark,
           }
-          console.log(this.form)
           this.addAttributeState=true
         }else{
           this.$message.error('请选中一行')
         }
       }else{
+        this.value = [],
         this.form={
-          issend: 2
+          issend: 2,
         }
+        this.$nextTick(function () {
+          this.$refs.form.clearValidate();
+        });
         this.addAttributeState=true
       }
       this.brandMethod()

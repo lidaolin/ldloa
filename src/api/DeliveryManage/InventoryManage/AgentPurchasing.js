@@ -48,7 +48,7 @@ export function add(data) {
  */
 export function edit(data) {
     return request({
-        url: '/stock/Purchase/p_edit',
+        url: '/stock/Purchase/p_update',
         method: 'post',
         data: data
     })
@@ -157,5 +157,18 @@ export function searchDeliverList(data) {
         url: '/stock/purchase/fh_company',
         method: 'post',
         data: data
+    })
+}
+
+//编辑从这里拿数据
+/** 发货单位(搜索列表)
+ 参数名	必选	类型	说明
+ id	    是	int	进货单id
+ */
+export function editDetailed(id) {
+    return request({
+        url: '/stock/Purchase/p_update',
+        method: 'get',
+        params: {id}
     })
 }

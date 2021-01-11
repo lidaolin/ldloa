@@ -327,10 +327,10 @@ export default {
       }
     },
 
-    // 配送搜索
+    // 配送公司搜索
     brandMethod(e){
       this.loading=true
-      distributCompany({name:e}).then(res=>{
+      distributCompany({name:e,type:5}).then(res=>{
         this.companyId_arr=res.data
         this.loading=false
       })
