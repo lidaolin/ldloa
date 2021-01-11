@@ -5,6 +5,78 @@
     <el-dialog
         v-el-drag-dialog
         width="40%"
+        custom-class="minWidth600"
+        :visible.sync="ManualSplitState"
+        :destroy-on-close="false"
+        :close-on-click-modal="false"
+        title="手动拆分"
+        size="mini"
+        center
+    >
+      <el-table
+          :data="selectGoodsList"
+          size="mini"
+          border
+          style="width: 100%">
+        <el-table-column
+            prop="product_name"
+            label="商品">
+        </el-table-column>
+        <el-table-column
+            prop="sku_name"
+            label="属性">
+        </el-table-column>
+        <el-table-column
+            prop="weight"
+            width="80"
+            label="价格">
+        </el-table-column>
+        <el-table-column
+            prop="number"
+            label="数目">
+          <template slot-scope="scope">
+            <el-input-number v-model="scope.row.number" :min="0" size="mini" :step="1"></el-input-number>
+          </template>
+        </el-table-column>
+      </el-table>
+      <br>
+      包装箱型：
+      <el-select
+          size="mini"
+          v-model="bz_xin"
+          filterable
+          remote
+          clearable
+          reserve-keyword
+          placeholder="请输入关键词"
+          :remote-method="boxMethod"
+          :loading="loading">
+        <el-option
+            v-for="item in box_arr"
+            :key="item.packname"
+            :label="item.packname"
+            :value="item.packname">
+        </el-option>
+      </el-select>
+      <br>
+      <br>
+      备注信息：
+      <br>
+      <br>
+      <el-input
+          type="textarea"
+          :rows="3"
+          placeholder="请输入备注信息"
+          v-model="remarks">
+      </el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="ManualSplitState = false">取 消</el-button>
+        <el-button type="primary" @click="onManualSplitSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog
+        v-el-drag-dialog
+        width="40%"
         custom-class="minWidth400"
         :visible.sync="AuditState"
         :destroy-on-close="false"
@@ -44,9 +116,9 @@
               :loading="loading">
             <el-option
                 v-for="item in box_arr"
-                :key="item.id"
+                :key="item.packname"
                 :label="item.packname"
-                :value="item.id">
+                :value="item.packname">
             </el-option>
           </el-select>
         </el-form-item>
@@ -59,7 +131,6 @@
         <el-button type="primary" @click="onAuditSubmit">确 定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -67,12 +138,16 @@
 
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
-import {p_list,boxSimpleList,batch_review,p_merge,p_split,cancel_intercept,intercept,orderShipping} from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
+import {p_list,boxSimpleList,batch_review,p_merge,p_split,cancel_intercept,intercept,orderShipping,manual_product_list,manual_split} from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
 import {searchKdList} from "@/api/DeliveryManage/DeliverySettings/ExpressCompany";
 export default {
 name: "OrderManage",
   data(){
     return{
+      bz_xin:'',
+      remarks:'',
+      selectGoodsList:[],
+      ManualSplitState:false,
       loading:false,
       kd_id_arr:[],
       box_arr:[],
@@ -119,6 +194,21 @@ name: "OrderManage",
     }
   },
   methods:{
+    onManualSplitSubmit(){
+      let delList=[]
+      let selectGoodsList=[...this.selectGoodsList]
+      for (let i = 0; i < this.selectGoodsList.length; i++) {
+        delList.push(i)
+      }
+      for (let i = 0; i < delList.length; i++) {
+        selectGoodsList.splice(delList[i],1)
+      }
+      manual_split({id:this.selectRow.id,product:selectGoodsList,remarks:this.remarks,bz_xin:this.bz_xin}).then(res=>{
+        this.ManualSplitState=false
+        this.getList()
+        this.$message.success(res.msg)
+      })
+    },
     //运费计算
     countFreight(){
       if(this.selectRow){
@@ -174,7 +264,17 @@ name: "OrderManage",
     },
     //手动拆分
     ManualSplit(){
-
+      if(this.selectRow){
+        this.remarks=''
+        this.bz_xin=''
+        this.boxMethod()
+        manual_product_list({id:this.selectRow.id}).then(res=>{
+          this.selectGoodsList=res.data
+          this.ManualSplitState=true
+        })
+      }else{
+        this.$message.error('请点击选中一行')
+      }
     },
     //自动拆分
     autoSplit(){

@@ -100,3 +100,13 @@ export function boxSimpleList(data) {
         data: data
     })
 }
+/** 手动拆分时选择商品列表
+ * id	是	int	发货单id
+ */
+export function manual_product_list(data) {
+    return request({
+        url: '/admin/plfahuo/manual_product_list',
+        method: 'post',
+        data: data
+    })
+}

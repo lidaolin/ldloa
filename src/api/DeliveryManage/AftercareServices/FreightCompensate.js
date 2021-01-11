@@ -42,3 +42,13 @@ export function edit(data) {
         data: data
     })
 }
+/** 快递赔偿操作记录
+ * id
+ */
+export function log(data) {
+    return request({
+        url: 'admin/compen_sate/log',
+        method: 'post',
+        data: data
+    })
+}
