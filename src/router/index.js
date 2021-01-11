@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Layout from '@/layout'
-import index from './modules/index'
+// import index from './modules/index'
 import login from '@/views/login/login'
 
 Vue.use(VueRouter)
@@ -9,7 +9,7 @@ Vue.use(VueRouter)
 export const routes = [
   {
     path: '/',
-    name: 'Layout',
+    name: 'index',
     component: Layout,
     redirect: '/index',
     meta: { title: '控制台', icon: 'icon-gongsi', affix: true,keepAlive:true,isHidden:true },
@@ -17,7 +17,7 @@ export const routes = [
       {
         path: 'index',
         component: () => import('@/views/page/'),
-        name: 'index',
+        name: '',
         meta: { title: '控制台', icon: 'icon-gongsi', affix: true,keepAlive:true,isHidden:true }
       }
     ]
@@ -28,28 +28,7 @@ export const routes = [
     component: login,
     meta:{title:'登录',icon:'', affix: false,keepAlive:false,isHidden:true}
   },
-  index,
-  {
-    path: '/b',
-    name: 'sss',
-    component: Layout,
-    meta: { title: 'sss的控制', icon: 'icon-gongsi', affix: false, },
-    children: [
-      {
-        path: 'b',
-        component: () => import('@/views/page/b'),
-        name: 'b',
-        meta: { title: 'bb', icon: 'icon-gongsi', affix: false,isHidden:true }
-      },
-      {
-        path: 'bb',
-        component: () => import('@/views/page/b/bb'),
-        name: 'bb',
-        meta: { title: 'bbb', icon: 'icon-gongsi', affix: false }
-      }
-    ]
-  }
-
+  // index,
 ]
 const router = new VueRouter({
   mode: 'history',
