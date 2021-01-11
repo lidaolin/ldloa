@@ -1,6 +1,6 @@
 <template>
   <div class="subNavItem" v-if="!item.meta.isHidden">
-    <el-menu-item :index="toIndex(item)" v-if="(item.children?item.children.length===1:true)">
+    <el-menu-item :index="toIndex(item)=='/'?'/index':toIndex(item)" v-if="(item.children?item.children.length===1:true)">
       <div class="navDiv" v-if="stretchNavState">
         <i :class="classFun(item.meta.icon)"></i>
         <span>{{item.meta.title}}</span>
