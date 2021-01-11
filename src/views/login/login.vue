@@ -82,7 +82,7 @@ export default {
       })();
     }
     if (that.$store.state.user.userInfo.token){
-      that.$router.push({path: that.redirect || '/a', query: that.otherQuery })
+      that.$router.push({path: that.redirect || '/index', query: that.otherQuery })
     }
   },
   methods: {

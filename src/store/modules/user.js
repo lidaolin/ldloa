@@ -30,7 +30,7 @@ const user = {
             state.userInfo = {}
         },
         userSidebar(state, data) {
-            var datas = []
+            let datas = []
             for (let index = 0; index < data.length; index++) {
                 if (data[index].children.length > 0) {
                     datas = datas.concat(data[index].children)
