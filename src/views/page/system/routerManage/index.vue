@@ -16,7 +16,6 @@
       <el-table-column prop="affix" label="图钉" align='center'>
         <template slot-scope="{row}" >
           <el-tag v-if="row.affixt" size="mini" type="success">开启</el-tag>
-<!--          <el-tag v-else size="mini" type="danger">否</el-tag>-->
         </template>
       </el-table-column>
       <el-table-column prop="isHidden" label="menu隐藏" align='center'>
@@ -56,9 +55,10 @@
           {{ row.create_Time | parseTime('{y}-{m}-{d} {h}:{i}') }}
         </template>
       </el-table-column>
-      <el-table-column prop="pid" label="操作" width="240" align='center'>
+      <el-table-column prop="pid" label="操作" width="340" align='center'>
         <template slot-scope="{row}">
-          <el-button type="primary" v-if="JSON.stringify(row.children) === '[]'" size='mini' plain @click="openBtnMange(row)" >按钮管理</el-button>
+          <el-button type="primary" size='mini' plain @click="openBtnMange(row)" v-if="JSON.stringify(row.children) === '[]'">按钮管理</el-button>
+          <el-button type="primary" size='mini' plain @click="openAdvancedSearch(row)" v-if="JSON.stringify(row.children) === '[]'">高级搜索管理</el-button>
           <el-button type="primary" size='mini' plain @click="addPath(row)">添加</el-button>
           <el-button type="success" size='mini' plain @click="editPath(row)">编辑</el-button>
           <el-button type="warning" size='mini' plain @click="changeStatus(row)">{{row.status == 1? '开启':'禁用'}}</el-button>
@@ -138,7 +138,7 @@
             width="100">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editBtn(scope.row)">编辑</el-button>
-            <el-button type="text" size="small" @click="changeBtn(scope.row)">开启</el-button>
+            <el-button type="text" size="small" @click="changeBtn(scope.row)">{{scope.row.status == 1?'禁止':'开启'}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -157,7 +157,6 @@
           <el-input v-model="btnFrom.event" ></el-input>
           <div class="tipsText">事件名称如果携带参数使用“/”分开。eg:add/id</div>
         </el-form-item>
-
         <el-form-item prop="icon" label="图标">
           <el-input v-model="btnFrom.icon"></el-input>
         </el-form-item>
@@ -186,13 +185,131 @@
       </div>
     </el-dialog>
 
+    <!--高级搜索管理弹框-->
+    <el-dialog center title="高级搜索" :visible.sync="dialogTableSearch" width="60%">
+      <div>
+        <el-button type="primary" size="small" plan @click="addSearch">新增</el-button>
+      </div>
+      <el-table :data="searchData">
+        <el-table-column property="search_name" label="搜索名称" align='center'></el-table-column>
+        <el-table-column property="menu_name" width="120" label="唯一性标识" align='center'></el-table-column>
+        <el-table-column property="db_table" label="数据库名" align='center'></el-table-column>
+        <el-table-column property="db_name" label="数据表字段名" align='center' width="110"></el-table-column>
+        <el-table-column property="status" label="状态" align='center'>
+          <template slot-scope="{row}">
+            <el-tag v-if="row.status==2" size="mini" type="danger">禁止</el-tag>
+            <el-tag v-if="row.status==1" size="mini" type="success">开启</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column property="is_search" label="是否可搜索" align='center' width="100">
+          <template slot-scope="{row}">
+            <el-tag v-if="row.status==2" size="mini" type="danger">否</el-tag>
+            <el-tag v-if="row.status==1" size="mini" type="success">是</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column property="search_way" label="搜索方式" align='center'>
+          <template slot-scope="{row}">
+            <span v-if="row.search_way == 1">精确搜索</span>
+            <span v-if="row.search_way == 2">范围搜索</span>
+            <span v-if="row.search_way == 3">模糊搜索</span>
+            <span v-if="row.search_way == 4">order分组</span>
+          </template>
+        </el-table-column>
+        <el-table-column property="frame_type" label="搜索框类型" align='center' width="110"></el-table-column>
+        <el-table-column property="search_type_name" label="数据来源名称" align='center' width="120"></el-table-column>
+        <el-table-column property="json_date" label="json数据" align='center'></el-table-column>
+        <el-table-column property="sort" label="排序" align='center'></el-table-column>
+        <el-table-column
+            label="操作"
+            width="100">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="editSearch(scope.row)">编辑</el-button>
+            <el-button type="text" size="small" @click="changeSearch(scope.row)">{{scope.row.status == 1?'禁止':'开启'}}</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <!--按钮新增/编辑-->
+    <el-dialog title="高级搜索新增" :visible.sync="dialogFormSearch" width="580px">
+      <el-form ref="searchFrom" :model="searchFrom" label-width="120px" label-position='left' size="small">
+        <el-form-item label="搜索名称" prop="search_name" :rules="[{ required: true, message: '搜索名称不能为空'},]">
+          <el-input v-model="searchFrom.search_name" ></el-input>
+        </el-form-item>
+        <el-form-item label="唯一性标识" prop="menu_name" :rules="[{ required: true, message: '唯一性标识不能为空'},]">
+          <el-input v-model="searchFrom.menu_name" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="数据库名" prop="db_table" :rules="[{ required: true, message: '数据库名不能为空'},]">
+          <el-input v-model="searchFrom.db_table" ></el-input>
+        </el-form-item>
+        <el-form-item label="数据表字段名" prop="db_name" :rules="[{ required: true, message: '数据表字段名不能为空'},]">
+          <el-input v-model="searchFrom.db_name" ></el-input>
+        </el-form-item>
+        <el-form-item label="是否可搜索">
+          <el-radio-group v-model="searchFrom.is_search">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="2">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="搜索方式" prop="search_way" :rules="[{ required: true, message: '搜索方式不能为空'},]">
+          <el-select v-model="searchFrom.search_way" placeholder="请选择">
+            <el-option
+                v-for="(item,index) in optionSearch_way"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="搜索框类型" prop="frame_type" :rules="[{ required: true, message: '搜索框类型不能为空'},]">
+          <el-select v-model="searchFrom.frame_type" placeholder="请选择">
+            <el-option
+                v-for="(item,index) in optionType"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="数据类型来源">
+          <el-select v-model="searchFrom.search_type_id" placeholder="请选择">
+            <el-option
+                v-for="(item,index) in search_type_id_arr"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="json数据">
+          <jsonEditor v-model="searchFrom.json_date" />
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input-number
+              v-model="searchFrom.sort"
+              controls-position="right"
+              placeholder="请输入序号"
+              :min="0"
+          ></el-input-number>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogFormSearch = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="keepSearch(searchFrom)">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import {menuRouteAll, add, edit, setStatus, btnAll, addBtn, editBtn, setBtnStatus} from "@/api/root/root"
+import {menuRouteAll, add, edit, setStatus, btnAll, add_btn, edit_btn, setBtnStatus, searchList, searchAllData, add_search, edit_search, setSearchStatus, searchTypeList, searchDetails} from "@/api/root/root"
+import jsonEditor from '@/components/JsonEditor'
 export default {
   name: "RouterManage",
+  components: {
+    jsonEditor
+  },
   data(){
     return {
       menuList:[],
@@ -206,6 +323,59 @@ export default {
       //按钮管理
       dialogTableVisible:false,
       btnData:[],
+      //按钮管理
+
+      //高级搜索管理
+      searchDialogstate:"add",
+      dialogTableSearch:false,
+      dialogFormSearch:false,
+      optionSearch_way: [
+        {
+          value: 1,
+          label: "精确搜索"
+        },
+        {
+          value: 2,
+          label: "范围搜索"
+        },
+        {
+          value: 3,
+          label: "模糊搜索"
+        },
+        {
+          value: 4,
+          label: "order分组"
+        }
+      ],
+      optionType: [
+        {
+          value: "input",
+          label: "输入框"
+        },
+        {
+          value: "date",
+          label: "时间选择器"
+        },
+        {
+          value: "select",
+          label: "选择器"
+        },
+        {
+          value: "dates",
+          label: "时间范围选择"
+        },
+        // {
+        //   value: "radio",
+        //   label: "单选"
+        // },
+        // {
+        //   value: "Section",
+        //   label: "区间"
+        // }
+      ],
+      search_type_id_arr:[],//数据来源数组
+      searchData:[],
+      searchFrom:{},
       //按钮管理
 
       //按钮新增/编辑
@@ -251,6 +421,15 @@ export default {
     this.getMenuRouteAll()
   },
   methods:{
+
+    //获取数据来源
+    getSearchTypeList(){
+      let data = {}
+      searchTypeList(data).then(res=>{
+        this.search_type_id_arr = res.data
+      })
+    },
+
     //图标来源判断
     fontClassFun(e){
       if (e.indexOf("el-") != -1) {
@@ -303,6 +482,44 @@ export default {
       })
     },
 
+    //获取高级搜索列表
+    getSearchList(){
+      let data = {
+        menu_name:this.name
+      }
+      searchList(data).then(res=>{
+        this.searchData = res.data
+      })
+    },
+
+    //获取可搜索时数据合集
+    getSearchAllData(){
+      let data = {
+        search_type_id:"",
+        data:""
+      }
+      searchAllData(data).then(res=>{
+        console.log(res)
+      })
+    },
+
+    //改变高级搜索状态
+    changeSearch(e){
+      this.$confirm('确认修改此高级搜索的状态？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        setSearchStatus({id:e.id}).then(res=>{
+          this.$message({
+            message: res.msg,
+            type: 'success'
+          });
+          this.getSearchList()
+        })
+      }).catch(() => {});
+    },
+
     //改变按钮状态
     changeBtn(e){
       this.$confirm('确认修改此按钮的状态？', '提示', {
@@ -320,7 +537,82 @@ export default {
       }).catch(() => {});
     },
 
-    //添加/编辑-->弹窗打开
+    //高级搜索管理弹框
+    openAdvancedSearch(e){
+      this.name = e.name
+      this.getSearchList()
+      this.dialogTableSearch = true
+    },
+
+    //高级搜索添加-->弹窗打开
+    addSearch(){
+      this.searchDialogstate = "add"
+      this.searchFrom = {
+        menu_name:this.name,
+        sort:0,
+        is_search:2,
+        json_date:[],
+      };
+      this.$nextTick(function () {
+        this.$refs.searchFrom.clearValidate();
+      });
+      this.getSearchTypeList()
+      this.dialogFormSearch = true
+    },
+
+    //高级搜索编辑-->弹窗打开
+    editSearch(e){
+      this.searchDialogstate = "edit"
+      let data = {
+        menu_name:e.menu_name
+      }
+      searchDetails(data).then(res=>{
+        this.searchFrom = res.data
+        this.id = res.data.id
+        this.getSearchTypeList()
+        this.dialogFormSearch = true
+      })
+    },
+
+    //高级搜索添加/编辑-->保存
+    keepSearch(data){
+      this.$refs.searchFrom.validate((valid) => {
+        if (valid) {
+          if(this.searchDialogstate == "add"){
+            add_search(data).then(res=>{
+              this.$message({
+                message: res.msg,
+                type: 'success'
+              });
+              this.dialogFormSearch = false
+              this.getSearchList()
+            }).catch((err) => {
+              this.$message({
+                message: err,
+                type: "error",
+              });
+            });
+          }else if(this.searchDialogstate == "edit"){
+            let odata = { ...data,id:this.id }
+            edit_search(odata).then(res=>{
+              this.$message({
+                message: res.msg,
+                type: 'success'
+              });
+              this.dialogFormSearch = false
+              this.getSearchList()
+            }).catch((err) => {
+              this.$message({
+                message: err,
+                type: "error",
+              });
+            });
+          }
+        }
+      })
+    },
+
+    //按钮添加-->弹窗打开
     addBtn(){
       this.btnDialogstate = "add"
       this.btnFrom = {
@@ -333,7 +625,7 @@ export default {
       this.dialogFormVisible = true
     },
 
-    //添加/编辑-->弹窗打开
+    //按钮编辑-->弹窗打开
     editBtn(e){
       this.btnDialogstate = "edit"
       this.id = e.id
@@ -341,12 +633,12 @@ export default {
       this.dialogFormVisible = true
     },
 
-    //添加/编辑-->确认提交
+    //按钮添加/编辑-->确认提交
     addBtnSubmit(data){
       this.$refs.btnFrom.validate((valid) => {
         if (valid) {
           if(this.btnDialogstate == "add"){
-            addBtn(data).then(res=>{
+            add_btn(data).then(res=>{
               this.$message({
                 message: res.msg,
                 type: 'success'
@@ -361,7 +653,7 @@ export default {
             });
           }else if(this.btnDialogstate == "edit"){
             let odata = { ...data,id:this.id }
-            editBtn(odata).then(res=>{
+            edit_btn(odata).then(res=>{
               this.$message({
                 message: res.msg,
                 type: 'success'
@@ -379,7 +671,7 @@ export default {
       })
     },
 
-    //修改状态
+    //菜单修改状态
     changeStatus(e){
       this.$confirm('确认修改此路由的状态？', '提示', {
         confirmButtonText: '确定',
@@ -396,7 +688,7 @@ export default {
       }).catch(() => {});
     },
 
-    //新增
+    //菜单新增
     addPath(data){
       this.state = "add";
       this.form = {
@@ -415,7 +707,7 @@ export default {
       this.pathSwitch=true
     },
 
-    //编辑
+    //菜单编辑
     editPath(data){
       this.state = "edit";
       this.pathSwitch=true
@@ -432,7 +724,7 @@ export default {
       }
     },
 
-    //新增/编辑-->保存
+    //菜单新增/编辑-->保存
     addPathSubmit(data){
       this.$refs.form.validate((valid) => {
         if (valid) {

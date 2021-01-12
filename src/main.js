@@ -3,11 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import ElementUI from 'element-ui';
+import { codemirror } from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
 import ElDragDialog from '@/directives/el-dragDialog'
 import waves from '@/directives/waves'
 
+
 Vue.use( ElDragDialog );
 Vue.use( waves );
+Vue.use(codemirror)
 import {inteRouter} from '@/router/inteRouter'
 inteRouter().then(res=>{
   // 动态添加路由
