@@ -39,9 +39,6 @@ export default {
       this.$store.commit("changePageData", this.$router.currentRoute.matched[0]);
     }
   },
-  mounted() {
-    console.log(this.pageData,'pageData')
-  },
   computed:{
     ...mapGetters([
       'stretchNavState',

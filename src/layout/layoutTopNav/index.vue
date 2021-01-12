@@ -67,9 +67,6 @@ export default {
       return this.$router.currentRoute.matched[0].path
     }
   },
-  mounted() {
-    console.log(this.$store.state)
-  },
   methods:{
     overLogin(){
       this.$store.dispatch('outLogin')

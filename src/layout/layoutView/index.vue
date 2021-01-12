@@ -9,7 +9,7 @@
 
     </transition >
     <transition name="fade-transform" mode="out-in">
-      <router-view v-if="!$route.meta.keepAlive"></router-view>
+      <router-view v-if="!$route.meta.keepAlive"  v-wechat-title='$route.meta.title'></router-view>
     </transition>
   </div>
 </template>
