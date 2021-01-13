@@ -13,7 +13,7 @@
         size="mini"
         center
     >
-      <el-form :inline="true" ref="form" size="mini" class="demo-form-inline modalContainer" label-width="120px">
+      <el-form :inline="true" ref="form" size="mini" class="demo-form-inline modalContainer inputWidth" label-width="120px">
         <el-form-item :label="item.search_name+':'" v-for="(item, index) in list" :key="index">
           <!--普通输入框-->
           <el-input
@@ -162,7 +162,6 @@ name: "searchBox",
       var url=this.$route.path
       var datas= url.split("/").reverse()
       searchDetails({menu_name:datas[0]}).then(res=>{
-        console.log(res.data)
         var form = [],dataInfo = res.data;
         for (var i = 0; i < dataInfo.length; i++) {
           var Arr = {
@@ -291,4 +290,12 @@ name: "searchBox",
   background: rgba(85, 85, 85, .2);
 }
 
+</style>
+<style>
+.inputWidth .el-input__inner{
+  width: 200px !important;
+}
+.inputWidth  .el-date-editor.el-input, .el-date-editor.el-input__inner{
+  width: 200px !important;
+}
 </style>
