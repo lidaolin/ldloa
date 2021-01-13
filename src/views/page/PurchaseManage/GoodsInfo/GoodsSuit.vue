@@ -98,6 +98,7 @@
               inactive-text="下架">
           </el-switch>
         </el-form-item>
+        <br>
         <el-form-item label="商品封面图:" prop="cover_link_img" :rules="{ required: true, message: '请上传商品组合封面图', trigger: 'blur' }">
           <el-upload
               class="avatar-uploader"
@@ -164,6 +165,7 @@
           </el-dialog>
         </el-form-item>
         <br>
+<!--        2021年1月13日10:13:23吴老板说以后商品肯定不会选单个-->
         <el-form-item label="组合的商品:" prop="product_combination">
           <el-select
               v-model="selectGoods"
