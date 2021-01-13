@@ -50,6 +50,9 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="菜鸟物流编号:" prop="kdn_num" :rules="{ required: true, message: '菜鸟物流编号不能为空', trigger: 'blur' }">
+          <el-input v-model="form.kdn_num" placeholder="请输入菜鸟物流编号"></el-input>
+        </el-form-item>
         <el-form-item label="状态">
           <el-switch
               v-model="form.status"
@@ -79,9 +82,6 @@
               placeholder="请输入序号"
               :min="0"
           ></el-input-number>
-        </el-form-item>
-        <el-form-item label="快递鸟物流编号:" prop="kdn_num">
-          <el-input v-model="form.kdn_num" disabled placeholder="请输入快递鸟物流编号"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">{{ form.id? '立即保存':'立即创建' }}</el-button>
@@ -242,7 +242,7 @@ export default {
         dataListInfo:[
           {prop:'companyName',label:'配送中心名称',},
           {prop:'kdname',label:'快递名称',},
-          {prop:'kdnum',label:'快递英文编号',},
+          {prop:'kdn_num',label:'菜鸟物流编号',},
           {prop:'total',label:'总订单数',sortable:"custom"},
           {prop:'ps_fee',label:'总快递费用',sortable:"custom"},
           {prop:'count',label:'电子面单余量',sortable:"custom"},
@@ -389,6 +389,9 @@ export default {
           status:1,
           isappoint:1,
         }
+        this.$nextTick(function () {
+          this.$refs.form.clearValidate();
+        });
         this.addAttributeState=true
       }
       this.brandMethod()

@@ -184,7 +184,7 @@
 </template>
 
 <script>
-import {menuRouteAll, add, edit, setStatus, btnAll, addBtn, editBtn, setBtnStatus} from "@/api/root/root"
+import {menuRouteAll, add, edit, setStatus, btnAll, add_btn, edit_btn, setBtnStatus} from "@/api/root/root"
 export default {
   name: "bb",
   data(){
@@ -325,7 +325,7 @@ export default {
       this.$refs.btnFrom.validate((valid) => {
         if (valid) {
           if(this.btnDialogstate == "add"){
-            addBtn(data).then(res=>{
+            add_btn(data).then(res=>{
               this.$message({
                 message: res.msg,
                 type: 'success'
@@ -340,7 +340,7 @@ export default {
             });
           }else if(this.btnDialogstate == "edit"){
             let odata = { ...data,id:this.id }
-            editBtn(odata).then(res=>{
+            edit_btn(odata).then(res=>{
               this.$message({
                 message: res.msg,
                 type: 'success'

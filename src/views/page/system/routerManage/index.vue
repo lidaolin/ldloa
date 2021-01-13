@@ -217,7 +217,11 @@
         </el-table-column>
         <el-table-column property="frame_type" label="搜索框类型" align='center' width="110"></el-table-column>
         <el-table-column property="search_type_name" label="数据来源名称" align='center' width="120"></el-table-column>
-        <el-table-column property="json_date" label="json数据" align='center'></el-table-column>
+<!--        <el-table-column property="json_date" label="json数据" align='center'>-->
+<!--          <template slot-scope="{row}">-->
+<!--            <pre>{{row.json_date}}</pre>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column property="sort" label="排序" align='center'></el-table-column>
         <el-table-column
             label="操作"
@@ -271,7 +275,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="数据类型来源">
+        <el-form-item label="数据类型来源" v-if="this.searchFrom.is_search == 1">
           <el-select v-model="searchFrom.search_type_id" placeholder="请选择">
             <el-option
                 v-for="(item,index) in search_type_id_arr"
@@ -281,7 +285,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="json数据">
+        <el-form-item label="json数据" v-if="this.searchFrom.is_search == 2">
           <jsonEditor v-model="searchFrom.json_date" />
         </el-form-item>
         <el-form-item label="排序">
@@ -303,7 +307,7 @@
 </template>
 
 <script>
-import {menuRouteAll, add, edit, setStatus, btnAll, add_btn, edit_btn, setBtnStatus, searchList, searchAllData, add_search, edit_search, setSearchStatus, searchTypeList, searchDetails} from "@/api/root/root"
+import {menuRouteAll, add, edit, setStatus, btnAll, add_btn, edit_btn, setBtnStatus, searchList, searchAllData, add_search, edit_search, setSearchStatus, searchTypeList,} from "@/api/root/root"
 import jsonEditor from '@/components/JsonEditor'
 export default {
   name: "RouterManage",
@@ -563,15 +567,10 @@ export default {
     //高级搜索编辑-->弹窗打开
     editSearch(e){
       this.searchDialogstate = "edit"
-      let data = {
-        menu_name:e.menu_name
-      }
-      searchDetails(data).then(res=>{
-        this.searchFrom = res.data
-        this.id = res.data.id
-        this.getSearchTypeList()
-        this.dialogFormSearch = true
-      })
+      this.searchFrom = {...e}
+      this.id = e.id
+      this.getSearchTypeList()
+      this.dialogFormSearch = true
     },
 
     //高级搜索添加/编辑-->保存
@@ -579,7 +578,11 @@ export default {
       this.$refs.searchFrom.validate((valid) => {
         if (valid) {
           if(this.searchDialogstate == "add"){
-            add_search(data).then(res=>{
+            let odata = {
+              ...data,
+              json_date:JSON.parse(data.json_date)
+            }
+            add_search(odata).then(res=>{
               this.$message({
                 message: res.msg,
                 type: 'success'
@@ -593,7 +596,7 @@ export default {
               });
             });
           }else if(this.searchDialogstate == "edit"){
-            let odata = { ...data,id:this.id }
+            let odata = { ...data,id:this.id}
             edit_search(odata).then(res=>{
               this.$message({
                 message: res.msg,

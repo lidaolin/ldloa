@@ -3,7 +3,7 @@
     <ldl-table @listClick="listClick" @selectionChange="selectionChange" :style="{height:'calc(100% - '+dd+')'}" v-if="tableDataInfoS&&tableDataInfoS.dataList" :tableDataInfo="tableDataInfoS" :pagingData.sync="pagingDataS"  @getList="getList"></ldl-table>
     <div class="ldlTablePaginationBox">
       <div>
-        <searchBox></searchBox>
+        <searchBox :pagingData.sync="pagingDataS" @getList="getList"></searchBox>
       </div>
       <ldl-pagination :pagingData.sync="pagingDataS" @getList="getList"></ldl-pagination>
     </div>
@@ -53,6 +53,7 @@ export default {
     searchBox
   },
   methods:{
+
     listClick(e){
       this.$emit('update:selectRow',e)
       this.$emit('listClick',e)

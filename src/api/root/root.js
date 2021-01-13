@@ -287,3 +287,20 @@ export function searchTypeList(data) {
     })
 }
 
+/*
+    可搜索是数据列表
+参数名	必选	类型	说明
+search_type_id	是	int	数据类型id
+data	否	string	搜索关键词
+*/
+export function searchframe(data) {
+    return request({
+        url: '/admin/Search/search_type_data',
+        method: 'post',
+        data: data
+    })
+}
+
+
+
+
