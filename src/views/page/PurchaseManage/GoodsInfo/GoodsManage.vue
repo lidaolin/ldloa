@@ -19,6 +19,7 @@
           :data="getSku"
           border
           size="mini"
+          max-height="660"
           height="100%">
         <el-table-column
             prop="product_attr_val_pash"
