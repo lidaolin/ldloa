@@ -53,7 +53,7 @@
                 v-else
             >
               <template slot-scope="scope">
-                <span class="el-icon-rank handle" :scope="scope.row" v-if="item.type=='html'" v-html="scope.row[item.prop]"></span>
+                <span :scope="scope.row" v-if="item.type=='html'" v-html="scope.row[item.prop]"></span>
                 <span class="el-icon-rank handle" :scope="scope.row" v-if="item.type=='derk'"></span>
                 <span v-if="item.type=='date'" >{{ scope.row[item.prop] | parseTime(item.dateFormat) }}</span>
                 <div v-if="item.type=='tag'" class="tagWrap">

@@ -13,6 +13,9 @@
         size="mini"
         center
     >
+      <span style="font-size: 12px;color: red">*商品为0不拆分此商品</span>
+      <br>
+      <br>
       <el-table
           :data="selectGoodsList"
           size="mini"
@@ -35,7 +38,7 @@
             prop="number"
             label="数目">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.number" :min="0" size="mini" :step="1"></el-input-number>
+            <el-input-number v-model="scope.row.number" :min="0" :max="scope.row.max_number" size="mini" :step="1"></el-input-number>
           </template>
         </el-table-column>
       </el-table>
@@ -177,8 +180,8 @@ name: "OrderManage",
           {prop:'sj_phone',label:'收件人手机',},
           {prop:'province',label:'省',},
           {prop:'city',label:'市',},
-          {prop:'district',label:'区',},
-          {prop:'detail_address',label:'详细地址',},
+          {prop:'area',label:'区',},
+          {prop:'address',label:'详细地址', width: 120},
           {prop:'plfahuo_characteristic',type:'tag',label:'发货单标识',data:[{type:'danger',key:2,name:'拆分单'},{type:'success',key:3,name:'合并单'}],},
           {prop:'express_status',type:'tag',label:'快递单打印状态',width:100,data:[{type:'info',key:1,name:'未打印'},{type:'',key:2,name:'打印成功'},{type:'danger',key:2,name:'打印失败'}],},
           {prop:'qingdan_status',type:'tag',label:'清单打印状态',width:100,data:[{type:'info',key:1,name:'未打印'},{type:'',key:2,name:'打印成功'}],},
@@ -197,11 +200,16 @@ name: "OrderManage",
     onManualSplitSubmit(){
       let delList=[]
       let selectGoodsList=[...this.selectGoodsList]
+      console.log(selectGoodsList)
       for (let i = 0; i < this.selectGoodsList.length; i++) {
-        delList.push(i)
+        if (this.selectGoodsList[i].number===0){
+          delList.push(i)
+        }
       }
-      for (let i = 0; i < delList.length; i++) {
-        selectGoodsList.splice(delList[i],1)
+      if (delList.length>0){
+        for (let i = delList.length-1; i >= 0 ; i--) {
+          selectGoodsList.splice(delList[i],1)
+        }
       }
       manual_split({id:this.selectRow.id,product:selectGoodsList,remarks:this.remarks,bz_xin:this.bz_xin}).then(res=>{
         this.ManualSplitState=false

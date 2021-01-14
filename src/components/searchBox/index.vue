@@ -3,9 +3,8 @@
     <el-button native-type="button" size="mini" plain @click="openSearch">高级搜索<i class="el-icon-search el-icon--right"></i></el-button>
     <el-dialog
         v-el-drag-dialog
-        width="80%"
-        minWidth="600px"
-        custom-class="minWidth600"
+        width="70%"
+        custom-class="minWidth760"
         :visible.sync="openSearchState"
         :destroy-on-close="false"
         :close-on-click-modal="false"
