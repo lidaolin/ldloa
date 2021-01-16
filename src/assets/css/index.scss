@@ -92,6 +92,7 @@ body{
     min-width: 700px!important;
     .el-form{
         width: calc(100% - 2px);
+        height: 650px;
         overflow-x: hidden;
         overflow-y:auto ;
         &::-webkit-scrollbar-track
