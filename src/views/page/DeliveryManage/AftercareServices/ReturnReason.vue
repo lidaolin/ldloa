@@ -69,7 +69,7 @@ export default {
           {prop:'name',label:'退货原因',},
           {prop:'status',type:'tag',label:'状态',data:[{type:'danger',key:1,name:'禁用'},{type:'success',key:2,name:'启用'}],},
           {prop:'sort',label:'排序',sortable:"custom"},
-          {prop:'createTime',label:'创建时间',type:"date",sortable:"custom"},
+          {prop:'create_time',label:'创建时间',type:"date",sortable:"custom"},
         ],//表格列信息
         dataList:[]//表格行信息
       },
