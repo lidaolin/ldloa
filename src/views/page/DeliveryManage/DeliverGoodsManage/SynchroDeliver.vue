@@ -2,6 +2,53 @@
  <div class="pageWrap">
    <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
    <ldl-table-pagination :selectRow.sync="selectRow" :selectionList.sync="selectionList" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+   <!-- 同步发货 -->
+   <el-dialog title="同步发货" :visible.sync="syncDev" width="500px" :close-on-click-modal="false">
+     <el-form
+         ref="syncdevForm"
+         label-position="right"
+         label-width="80px"
+         :model="syncdevForm"
+         size="mini"
+     >
+       <el-form-item label="包装箱型" prop="bz_xin" :rules="[{ required: true, message: '包装箱型不能为空'}]">
+         <el-input v-model="syncdevForm.bz_xin" disabled />
+       </el-form-item>
+       <el-form-item label="估重" prop="guzong">
+         <el-input v-model="syncdevForm.guzong" :disabled="true">
+           <template slot="append">克</template>
+         </el-input>
+       </el-form-item>
+       <el-form-item label="实重" prop="shizong" :rules="[{ required: true, message: '实重不能为空'}]">
+         <el-input ref="customerInput" v-model="syncdevForm.shizong" @focus="getInputFocus($event)" @keyup.enter.native="syncdevFormSave(syncdevForm)">
+           <template slot="append">克</template>
+         </el-input>
+       </el-form-item>
+       <el-form-item label="快递费用">
+         <el-input v-model="syncdevForm.ps_fee" />
+         <!-- <el-select v-model="syncdevForm.ps_fee" filterable>
+           <el-option
+             v-for="(item,index) in expressCompany"
+             :key="index"
+             :label="item.kdname"
+             :value="item.expressId">
+           </el-option>
+         </el-select>-->
+       </el-form-item>
+       <el-form-item label="客户备注">
+         {{ syncdevForm.fh_remarks? syncdevForm.fh_remarks:'无' }}
+       </el-form-item>
+       <el-form-item label="发货备注">
+         <el-input v-model="syncdevForm.remarks" type="textarea" />
+       </el-form-item>
+     </el-form>
+     <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="syncDev = false">取 消</el-button>
+        <el-button type="primary" size="mini" @click="syncdevFormSave(syncdevForm)">保 存</el-button>
+      </span>
+   </el-dialog>
+   <!-- 同步发货 -->
+
  </div>
 </template>
 
@@ -9,11 +56,14 @@
 
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
-import {d_list} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
+import {d_list,getCloudNumber,get_express_view,code_deliver} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
 export default {
   name: "SynchroDeliver",
   data(){
     return{
+      syncDev:false,
+      syncdevForm:{},
+      socket:null,
       /**必要参数*/
       selectionList:undefined,//多选
       selectRow:undefined, //选中行
@@ -54,6 +104,123 @@ export default {
     }
   },
   methods:{
+    //实重聚焦
+    getInputFocus(event) {
+      console.log("event",event)
+      event.currentTarget.select();
+    },
+
+    // 同步发货
+    syncdevFormSave(data) {
+      var that=this
+      this.$nextTick(()=>{
+        that.$refs.syncdevForm.validate(valid => {
+          if (valid) {
+            code_deliver({
+                  id:data.mianId,
+                  shizong:data.shizong,
+                  fahuo_fieight:data.ps_fee,
+                }
+            ).then(res => {
+                  that.$message({
+                    message: res.msg,
+                    type: 'success'
+                  })
+                  that.syncDev = false
+                  that.syncDelivery()
+                  that.GetList()
+                }).catch(err => {
+                  that.$message({
+                    message: err,
+                    type: 'error'
+                  })
+                })
+          } else {
+            this.$message({
+              message: '信息填写不完整，请将红色处填写完整后再尝试保存！',
+              type: 'warning'
+            })
+          }
+        })
+      })
+    },
+    // 同步发货
+    //扫码发货
+    deliverGoods(){
+      this.$prompt('请扫码或者输入快递单号', '扫描快递单号', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        get_express_view({express_code:value}).then(res=>{
+
+          let data=res.data
+          this.syncdevForm = {
+            mianId: data.mianId,
+            bz_xin: data.bz_xin,
+            shizong: data.shizong,
+            ps_fee: data.ps_fee,
+            fh_remarks: data.fh_remarks,
+            remarks:'',
+            guzong: data.guzong
+          }
+
+          this.syncDev = true
+          this.$nextTick(function() {
+            this.$refs.syncdevForm.clearValidate()
+            this.$refs.customerInput.$el.querySelector('input').focus();
+          })
+        })
+      }).catch(() => {});
+    },
+    //打印
+    onSocket (){
+      let that=this
+      that.socket = new WebSocket('ws://localhost:13528');
+      that.socket.onopen = function(event)
+      {
+        console.log(event)
+        // 监听消息
+        that.socket.onmessage = function(event)
+        {
+          let printResult = JSON.parse(event.data);
+          // layer.load();
+          if(printResult.cmd == 'print'&&( printResult.msg == '成功' || printResult.status == 'success' )){
+            //打印成功--做一些自己的处理
+
+          }else if(  printResult.msg == '无效的打印机' || printResult.status == 'failed' ){
+
+            console.log("失败！！！！！！！！");
+            //打印失败--做一些自己的处理
+
+          }
+          console.log('Client received a message',event);
+        };
+        // 监听Socket的关闭
+        that.socket.onclose = function(event)
+        {
+          console.log('Client notified socket has closed',event);
+        };
+      };
+    },
+    Printing(){
+      if(this.selectionList){
+        if(this.selectionList.length>0){
+          console.log(this.selectionList)
+          let plfahuo_code=[]
+          for (let i = 0; i < this.selectionList.length; i++) {
+            plfahuo_code.push(this.selectionList[i].plfahuo_code)
+          }
+          getCloudNumber({plfahuo_code:plfahuo_code}).then(res=>{
+            this.socket.send(JSON.stringify(res.data));
+            console.log(res)
+          })
+        }else{
+          this.$message.error('请在左侧选择一个或者多个进行打印')
+        }
+      }else{
+        this.$message.error('请在左侧选择一个或者多个进行打印')
+      }
+    },
     /**这是按钮方法调用*/
     functionCall(name) {
       if (name.length == 1) {
@@ -79,6 +246,8 @@ export default {
   mounted() {
     this.$nextTick(()=>{
       this.getList()
+
+      this.onSocket()
     })
   },
   components:{

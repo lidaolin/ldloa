@@ -13,3 +13,35 @@ export function d_list(data) {
         data: data
     })
 }
+/** 获取电子面单返回打印数据
+ * plfahuo_code	是	array	批量发货单号 [“8882906”,”8791517”]
+ */
+export function getCloudNumber(data) {
+    return request({
+        url: '/admin/cainiao_link/getCloudNumber',
+        method: 'post',
+        data: data
+    })
+}
+/** 根据快递单号获取发货单信息
+ * express_code	是	string	快递单号
+ */
+export function get_express_view(data) {
+    return request({
+        url: '/admin/Deliver_Plfahuo/get_express_view',
+        method: 'post',
+        data: data
+    })
+}
+/** 扫码发货
+ * id	是	int	发货单id
+ * shizong	是	float	实重
+ * fahuo_fieight	否	float	发货运费（不传或传0时系统自动计算运费）
+ */
+export function code_deliver(data) {
+    return request({
+        url: '/admin/Deliver_Plfahuo/code_deliver',
+        method: 'post',
+        data: data
+    })
+}
