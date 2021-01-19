@@ -158,27 +158,26 @@ export default {
     //提交
     onSubmit(){
       this.$refs.form.validate((valid) => {
-            if(valid){
-              let form ={...this.form}
-              console.log(form)
-              form.province=form.addressAll[0]
-              form.city=form.addressAll[1]
-              form.area=form.addressAll[2]
-              if(this.form.id){
-                edit(form).then(()=>{
-                  this.missingHistoryState=false
-                  this.$message.success('修改成功')
-                  this.getList()
-                })
-              }else{
-                add(form).then(()=>{
-                  this.missingHistoryState=false
-                  this.$message.success('添加成功')
-                  this.getList()
-                })
-
-              }
+          if(valid){
+            let form ={...this.form}
+            console.log(form)
+            form.province=form.addressAll[0]
+            form.city=form.addressAll[1]
+            form.area=form.addressAll[2]
+            if(this.form.id){
+              edit(form).then(()=>{
+                this.missingHistoryState=false
+                this.$message.success('修改成功')
+                this.getList()
+              })
+            }else{
+              add(form).then(()=>{
+                this.missingHistoryState=false
+                this.$message.success('添加成功')
+                this.getList()
+              })
             }
+          }
       })
     },
     delMissing(){

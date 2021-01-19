@@ -145,6 +145,7 @@ export default {
       })
     },
     // 同步发货
+
     //扫码发货
     deliverGoods(){
       this.$prompt('请扫码或者输入快递单号', '扫描快递单号', {
@@ -172,6 +173,7 @@ export default {
         })
       }).catch(() => {});
     },
+
     //打印
     onSocket (){
       let that=this
