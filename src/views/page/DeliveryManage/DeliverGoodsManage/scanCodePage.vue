@@ -201,7 +201,7 @@ ul,li{
   padding: 0;
 }
 .invoiceInfo ul li{
-  width: 264px;
+  width: 345px;
   margin-bottom: 20px;
   margin-right: 10px;
 }
