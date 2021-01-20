@@ -276,7 +276,6 @@ export default {
   mounted() {
     this.$nextTick(()=>{
       this.getList()
-
       this.onSocket()
     })
   },
