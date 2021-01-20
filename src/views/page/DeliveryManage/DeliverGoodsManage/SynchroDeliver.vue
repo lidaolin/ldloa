@@ -56,7 +56,7 @@
 
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
-import {d_list,getCloudNumber,get_express_view,code_deliver} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
+import {d_list,getCloudNumber, code_deliver} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
 export default {
   name: "SynchroDeliver",
   data(){
@@ -148,30 +148,29 @@ export default {
 
     //扫码发货
     deliverGoods(){
-      this.$prompt('请扫码或者输入快递单号', '扫描快递单号', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-      }).then(({ value }) => {
-        get_express_view({express_code:value}).then(res=>{
-
-          let data=res.data
-          this.syncdevForm = {
-            mianId: data.mianId,
-            bz_xin: data.bz_xin,
-            shizong: data.shizong,
-            ps_fee: data.ps_fee,
-            fh_remarks: data.fh_remarks,
-            remarks:'',
-            guzong: data.guzong
-          }
-
-          this.syncDev = true
-          this.$nextTick(function() {
-            this.$refs.syncdevForm.clearValidate()
-            this.$refs.customerInput.$el.querySelector('input').focus();
-          })
-        })
-      }).catch(() => {});
+      this.$router.push({path: '/DeliveryManage/DeliverGoodsManage/scanCodePage'})
+      // this.$prompt('请扫码或者输入快递单号', '扫描快递单号', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      // }).then(({ value }) => {
+      //   get_express_view({express_code:value}).then(res=>{
+      //     let data=res.data
+      //     this.syncdevForm = {
+      //       mianId: data.mianId,
+      //       bz_xin: data.bz_xin,
+      //       shizong: data.shizong,
+      //       ps_fee: data.ps_fee,
+      //       fh_remarks: data.fh_remarks,
+      //       remarks:'',
+      //       guzong: data.guzong
+      //     }
+      //     this.syncDev = true
+      //     this.$nextTick(function() {
+      //       this.$refs.syncdevForm.clearValidate()
+      //       this.$refs.customerInput.$el.querySelector('input').focus();
+      //     })
+      //   })
+      // }).catch(() => {});
     },
 
     //打印
@@ -248,7 +247,6 @@ export default {
   mounted() {
     this.$nextTick(()=>{
       this.getList()
-
       this.onSocket()
     })
   },
