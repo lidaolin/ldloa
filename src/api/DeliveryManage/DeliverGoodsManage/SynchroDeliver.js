@@ -45,3 +45,37 @@ export function code_deliver(data) {
         data: data
     })
 }
+
+/** 打印
+ * id	是	int	发货单id
+ */
+export function printPlhuo(data) {
+    return request({
+        url: '/admin/cainiao_link/printPlhuo',
+        method: 'post',
+        data: data
+    })
+}
+/** 修改打印状态
+
+ * data	是	array	返回数据
+ type	是	int	修改类型 1快递 2清单
+ */
+export function changePlhuoStatus(data) {
+    return request({
+        url: '/admin/cainiao_link/changePlhuoStatus',
+        method: 'post',
+        data: data
+    })
+}
+/** 扫码验货时扫快递单号返回数据
+ * data	是	array	返回数据
+ type	是	int	修改类型 1快递 2清单
+ */
+export function security_express_code(data) {
+    return request({
+        url: '/admin/Deliver_Plfahuo/security_express_code',
+        method: 'post',
+        data: data
+    })
+}
