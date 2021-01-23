@@ -56,11 +56,13 @@
 
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
-import {d_list,getCloudNumber, code_deliver} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
+import {d_list,getCloudNumber,code_deliver,printPlhuo,changePlhuoStatus} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
 export default {
   name: "SynchroDeliver",
   data(){
     return{
+      cc:0,
+      type:0,
       syncDev:false,
       syncdevForm:{},
       socket:null,
@@ -90,7 +92,7 @@ export default {
           {prop:'district',label:'区',},
           {prop:'detail_address',label:'详细地址',},
           {prop:'plfahuo_characteristic',type:'tag',label:'发货单标识',data:[{type:'danger',key:2,name:'拆分单'},{type:'success',key:3,name:'合并单'}],},
-          {prop:'express_status',type:'tag',label:'快递单打印状态',width:100,data:[{type:'info',key:1,name:'未打印'},{type:'',key:2,name:'打印成功'},{type:'danger',key:2,name:'打印失败'}],},
+          {prop:'express_status',type:'tag',label:'快递单打印状态',width:100,data:[{type:'info',key:1,name:'未打印'},{type:'',key:2,name:'打印成功'},{type:'danger',key:3,name:'打印失败'}],},
           {prop:'qingdan_status',type:'tag',label:'清单打印状态',width:100,data:[{type:'info',key:1,name:'未打印'},{type:'',key:2,name:'打印成功'}],},
           {prop:'k_dy_time',label:'快递单打印时间',type:"date",sortable:"custom",width:140},
           {prop:'qd_dy_time',label:'清单打印时间',type:"date",sortable:"custom",width:140},
@@ -104,12 +106,78 @@ export default {
     }
   },
   methods:{
-    //实重聚焦
-    getInputFocus(event) {
-      console.log("event",event)
-      event.currentTarget.select();
+    Printing(){
+      if(this.selectionList){
+        if(this.selectionList.length>0){
+          console.log(this.selectionList)
+          let plfahuo_code=[]
+          for (let i = 0; i < this.selectionList.length; i++) {
+            plfahuo_code.push(this.selectionList[i].plfahuo_code)
+          }
+          getCloudNumber({plfahuo_code:plfahuo_code}).then(res=>{
+            this.type=1
+            this.socket.send(JSON.stringify(res.data));
+          })
+        }else{
+          this.$message.error('请在左侧选择一个或者多个进行打印')
+        }
+      }else{
+        this.$message.error('请在左侧选择一个或者多个进行打印')
+      }
     },
-
+    printList(){
+      const data = this.selectionList
+      if (data) {
+        const mianIds = new Array()
+        data.map(item => {
+          mianIds.push(item.id)
+        })
+        printPlhuo({ids: mianIds}).then(res => {
+          // this.socket.send(JSON.stringify(res.data));
+          this.type=2
+          this.socket.send(JSON.stringify(res.data));
+          console.log(res.data)
+        })
+      } else {
+        this.$message.warning('请选择一条列表进行操作')
+      }
+    },
+    //打印
+    onSocket (){
+      let that=this
+      this.cc=this.cc+1
+      console.log(this.cc)
+      that.socket = new WebSocket('ws://localhost:13528');
+      that.socket.onopen = function()
+      {
+        // 监听消息
+        that.socket.onmessage = function(event)
+        {
+          let printResult = JSON.parse(event.data);
+          // layer.load();
+          if(printResult.cmd == 'print'&&( printResult.msg == '成功' || printResult.status == 'success' )){
+            //打印成功--做一些自己的处理
+            console.log(printResult,'2')
+          }else if(  printResult.msg == '无效的打印机' || printResult.status == 'failed' ){
+            console.log("失败！！！！！！！！");
+            //打印失败--做一些自己的处理
+          }
+          let overData = JSON.parse(event.data);
+          if (overData.cmd=='notifyPrintResult'&&overData.taskStatus=='printed'){
+            console.log(overData)
+            changePlhuoStatus({data:overData.printStatus,type:that.type}).then(res=>{
+              that.$message.success(res.msg)
+            })
+          }
+          console.log('Client received a message',event);
+        };
+        // 监听Socket的关闭
+        that.socket.onclose = function(event)
+        {
+          console.log('Client notified socket has closed',event);
+        };
+      };
+    },
     // 同步发货
     syncdevFormSave(data) {
       var that=this
@@ -122,19 +190,19 @@ export default {
                   fahuo_fieight:data.ps_fee,
                 }
             ).then(res => {
-                  that.$message({
-                    message: res.msg,
-                    type: 'success'
-                  })
-                  that.syncDev = false
-                  that.syncDelivery()
-                  that.GetList()
-                }).catch(err => {
-                  that.$message({
-                    message: err,
-                    type: 'error'
-                  })
-                })
+              that.$message({
+                message: res.msg,
+                type: 'success'
+              })
+              that.syncDev = false
+              that.syncDelivery()
+              that.GetList()
+            }).catch(err => {
+              that.$message({
+                message: err,
+                type: 'error'
+              })
+            })
           } else {
             this.$message({
               message: '信息填写不完整，请将红色处填写完整后再尝试保存！',
@@ -145,7 +213,6 @@ export default {
       })
     },
     // 同步发货
-
     //扫码发货
     deliverGoods(){
       this.$router.push({path: '/DeliveryManage/DeliverGoodsManage/scanCodePage'})
@@ -164,6 +231,7 @@ export default {
       //       remarks:'',
       //       guzong: data.guzong
       //     }
+      //
       //     this.syncDev = true
       //     this.$nextTick(function() {
       //       this.$refs.syncdevForm.clearValidate()
@@ -173,54 +241,15 @@ export default {
       // }).catch(() => {});
     },
 
-    //打印
-    onSocket (){
-      let that=this
-      that.socket = new WebSocket('ws://localhost:13528');
-      that.socket.onopen = function(event)
-      {
-        console.log(event)
-        // 监听消息
-        that.socket.onmessage = function(event)
-        {
-          let printResult = JSON.parse(event.data);
-          // layer.load();
-          if(printResult.cmd == 'print'&&( printResult.msg == '成功' || printResult.status == 'success' )){
-            //打印成功--做一些自己的处理
-
-          }else if(  printResult.msg == '无效的打印机' || printResult.status == 'failed' ){
-
-            console.log("失败！！！！！！！！");
-            //打印失败--做一些自己的处理
-
-          }
-          console.log('Client received a message',event);
-        };
-        // 监听Socket的关闭
-        that.socket.onclose = function(event)
-        {
-          console.log('Client notified socket has closed',event);
-        };
-      };
+    //扫码验货
+    toExamineGoods(){
+      this.$router.push({path: '/DeliveryManage/DeliverGoodsManage/ExamineGoods'})
     },
-    Printing(){
-      if(this.selectionList){
-        if(this.selectionList.length>0){
-          console.log(this.selectionList)
-          let plfahuo_code=[]
-          for (let i = 0; i < this.selectionList.length; i++) {
-            plfahuo_code.push(this.selectionList[i].plfahuo_code)
-          }
-          getCloudNumber({plfahuo_code:plfahuo_code}).then(res=>{
-            this.socket.send(JSON.stringify(res.data));
-            console.log(res)
-          })
-        }else{
-          this.$message.error('请在左侧选择一个或者多个进行打印')
-        }
-      }else{
-        this.$message.error('请在左侧选择一个或者多个进行打印')
-      }
+
+    //实重聚焦
+    getInputFocus(event) {
+      console.log("event",event)
+      event.currentTarget.select();
     },
     /**这是按钮方法调用*/
     functionCall(name) {
@@ -247,6 +276,7 @@ export default {
   mounted() {
     this.$nextTick(()=>{
       this.getList()
+
       this.onSocket()
     })
   },

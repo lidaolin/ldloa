@@ -76,12 +76,12 @@
             </el-input>
           </el-form-item>
           <el-form-item label="实重" prop="shizong" :rules="[{ required: true, message: '实重不能为空'}]">
-            <el-input ref="shiZongInput" v-model="syncdevForm.shizong" @keyup.enter.native="syncdevFormSave">
+            <el-input ref="shiZongInput"  v-model="syncdevForm.shizong" @keyup.enter.native="syncdevFormSave">
               <template slot="append">克</template>
             </el-input>
           </el-form-item>
           <el-form-item label="发货运费">
-            <el-input v-model="syncdevForm.fahuo_fieight" />
+            <el-input v-model="syncdevForm.fahuo_fieight" placeholder="系统默认自动计算运费" />
           </el-form-item>
           <el-form-item label="发货备注">
             <el-input v-model="syncdevForm.remarks" type="textarea" />
@@ -100,9 +100,7 @@
 import {get_express_view, code_deliver} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
 export default {
   name: "scanCodePage",
-  components:{
-
-  },
+  components:{},
   data(){
     return{
       code:"",
@@ -166,7 +164,7 @@ export default {
       this.disabledTF = false
       this.$nextTick(() => {
         this.$refs.focusInput.focus()
-        this.$refs.syncdevForm.resetFields()
+        this.$refs.syncdevForm.clearValidate()
       })
     },
   }
