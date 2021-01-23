@@ -76,7 +76,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="实重" prop="shizong" :rules="[{ required: true, message: '实重不能为空'}]">
-            <el-input ref="shiZongInput" v-model="syncdevForm.shizong" @keyup.enter.native="syncdevFormSave">
+            <el-input ref="shiZongInput"  v-model="syncdevForm.shizong" @keyup.enter.native="syncdevFormSave">
               <template slot="append">克</template>
             </el-input>
           </el-form-item>
@@ -164,7 +164,7 @@ export default {
       this.disabledTF = false
       this.$nextTick(() => {
         this.$refs.focusInput.focus()
-        this.$refs.syncdevForm.resetFields()
+        this.$refs.syncdevForm.clearValidate()
       })
     },
   }
