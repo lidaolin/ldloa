@@ -79,3 +79,36 @@ export function security_express_code(data) {
         data: data
     })
 }
+/** 判断商品防伪码是否重复扫码
+ * a_fake_17	是	string	防伪码
+ */
+export function is_repeat_scanning(data) {
+    return request({
+        url: '/admin/Deliver_Plfahuo/is_repeat_scanning',
+        method: 'post',
+        data: data
+    })
+}
+/** 扫码验货
+ * product	是	array	商品信息 格式[{“product_sku_id”:1,”a_fake_17”:25274746765220587,25274746765220587,25274746765220587,”number”:3},{“product_sku_id”:1,”a_fake_17”:25274746765220587,25274746765220587,25274746765220587,”number”:3}]
+ * product _card	是	array	电子卡信息 没有电子卡传空数组 格式[{“product_sku_id”:1,”card_id”:5231231554,5645648231,21356485544,”number”:3},{“product_sku_id”:1,”card_id”:5231231554,5645648231,21356485544,”number”:3}]
+ * plfahuo_id	是	int	发货单id
+ */
+export function examine_product(data) {
+    return request({
+        url: '/admin/Deliver_Plfahuo/examine_product',
+        method: 'post',
+        data: data
+    })
+}
+/** 扫码验货
+ * id	是	int	发货单id
+ * type	是	int	类型 1 商品信息 2，收件人信息，3订单信息，4物流信息,5操作信息,6电子卡信息,7验货信息
+ */
+export function p_footer(data) {
+    return request({
+        url: '/admin/Deliver_Plfahuo/p_footer',
+        method: 'post',
+        data: data
+    })
+}

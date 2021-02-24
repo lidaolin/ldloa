@@ -189,12 +189,14 @@ export default {
     //排序
     sortChanges(e){
       let sort = ''
+      console.log(e)
       if (e.order == 'descending') {
         sort = 'desc'
       } else {
         sort = 'asc'
       }
-      let pagingData= {... this.pagingData,sort:''}
+      let pagingData= {... this.pagingData,sort:'',dbname:''}
+      pagingData.dbname=e.prop
       pagingData.sort=sort
       this.$emit('update:pagingData',pagingData)
       this.$emit('getList')
