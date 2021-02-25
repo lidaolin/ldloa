@@ -44,7 +44,7 @@ export default {
     }
   },
   mounted() {
-    this.tableDataInfoS=this.pagingData
+    this.tableDataInfoS=this.tableDataInfo
     this.pagingDataS=this.pagingData
   },
   components:{

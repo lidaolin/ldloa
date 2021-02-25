@@ -19,6 +19,7 @@
         :show-header="tableDataInfo.fit!==undefined?tableDataInfo.fit:true"
         :highlight-current-row="tableDataInfo.highlightCurrentRow!==undefined?tableDataInfo.highlightCurrentRow:true"
         :show-summary="tableDataInfo.showSummary!==undefined?tableDataInfo.showSummary:false"
+        :default-sort="defaultSort"
         style="width: 100%">
           <template
               v-for="(item,index) in tableDataInfo.dataListInfo"
@@ -33,6 +34,7 @@
                 :formatter="(row, column,)=>{return formatter(row, column,item.unit)}"
                 v-if="item.type==undefined"
                 :show-overflow-tooltip="item.showOverflowTooltip"
+                :class-name="pagingData.dbname==item.prop? pagingData.paixu=='desc'?'descending':'ascending':''"
             >
             </el-table-column>
             <el-table-column
@@ -40,6 +42,7 @@
                 :key="index"
                 type="selection"
                 align="center"
+                :class-name="pagingData.dbname==item.prop? pagingData.paixu=='desc'?'descending':'ascending':''"
                 :width="item.width?item.width:35">
             </el-table-column>
             <el-table-column
@@ -49,6 +52,7 @@
                 :label="item.label"
                 :prop="item.prop"
                 :sortable="item.sortable"
+                :class-name="pagingData.dbname==item.prop? pagingData.paixu=='desc'?'descending':'ascending':''"
                 :formatter="(row, column,)=>{return formatter(row, column,item.unit)}"
                 v-else
             >
@@ -111,6 +115,25 @@ export default {
       // tableDataInfo: {}
     }
   },
+  computed:{
+    defaultSort(){
+      return {prop:this.pagingData.dbname,order:this.pagingData.paixu=='desc'?'descending':'ascending'}
+    }
+  },
+  // watch:{
+  //   tableDataInfo: {
+  //     handler() {
+  //       let that=this
+  //       this.$nextTick(()=>{
+  //         setTimeout(()=>{
+  //           console.log('----------',{prop:'create_time',order:'descending'})
+  //           that.defaultSort={prop:'create_time',order:'descending'}
+  //             // that.defaultSort={prop:that.pagingData.dbname,order:that.pagingData.paixu=='desc'?'descending':'ascending'}
+  //           },3000)
+  //       })
+  //     },
+  //   },
+  // },
   mounted() {
 
     // this.tableDataInfo= {... this.tableDataInfo}
@@ -142,11 +165,11 @@ export default {
       Sortable.create(tbody, {
         handle: '.handle',
         // onEnd({ newIndex, oldIndex }) {
-          // console.log(newIndex,oldIndex)
-          // let tableDataInfo= {... _this.tableDataInfo}
-          // const currRow =tableDataInfo.dataList.splice(oldIndex, 1)[0]
-          // tableDataInfo.dataList.splice(newIndex, 0, currRow)
-          // _this.tableDataInfo= {... tableDataInfo}
+        //   console.log(newIndex,oldIndex)
+        //   let tableDataInfo= {... _this.tableDataInfo}
+        //   const currRow =tableDataInfo.dataList.splice(oldIndex, 1)[0]
+        //   tableDataInfo.dataList.splice(newIndex, 0, currRow)
+        //   _this.tableDataInfo= {... tableDataInfo}
         // }
       })
     },
@@ -155,6 +178,7 @@ export default {
       const that=this
       const wrapperTr = document.querySelector('.el-table__header-wrapper tr')
       this.sortable = Sortable.create(wrapperTr, {
+        // handle:'.cell',
         animation: 180,
         delay: 0,
         onEnd: evt => {
@@ -188,16 +212,16 @@ export default {
     },
     //排序
     sortChanges(e){
-      let sort = ''
-      console.log(e)
+      let paixu = ''
+      console.log(e,88888888888)
       if (e.order == 'descending') {
-        sort = 'desc'
+        paixu = 'desc'
       } else {
-        sort = 'asc'
+        paixu = 'asc'
       }
-      let pagingData= {... this.pagingData,sort:'',dbname:''}
+      let pagingData= {... this.pagingData,paixu:'',dbname:''}
       pagingData.dbname=e.prop
-      pagingData.sort=sort
+      pagingData.paixu=paixu
       this.$emit('update:pagingData',pagingData)
       this.$emit('getList')
     }
