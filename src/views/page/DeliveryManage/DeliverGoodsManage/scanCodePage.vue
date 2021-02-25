@@ -199,15 +199,7 @@ ul,li{
   padding: 0;
 }
 .invoiceInfo ul li{
-<<<<<<< HEAD
-<<<<<<< HEAD
-  width: 345px;
-=======
   width: 264px;
->>>>>>> 扫码发货
-=======
-  width: 345px;
->>>>>>> 扫码发货样式修改
   margin-bottom: 20px;
   margin-right: 10px;
 }
