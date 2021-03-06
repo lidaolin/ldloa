@@ -1,7 +1,7 @@
 <template>
   <div class="pageWrap">
     <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
-    <ldl-table-pagination :selectRow.sync="selectRow" :selectionList.sync="selectionList" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+    <ldl-table-pagination :selectRow.sync="selectRow"  @listClick="listClick" :selectionList.sync="selectionList" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
     <el-dialog
         v-el-drag-dialog
         width="40%"
@@ -134,6 +134,286 @@
         <el-button type="primary" @click="onAuditSubmit">确 定</el-button>
       </div>
     </el-dialog>
+    <ldlControlWindow :bottomHeight.sync="bottomHeight" ref="bottomHeight">
+      <el-tabs type="border-card" v-model="tabPaneValue" class="ldlTab" @tab-click="changeTab" style="height: calc(100% - 4px)">
+        <el-tab-pane label="商品信息" name="goodsInfo1" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="product_name"
+                align="center"
+                label="商品名称">
+            </el-table-column>
+            <el-table-column
+                prop="sku_name"
+                align="center"
+                label="规格">
+            </el-table-column>
+            <el-table-column
+                prop="price"
+                align="center"
+                label="价格">
+            </el-table-column>
+            <!--           <el-table-column-->
+            <!--               prop="cover_link_img"-->
+            <!--               label="商品的封面图">-->
+            <!--             <template slot-scope="scope">-->
+            <!--               <el-image-->
+            <!--                   style="width: 40px; height: 40px"-->
+            <!--                   :src="scope.row.cover_link_img"-->
+            <!--                   :preview-src-list="[scope.row.cover_link_img]">-->
+            <!--               </el-image>-->
+            <!--             </template>-->
+            <!--           </el-table-column>-->
+            <el-table-column
+                prop="number"
+                align="center"
+                width="80"
+                label="商品数量">
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="收件人信息" name="goodsInfo2" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="sj_name"
+                align="center"
+                label="收件人名称">
+            </el-table-column>
+            <el-table-column
+                prop="sj_phone"
+                align="center"
+                label="手机号">
+            </el-table-column>
+            <el-table-column
+                prop="province"
+                align="center"
+                label="省">
+            </el-table-column>
+            <el-table-column
+                prop="city"
+                align="center"
+                label="市">
+            </el-table-column>
+            <el-table-column
+                prop="area"
+                align="center"
+                label="区">
+            </el-table-column>
+            <el-table-column
+                prop="address"
+                align="center"
+                label="地址">
+            </el-table-column>
+            <el-table-column
+                prop="detail_address"
+                align="center"
+                label="复制信息">
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="订单信息" name="goodsInfo3" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="order_code"
+                align="center"
+                label="订单编号">
+            </el-table-column>
+            <el-table-column
+                prop="appoint_expressid"
+                align="center"
+                label="指定快递公司">
+            </el-table-column>
+            <el-table-column
+                prop="user_id"
+                align="center"
+                label="成交员工">
+            </el-table-column>
+            <el-table-column
+                prop="company_id"
+                align="center"
+                label="成交单位">
+            </el-table-column>
+            <el-table-column
+                prop="ke_user_id"
+                align="center"
+                label="客服员工">
+            </el-table-column>
+            <el-table-column
+                prop="ke_company_id"
+                align="center"
+                label="客服单位">
+            </el-table-column>
+            <el-table-column
+                prop="order_mold"
+                align="center"
+                label="订单类型">
+            </el-table-column>
+            <el-table-column
+                prop="ke_zf_fee"
+                align="center"
+                label="客户支付金额">
+            </el-table-column>
+            <el-table-column
+                prop="order_type"
+                align="center"
+                label="订单来源">
+              <template slot-scope="scope">
+                <!--                 2021年2月25日17:35:52 吴老板说的和文档相反-->
+                <el-tag v-if="scope.row.order_type===2">小程序订单</el-tag>
+                <el-tag v-if="scope.row.order_type===1"  type="success">app订单</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="is_vip"
+                align="center"
+                label="是否是vip订单">
+            </el-table-column>
+            <el-table-column
+                prop="status_ex"
+                align="center"
+                label="订单状态">
+            </el-table-column>
+            <el-table-column
+                prop="create_time"
+                align="center"
+                label="下单时间">
+            </el-table-column>
+            <el-table-column
+                prop="pay_time"
+                align="center"
+                label="支付时间">
+            </el-table-column>
+            <el-table-column
+                prop="pay_type"
+                align="center"
+                label="支付方式">
+            </el-table-column>
+            <el-table-column
+                prop="order_remarks"
+                align="center"
+                label="订单备注">
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="操作信息" name="goodsInfo5" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="user_id"
+                align="center"
+                label="操作员工">
+            </el-table-column>
+            <el-table-column
+                prop="operation_type"
+                align="center"
+                label="操作类型">
+            </el-table-column>
+            <el-table-column
+                prop="operation_remarks"
+                align="center"
+                label="备注信息">
+            </el-table-column>
+            <el-table-column
+                prop="create_time"
+                align="center"
+                label="操作时间">
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="电子卡信息" name="goodsInfo6" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="product_name"
+                align="center"
+                label="商品名称">
+            </el-table-column>
+            <el-table-column
+                prop="sku_name"
+                align="center"
+                label="商品规格名称">
+            </el-table-column>
+            <el-table-column
+                prop="card_id"
+                align="center"
+                label="电子卡号">
+            </el-table-column>
+            <el-table-column
+                prop="create_time"
+                align="center"
+                label="扫码时间">
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="验货信息" name="goodsInfo7" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="product_name"
+                align="center"
+                label="商品名称">
+            </el-table-column>
+            <el-table-column
+                prop="sku_name"
+                align="center"
+                label="商品规格名称">
+            </el-table-column>
+            <el-table-column
+                prop="a_fake_17"
+                align="center"
+                label="防伪码号">
+            </el-table-column>
+            <el-table-column
+                prop="status"
+                align="center"
+                label="防伪码状态">
+            </el-table-column>
+            <el-table-column
+                prop="first_queryTime"
+                align="center"
+                label="首次查询时间">
+            </el-table-column>
+            <el-table-column
+                prop="s_number"
+                align="center"
+                label="查询次数">
+            </el-table-column>
+            <el-table-column
+                prop="create_time"
+                align="center"
+                label="扫码时间">
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
+    </ldlControlWindow>
   </div>
 </template>
 
@@ -141,14 +421,19 @@
 
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
+import ldlControlWindow from "@/components/ldlControlWindow";
+
 import {p_list,boxSimpleList,batch_review,p_merge,p_split,cancel_intercept,intercept,orderShipping,manual_product_list,manual_split} from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
 import {searchKdList} from "@/api/DeliveryManage/DeliverySettings/ExpressCompany";
+import {p_footer} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
 export default {
 name: "OrderManage",
   data(){
     return{
       bz_xin:'',
       remarks:'',
+      bottomList:{},
+      tabPaneValue:'goodsInfo1',
       selectGoodsList:[],
       ManualSplitState:false,
       loading:false,
@@ -161,7 +446,7 @@ name: "OrderManage",
       selectionList:undefined,//多选
       selectRow:undefined, //选中行
       pagingData:undefined,//getList的传参
-      bottomHeight: '0%',//底部高度
+      bottomHeight: '30%',//底部高度
       buttonBoxState:true,//开启按钮行的状态
       tableDataInfo:{ //表格信息
         dataListInfo:[
@@ -198,6 +483,27 @@ name: "OrderManage",
     }
   },
   methods:{
+    listClick(){
+      console.log(this.tabPaneValue)
+      let tabPaneValue=this.tabPaneValue
+      let index=tabPaneValue.charAt(9)
+      p_footer({id:this.selectRow.id,type:index}).then(res=>{
+        console.log(res)
+        let bottomList={... this.bottomList}
+        bottomList[this.tabPaneValue]= [... res.data]
+        this.bottomList= {... bottomList}
+      })
+    },
+    //切换tab现在无用
+    changeTab(){
+      let tabPaneValue=this.tabPaneValue
+      let index=tabPaneValue.charAt(9)
+      p_footer({id:this.selectRow.id,type:index}).then(res=>{
+        let bottomList={... this.bottomList}
+        bottomList[this.tabPaneValue]= [... res.data]
+        this.bottomList= {... bottomList}
+      })
+    },
     onManualSplitSubmit(){
       let delList=[]
       let selectGoodsList=[...this.selectGoodsList]
@@ -427,6 +733,7 @@ name: "OrderManage",
   components:{
     ldlTablePagination,
     buttonBox,
+    ldlControlWindow
   },
 }
 </script>

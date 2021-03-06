@@ -3,9 +3,11 @@ import { Message } from "element-ui";
 import store from "@/store";
 
 axios.defaults.baseURL = process.env.NODE_ENV === "production" ? "":'/api'
+console.log(process.env.BASE_API,99998888999)
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
+    // baseURL:'https://qx.erp.sportqx.com/',
   timeout: 100000 // request timeout
 });
 // request interceptor

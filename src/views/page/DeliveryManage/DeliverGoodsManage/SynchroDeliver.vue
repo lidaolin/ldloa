@@ -141,8 +141,9 @@
                align="center"
                label="订单来源">
                <template slot-scope="scope">
-                 <el-tag v-if="scope.row.order_type===1">小程序订单</el-tag>
-                 <el-tag v-if="scope.row.order_type===2"  type="success">app订单</el-tag>
+<!--                 2021年2月25日17:35:52 吴老板说的和文档相反-->
+                 <el-tag v-if="scope.row.order_type===2">小程序订单</el-tag>
+                 <el-tag v-if="scope.row.order_type===1"  type="success">app订单</el-tag>
                </template>
            </el-table-column>
            <el-table-column
@@ -235,7 +236,50 @@
            </el-table-column>
          </el-table>
        </el-tab-pane>
-
+       <el-tab-pane label="验货信息" name="goodsInfo7" :disabled="!selectRow" style="height:calc(100% - 4px)">
+         <el-table
+             :data="bottomList[tabPaneValue]"
+             border
+             size="mini"
+             height="100%"
+             style="width: 100%;">
+           <el-table-column
+               prop="product_name"
+               align="center"
+               label="商品名称">
+           </el-table-column>
+           <el-table-column
+               prop="sku_name"
+               align="center"
+               label="商品规格名称">
+           </el-table-column>
+           <el-table-column
+               prop="a_fake_17"
+               align="center"
+               label="防伪码号">
+           </el-table-column>
+           <el-table-column
+               prop="status"
+               align="center"
+               label="防伪码状态">
+           </el-table-column>
+           <el-table-column
+               prop="first_queryTime"
+               align="center"
+               label="首次查询时间">
+           </el-table-column>
+           <el-table-column
+               prop="s_number"
+               align="center"
+               label="查询次数">
+           </el-table-column>
+           <el-table-column
+               prop="create_time"
+               align="center"
+               label="扫码时间">
+           </el-table-column>
+         </el-table>
+       </el-tab-pane>
      </el-tabs>
    </ldlControlWindow>
        <!-- 同步发货 -->
