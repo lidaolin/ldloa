@@ -205,7 +205,7 @@
 import ldlTablePagination from '@/components/ldlTablePagination'
 import ldlControlWindow from '@/components/ldlControlWindow'
 import buttonBox from '@/components/buttonBox'
-import {index,supplierSimpleList,getPsCompany,add,status,del} from "@/api/PurchaseManage/ProductionInfo/ProductionStore";
+import {index,supplierSimpleList,getPsCompany,add,status,del,edit} from "@/api/PurchaseManage/ProductionInfo/ProductionStore";
 import {simpleList,getSku} from "@/api/PurchaseManage/GoodsInfo/GoodsManage";
 
 export default {
@@ -395,13 +395,25 @@ export default {
     onSubmit(){
       this.$refs.form.validate((valid) => {
         if(valid){
-          add(this.form).then(res=>{
-            console.log(res)
-            this.$message.success(res.msg)
-            this.getList()
-            this.changeStoreState=false
-            this.form={w_type:1,ruku_product:[]}
-          })
+          if(this.form.id){
+
+            edit(this.form).then(res=>{
+              console.log(res)
+              this.$message.success(res.msg)
+              this.getList()
+              this.changeStoreState=false
+              this.form={w_type:1,ruku_product:[]}
+            })
+          }else{
+            add(this.form).then(res=>{
+              console.log(res)
+              this.$message.success(res.msg)
+              this.getList()
+              this.changeStoreState=false
+              this.form={w_type:1,ruku_product:[]}
+            })
+
+          }
         }
       })
     },
