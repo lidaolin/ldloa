@@ -178,9 +178,19 @@
               label="数目"
               width="160">
             <template slot-scope="{row}">
-              <el-input-number v-model="row.number" size="mini" :min="0" :step="1"></el-input-number>
+              <el-input-number v-model="row.number" size="mini" :min="1" :step="1"></el-input-number>
             </template>
           </el-table-column>
+          <el-table-column
+              prop="price"
+              align="center"
+              label="操作"
+              width="160">
+            <template slot-scope="scope">
+              <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="delProductRow(scope.$index)"></el-button>
+            </template>
+          </el-table-column>
+
         </el-table>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -261,6 +271,14 @@ export default {
   //
   // },
   methods:{
+    delProductRow(){
+
+      let ruku_product=[... this.form.ruku_product]
+      ruku_product.splice(index,1)
+      let form ={... this.form}
+      form.ruku_product=ruku_product
+      this.form = {... form}
+    },
     changeSelectGoods(){
       getSku({product_id:this.goods}).then(res=>{
         for (let i = 0; i < res.data.length; i++) {

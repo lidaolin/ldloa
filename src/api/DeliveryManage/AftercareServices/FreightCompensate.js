@@ -47,7 +47,7 @@ export function edit(data) {
  */
 export function log(data) {
     return request({
-        url: 'admin/compen_sate/log',
+        url: '/admin/compen_sate/log',
         method: 'post',
         data: data
     })

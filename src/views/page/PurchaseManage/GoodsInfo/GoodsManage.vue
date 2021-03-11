@@ -121,21 +121,21 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品状态:" prop="status">
-          <el-switch
-              v-model="form.status"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              :active-value="1"
-              :inactive-value="2"
-              active-text="在售"
-              inactive-text="下架">
-          </el-switch>
-        </el-form-item>
+<!--        <el-form-item label="商品状态:" prop="status">-->
+<!--          <el-switch-->
+<!--              v-model="form.status"-->
+<!--              active-color="#13ce66"-->
+<!--              inactive-color="#ff4949"-->
+<!--              :active-value="1"-->
+<!--              :inactive-value="2"-->
+<!--              active-text="在售"-->
+<!--              inactive-text="下架">-->
+<!--          </el-switch>-->
+<!--        </el-form-item>-->
         <el-form-item label="商品封面图:" prop="cover_link_img" :rules="{ required: true, message: '请上传商品封面图', trigger: 'blur' }">
           <el-upload
               class="avatar-uploader"
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'cover_link_img')}"
@@ -144,11 +144,11 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="商品视频:" prop="video_link" :rules="{ required: true, message: '请上传商品视频', trigger: 'blur' }">
+        <el-form-item label="商品视频:" prop="video_link" :rules="{ message: '请上传商品视频', trigger: 'blur' }">
           <el-upload
               class="avatar-uploader"
               accept="video/*"
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'video_link')}"
@@ -164,11 +164,12 @@
         <br>
         <el-form-item label="产品详情图:" class="elFormItemFlex" prop="view_text" >
           <el-upload
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               list-type="picture-card"
               multiple
               show-file-list
               accept="image/*"
+
               :file-list.sync="view_text"
               :on-success="uploadSuccess"
               :on-preview="handlePreview"
@@ -182,7 +183,7 @@
         <br>
         <el-form-item label="产品橱窗图:" class="product_carousel_img" prop="product_carousel_img" >
           <el-upload
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               list-type="picture-card"
               multiple
               show-file-list
@@ -199,7 +200,7 @@
         </el-form-item>
         <br>
         <el-form-item label="商品重量:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">
-          <el-input-number size="mini" v-model="form.weight" placeholder="商品重量" :precision="2" :step="0.1"></el-input-number>
+          <el-input-number size="mini" v-model="form.weight" placeholder="商品重量g" :precision="2" :step="0.1"></el-input-number>
         </el-form-item>
         <el-form-item label="商品长:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">
           <el-input-number size="mini" v-model="form.long_size" placeholder="商品长cm" :precision="2" :step="0.1"></el-input-number>
@@ -225,49 +226,49 @@
               :close-on-click-modal="false"
               append-to-body
               :visible.sync="addAttributeState">
-              <el-select
-                  v-model="selectAttributeData"
-                  filterable
-                  remote
-                  reserve-keyword
-                  @change="onSelectAttr_id"
-                  placeholder="请输入关键词"
-                  :remote-method="attributeMethod"
-                  :loading="loading">
-                <el-option
-                    v-for="item in attributeIndexArray"
-                    :key="item.id"
-                    :label="item.attr_name"
-                    :value="item.id">
-                </el-option>
-              </el-select>
-              <br/>
-              <br/>
-              <el-tag
-                  :key="tag"
-                  v-for="tag in addAttributeData.val_name"
-                  closable
-                  :disable-transitions="false"
-                  @close="handleClose(tag)">
-                {{tag}}
-              </el-tag>
-              <el-input
-                  size="small"
-                  class="input-new-tag"
-                  v-if="inputVisible"
-                  v-model="inputValue"
-                  ref="saveTagInput"
-                  @keyup.enter.native="handleInputConfirm"
-                  @blur="handleInputConfirm"
-              >
-              </el-input>
-              <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 属性值</el-button>
-              <br>
-              <div slot="footer" class="dialog-footer">
-                <el-button @click="addAttributeState = false">取 消</el-button>
+            <el-select
+                v-model="selectAttributeData"
+                filterable
+                remote
+                reserve-keyword
+                @change="onSelectAttr_id"
+                placeholder="请输入关键词"
+                :remote-method="attributeMethod"
+                :loading="loading">
+              <el-option
+                  v-for="item in attributeIndexArray"
+                  :key="item.id"
+                  :label="item.attr_name"
+                  :value="item.id">
+              </el-option>
+            </el-select>
+            <br/>
+            <br/>
+            <el-tag
+                :key="tag"
+                v-for="tag in addAttributeData.val_name"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(tag)">
+              {{tag}}
+            </el-tag>
+            <el-input
+                size="small"
+                class="input-new-tag"
+                v-if="inputVisible"
+                v-model="inputValue"
+                ref="saveTagInput"
+                @keyup.enter.native="handleInputConfirm"
+                @blur="handleInputConfirm"
+            >
+            </el-input>
+            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 属性值</el-button>
+            <br>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="addAttributeState = false">取 消</el-button>
 
-                <el-button type="primary" @click="addAttributeSubmit">确 定</el-button>
-              </div>
+              <el-button type="primary" @click="addAttributeSubmit">确 定</el-button>
+            </div>
           </el-dialog>
         </el-form-item>
         <el-table
@@ -317,7 +318,7 @@
                 prop="product_attr_val_pash"
                 label="商品规格">
               <template slot-scope="scope">
-                  <span v-for="(item,index) in scope.row.product_attr_val_pash" :key="index">{{item.attr_name}}:{{item.val_name}}</span>
+                <span v-for="(item,index) in scope.row.product_attr_val_pash" :key="index">{{item.attr_name}}:{{item.val_name}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -506,7 +507,7 @@ export default {
     // 删除价格
     delSku(e){
       this.delSkuList.push(this.getSku[e].id)
-        this.getSku.splice(e,1)
+      this.getSku.splice(e,1)
     },
     //打开价格弹窗
     changePrice(){
@@ -600,7 +601,7 @@ export default {
       let inputValue = this.inputValue;
       for (let i = 0; i < this.addAttributeData.val_name.length; i++) {
         if(this.addAttributeData.val_name[i]===this.inputValue){
-            return this.$message.error('你已添加过')
+          return this.$message.error('你已添加过')
         }
       }
       if (inputValue) {
@@ -637,7 +638,14 @@ export default {
     },
     //上传成功
     uploadSuccess(response, file, fileList){
-      this.view_text.push({name:'图片'+fileList.length+1,url:response.data.url})
+      let that = this
+      let view_text=[]
+      fileList.forEach(function (item) {
+        view_text.push({name:'图片'+item.name,url:item.response.data.url})
+
+      });
+      that.view_text=view_text
+      // this.view_text.push({name:'图片'+fileList.length+1,url:response.data.url})
     },
     //多图的上传完成点击图片的钩子
     handlePreview(file) {
@@ -647,7 +655,13 @@ export default {
     },
     //上传成功
     uploadSuccessTwo(response, file, fileList){
-      this.view_textTwo.push({name:'图片'+fileList.length+1,url:response.data.url})
+      let that = this
+      let view_textTwo=[]
+      fileList.forEach(function (item) {
+        view_textTwo.push({name:'图片'+item.name,url:item.response.data.url})
+      });
+      that.view_textTwo=view_textTwo
+      // this.view_textTwo.push({name:'图片'+fileList.length+1,url:response.data.url})
     },
     //多图的上传完成点击图片的钩子
     handlePreviewTwo(file) {
@@ -673,7 +687,7 @@ export default {
           type: 'warning'
         }).then(() => {
           status({id:this.selectRow.id,status:this.selectRow.status==1?2:1}).then(()=>{
-              this.getList()
+            this.getList()
           })
         }).catch(() => {
           this.$message({
@@ -686,7 +700,7 @@ export default {
       }
     },
     /**编辑和新增商品*/
-      //打开弹窗
+    //打开弹窗
     changeGoods(e){
       if(e==='add'){
         this.brandMethod()
@@ -699,6 +713,8 @@ export default {
       }else{
         if(this.selectRow){
           console.log(this.selectRow)
+          this.view_text=[]
+          this.view_textTwo=[]
           this.form={... this.selectRow}
           for (let i = 0; i < this.selectRow.view_text.length; i++) {
             this.view_text.push({name:'图片'+i,url:this.selectRow.view_text[i]})
@@ -717,6 +733,7 @@ export default {
     // 提交
     onSubmit(){
       this.$refs.form.validate((valid) => {
+        console.log(valid)
         if(valid){
           if (this.form.attr.length<=0){return this.$message.error('你得先填写属性')}
           let form ={... this.form}
@@ -743,6 +760,7 @@ export default {
             })
           }else{
             add(form).then(res=>{
+              console.log(res)
               this.$message.success(res.msg)
               console.log(res)
               this.view_text=[]

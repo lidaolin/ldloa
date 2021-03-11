@@ -50,7 +50,7 @@ export function status(data) {
  */
 export function edit(data) {
     return request({
-        url: 'admin/product_combination/edit',
+        url: '/admin/product_combination/edit',
         method: 'post',
         data: data
     })
@@ -70,7 +70,7 @@ export function edit(data) {
  */
 export function add(data) {
     return request({
-        url: 'admin/product_combination/add',
+        url: '/admin/product_combination/add',
         method: 'post',
         data: data
     })

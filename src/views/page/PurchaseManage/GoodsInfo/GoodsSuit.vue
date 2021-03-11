@@ -102,7 +102,7 @@
         <el-form-item label="商品封面图:" prop="cover_link_img" :rules="{ required: true, message: '请上传商品组合封面图', trigger: 'blur' }">
           <el-upload
               class="avatar-uploader"
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'cover_link_img')}"
@@ -111,11 +111,11 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="商品视频:" prop="video_link" :rules="{ required: true, message: '请上传商品视频', trigger: 'blur' }">
+        <el-form-item label="商品视频:" prop="video_link">
           <el-upload
               class="avatar-uploader"
               accept="video/*"
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'video_link')}"
@@ -131,7 +131,7 @@
         <br>
         <el-form-item label="产品详情图:" class="elFormItemFlex" prop="view_text" >
           <el-upload
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               list-type="picture-card"
               multiple
               show-file-list
@@ -149,7 +149,7 @@
         <br>
         <el-form-item label="产品橱窗图:" class="product_carousel_img" prop="product_carousel_img" >
           <el-upload
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               list-type="picture-card"
               multiple
               show-file-list
@@ -454,7 +454,13 @@ export default {
     },
     //上传成功
     uploadSuccess(response, file, fileList){
-      this.view_text.push({name:'图片'+fileList.length+1,url:response.data.url})
+      let that = this
+      let view_text=[]
+      fileList.forEach(function (item) {
+        view_text.push({name:'图片'+item.name,url:item.response.data.url})
+      });
+      that.view_text=view_text
+      // this.view_text.push({name:'图片'+fileList.length+1,url:response.data.url})
     },
     //多图的上传完成点击图片的钩子
     handlePreview(file) {
@@ -463,7 +469,13 @@ export default {
     },
     //上传成功
     uploadSuccessTwo(response, file, fileList){
-      this.view_textTwo.push({name:'图片'+fileList.length+1,url:response.data.url})
+      let that = this
+      let view_textTwo=[]
+      fileList.forEach(function (item) {
+        view_textTwo.push({name:'图片'+item.name,url:item.response.data.url})
+      });
+      that.view_textTwo=view_textTwo
+      // this.view_textTwo.push({name:'图片'+fileList.length+1,url:response.data.url})
     },
     //多图的上传完成点击图片的钩子
     handlePreviewTwo(file) {

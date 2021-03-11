@@ -23,7 +23,7 @@
       <el-form-item label="商品分类封面图:" prop="classify_img" :rules="{ required: true, message: '请上传商品封面图', trigger: 'blur' }">
         <el-upload
             class="avatar-uploader"
-            action="/api/admin/upload_image/upload"
+            action="/admin/upload_image/upload"
             name="file"
             :show-file-list="false"
             :on-success="(e)=>{handleSuccess(e,'classify_img')}"
