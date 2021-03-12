@@ -172,3 +172,16 @@ export function editDetailed(id) {
         params: {id}
     })
 }
+
+//获取底部信息
+/** 参数名	必选	类型	说明
+ id	是	int	进货单id
+ type	否	string	类型，1商品信息，默认1
+ */
+export function getPurchaseOrderBottomInfo(data) {
+    return request({
+        url: '/stock/Purchase/p_son',
+        method: 'post',
+        data: data
+    })
+}

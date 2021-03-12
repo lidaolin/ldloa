@@ -1,7 +1,7 @@
 <template>
   <div class="pageWrap">
     <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
-    <ldl-table-pagination :selectRow.sync="selectRow"
+    <ldl-table-pagination :selectRow.sync="selectRow" @listClick="listClick"
                           :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}"
                           @getList="getList" :tableDataInfo="tableDataInfo"
                           :pagingData.sync="pagingData"></ldl-table-pagination>
@@ -169,7 +169,8 @@
               label="操作"
               width="160">
             <template slot-scope="scope">
-              <el-button type="danger" icon="el-icon-delete" circle size="mini" @click="delProductRow(scope.$index)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" circle size="mini"
+                         @click="delProductRow(scope.$index)"></el-button>
             </template>
           </el-table-column>
 
@@ -237,13 +238,47 @@
         <el-button type="primary" size="mini" @click="determineDeliver">确 定</el-button>
       </div>
     </el-dialog>
-
+    <ldlControlWindow :bottomHeight.sync="bottomHeight" ref="bottomHeight">
+      <el-tabs type="border-card" v-model="tabPaneValue" class="ldlTab"
+               style="height: calc(100% - 4px)">
+        <el-tab-pane label="进货单信息" name="goodsInfo1" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="product_name"
+                align="center"
+                label="商品名称">
+            </el-table-column>
+            <el-table-column
+                prop="product_sku_name"
+                align="center"
+                label="商品规格">
+              <template slot-scope="scope">
+                <div v-for="(item,index) in scope.row.product_sku_name" :key="index">
+                  <span type="success">{{ item }}</span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="number"
+                align="center"
+                label="数量">
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
+    </ldlControlWindow>
   </div>
 </template>
 
 <script>
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
+import ldlControlWindow from "@/components/ldlControlWindow";
 import {
   add,
   edit,
@@ -256,7 +291,8 @@ import {
   purchaseSign,
   purchaseBack,
   purchaseDeliver,
-  editDetailed
+  editDetailed,
+  getPurchaseOrderBottomInfo
 } from "@/api/DeliveryManage/InventoryManage/AgentPurchasing";
 import {getSku, simpleList} from "@/api/PurchaseManage/GoodsInfo/GoodsManage";
 
@@ -265,6 +301,7 @@ export default {
   components: {
     ldlTablePagination,
     buttonBox,
+    ldlControlWindow,
   },
   data() {
     return {
@@ -284,7 +321,7 @@ export default {
       /**必要参数*/
       selectRow: undefined, //选中行
       pagingData: undefined,//getList的传参
-      bottomHeight: '0%',//底部高度
+      bottomHeight: '30%',//底部高度
       buttonBoxState: true,//开启按钮行的状态
       tableDataInfo: { //表格信息
         dataListInfo: [
@@ -299,7 +336,7 @@ export default {
               name: '已确认'
             }, {type: 'danger', key: 4, name: '已发货'}, {type: 'success', key: 5, name: '已签收'},],
           },
-          {prop: 'goods_fee', label: '进货锁定价', sortable: "custom"},
+          {prop: 'goods_fee', label: '进货锁定价', sortable: "custom", width: 100},
           {prop: 'freight', label: '发货运费', sortable: "custom"},
           {
             prop: 'freight_type',
@@ -322,6 +359,12 @@ export default {
         dataList: []//表格行信息
       },
       /**必要参数*/
+
+      // 底部信息tab
+      bottomList: {},
+      tabPaneValue: 'goodsInfo1',
+      // 底部信息tab
+
     }
   },
   watch: {
@@ -340,12 +383,27 @@ export default {
     })
   },
   methods: {
-    delProductRow(index){
-      let product=[... this.form.product]
-      product.splice(index,1)
-      let form ={... this.form}
-      form.product=product
-      this.form = {... form}
+    listClick() {
+      let tabPaneValue = this.tabPaneValue
+      let index = tabPaneValue.charAt(9)
+      let data = {
+        id: this.selectRow.id,
+        type: index,
+      }
+      getPurchaseOrderBottomInfo(data).then(res => {
+        console.log(res, '------------')
+        let bottomList = {...this.bottomList}
+        bottomList[this.tabPaneValue] = [...res.data]
+        this.bottomList = {...bottomList}
+      })
+    },
+
+    delProductRow(index) {
+      let product = [...this.form.product]
+      product.splice(index, 1)
+      let form = {...this.form}
+      form.product = product
+      this.form = {...form}
       console.log(index)
     },
     //提交
@@ -611,7 +669,7 @@ export default {
             this.editData = res.data
             this.form = {
               ...this.editData,
-              p_data:this.editData.p_data*1000,
+              p_data: this.editData.p_data * 1000,
               id: this.selectRow.id,
             }
             this.addAttributeState = true
@@ -640,7 +698,7 @@ export default {
           if (this.form.id) {
             let data = {
               ...this.form,
-              p_data:this.form.p_data/1000
+              p_data: this.form.p_data / 1000
             }
             edit(data).then(() => {
               this.addAttributeState = false
