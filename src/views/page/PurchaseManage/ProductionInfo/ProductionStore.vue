@@ -21,7 +21,7 @@
                 align="center"
                 label="商品规格状态">
               <template slot-scope="{row}">
-                <span v-for="(item,index) in row.product_attr_val_pash_array" :key="index">
+                <span v-for="(item,index) in row.product_attr_val_pash" :key="index">
                   {{ item.attr_name }}:{{item.val_name}}
                 </span>
               </template>

@@ -42,6 +42,7 @@ export default {
           {prop:'p_lock_number',label:'进货锁定',sortable:"custom"},
           {prop:'p_zt_number',label:'进货在途',sortable:"custom"},
           {prop:'p_ck_number',label:'累计进货数量',sortable:"custom",width: 120},
+          {prop:'p_rk_number',label:'累计入库数量',sortable:"custom",width: 120},
           {prop:'cp_number',label:'次品仓',sortable:"custom"},
         ],//表格列信息
         dataList:[]//表格行信息
