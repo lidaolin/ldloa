@@ -137,7 +137,7 @@
         <el-button type="primary" @click="onAuditSubmit">确 定</el-button>
       </div>
     </el-dialog>
-    <ldlControlWindow :bottomHeight.sync="bottomHeight" ref="bottomHeight">
+    <ldlControlWindow class="ldlTab" :bottomHeight.sync="bottomHeight" ref="bottomHeight">
       <el-tabs type="border-card" v-model="tabPaneValue" class="ldlTab" @tab-click="changeTab"
                style="height: calc(100% - 4px)">
         <el-tab-pane label="商品信息" name="goodsInfo1" :disabled="!selectRow" style="height:calc(100% - 4px)">
@@ -550,6 +550,7 @@ export default {
         this.bottomList = {...bottomList}
       })
     },
+
     onManualSplitSubmit() {
       let delList = []
       let selectGoodsList = [...this.selectGoodsList]
@@ -575,6 +576,7 @@ export default {
         this.$message.success(res.msg)
       })
     },
+
     //运费计算
     countFreight() {
       if (this.selectRow) {
@@ -593,6 +595,7 @@ export default {
         this.$message.error('请点击选中一行')
       }
     },
+
     //取消拦截
     removeIntercept() {
       if (this.selectRow) {
@@ -611,6 +614,7 @@ export default {
         this.$message.error('请点击选中一行')
       }
     },
+
     //订单拦截
     orderIntercept() {
       if (this.selectRow) {
@@ -630,6 +634,7 @@ export default {
         this.$message.error('请点击选中一行')
       }
     },
+
     //手动拆分
     ManualSplit() {
       if (this.selectRow) {
@@ -644,6 +649,7 @@ export default {
         this.$message.error('请点击选中一行')
       }
     },
+
     //自动拆分
     autoSplit() {
       if (this.selectRow) {
@@ -665,6 +671,7 @@ export default {
         this.$message.error('请点击选中一行')
       }
     },
+
     //多个提示
     MultipleTips(res) {
       let that = this
@@ -691,6 +698,7 @@ export default {
         }
       }
     },
+
     //提交审核弹窗
     onAuditSubmit() {
       batch_review(this.AuditForm).then(res => {
@@ -699,6 +707,7 @@ export default {
         this.getList()
       })
     },
+
     //订单合并
     orderMerge() {
       if (this.selectionList) {
@@ -725,9 +734,9 @@ export default {
         this.$message.error('请在左侧多选选择')
       }
     },
+
     //打开审核弹窗
     Audit() {
-
       if (this.selectionList) {
         this.AuditState = true
         console.log(this.selectionList, '这是什么')
@@ -742,6 +751,7 @@ export default {
         this.$message.error('请在左侧多选选择')
       }
     },
+
     // 快递公司搜索
     brandMethod_kd(e) {
       this.loading = true
@@ -750,6 +760,7 @@ export default {
         this.loading = false
       })
     },
+
     //箱型搜索
     boxMethod(e) {
       this.loading = true
@@ -758,6 +769,7 @@ export default {
         this.loading = false
       })
     },
+
     /**这是按钮方法调用*/
     functionCall(name) {
       if (name.length == 1) {
@@ -770,8 +782,7 @@ export default {
     getList() {
       p_list(this.pagingData).then(res => {
         this.pagingData = {
-          ...
-              this.pagingData,
+          ...this.pagingData,
           page: res.data.current_page,
           limit: res.data.per_page,
           total: res.data.total,
@@ -786,6 +797,7 @@ export default {
       this.getList()
     })
   },
+
   components: {
     ldlTablePagination,
     buttonBox,

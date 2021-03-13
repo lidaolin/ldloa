@@ -112,3 +112,15 @@ export function p_footer(data) {
         data: data
     })
 }
+
+/** 发货单批量签收
+ 参数名	必选	类型	说明
+ ids	是	array	发货单id [2,3,4]
+ */
+export function batchSign(data) {
+    return request({
+        url: '/admin/Deliver_Plfahuo/sign',
+        method: 'post',
+        data: data
+    })
+}
