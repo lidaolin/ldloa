@@ -333,7 +333,25 @@
       </span>
     </el-dialog>
     <!-- 同步发货 -->
-
+    <!-- 批量签收 -->
+    <el-dialog title="订单签收" :visible.sync="signModal" width="450px" :close-on-click-modal="false">
+      <el-form
+          ref="SignForm"
+          label-position="right"
+          label-width="80px"
+          :model="SignForm"
+          size="mini"
+      >
+        <el-form-item label="审单备注">
+          <el-input v-model="SignForm.remarks" type="textarea"/>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="signModal = false">取 消</el-button>
+        <el-button type="primary" size="mini" @click="SignSave(SignForm)">保 存</el-button>
+      </span>
+    </el-dialog>
+    <!-- 批量签收 -->
     <!-- 批量操作成功弹窗 -->
     <el-dialog title="操作成功" :visible.sync="successModal" :modal="false" center width="500px">
       <div class="successModal">
@@ -452,6 +470,10 @@ export default {
         dataList: []//表格行信息
       },
       /**必要参数*/
+      // 订单签收
+      signModal: false,
+      SignForm: {},
+      // 订单签收
       // 批量操作成功
       successData: {}, // 批量操作成功返回数据
       successModal: false,
@@ -488,7 +510,8 @@ export default {
       this.successModal = true
     },
 
-    //发货单批量签收
+
+    //发货单批量签收-->弹框
     batchReceiptOfShippingOrder() {
       if (this.selectionList) {
         if (this.selectionList.length > 0) {
@@ -496,20 +519,25 @@ export default {
           for (let i = 0; i < this.selectionList.length; i++) {
             id_arr.push(this.selectionList[i].id)
           }
-          let data = {
-            ids: id_arr
-          }
-          batchSign(data).then(res => {
-            this.selectionList = undefined
-            this.successCallback(res.data)
-            this.getList()
-          })
+          this.SignForm = {ids: id_arr, remarks: null}
+          this.signModal = true
         } else {
           this.$message.error('请在左侧选择一个或者多个进行打印')
         }
       } else {
         this.$message.error('请在左侧选择一个或者多个进行打印')
       }
+    },
+
+    //发货单批量签收-->保存
+    SignSave(data) {
+      let odata = {...data}
+      batchSign(odata).then(res => {
+        this.successCallback(res.data)
+        this.signModal = false
+        this.getList()
+      }).catch(() => {
+      })
     },
 
     //批量打印
