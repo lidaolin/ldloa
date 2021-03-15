@@ -116,7 +116,7 @@ export function edit_btn(data) {
 */
 export function setBtnStatus(id) {
     return request({
-        url: 'admin/Button/bu_status',
+        url: '/admin/Button/bu_status',
         method: 'post',
         data: {id}
     })
