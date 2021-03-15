@@ -74,3 +74,16 @@ export function distributCompany(data) {
         data: data
     })
 }
+
+/** 修改是否送达
+ 参数名	必选	类型	说明
+ id	是	int	区域维护id
+ issend	是	int	是否送达1:是；2:否
+ */
+export function chStatus(data) {
+    return request({
+        url: '/admin/area_service/status',
+        method: 'post',
+        data: data
+    })
+}

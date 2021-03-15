@@ -1,7 +1,10 @@
 <template>
   <div class="pageWrap">
     <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
-    <ldl-table-pagination :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+    <ldl-table-pagination :selectRow.sync="selectRow"
+                          :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}"
+                          @getList="getList" :tableDataInfo="tableDataInfo"
+                          :pagingData.sync="pagingData"></ldl-table-pagination>
     <el-dialog
         v-el-drag-dialog
         width="30%"
@@ -13,7 +16,7 @@
         size="mini"
         center
     >
-      <el-form ref="form" :model="form" label-width="100px" size="mini" >
+      <el-form ref="form" :model="form" label-width="100px" size="mini">
         <el-form-item label="配送公司:" prop="companyId" :rules="{ required: true, message: '请填写配送公司名称', trigger: 'blur' }">
           <el-select
               v-model="form.companyId"
@@ -62,22 +65,22 @@
               clearable
           ></el-cascader>
         </el-form-item>
-        <el-form-item label="是否送达">
-          <el-switch
-              v-model="form.issend"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-value="1"
-              inactive-value="2"
-              active-text="已送达"
-              inactive-text="未送达">
-          </el-switch>
-        </el-form-item>
+<!--        <el-form-item label="是否送达">-->
+<!--          <el-switch-->
+<!--              v-model="form.issend"-->
+<!--              active-color="#13ce66"-->
+<!--              inactive-color="#ff4949"-->
+<!--              active-value="1"-->
+<!--              inactive-value="2"-->
+<!--              active-text="已送达"-->
+<!--              inactive-text="未送达">-->
+<!--          </el-switch>-->
+<!--        </el-form-item>-->
         <el-form-item label="备注:">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入备注"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">{{ form.id? '立即保存':'立即创建' }}</el-button>
+          <el-button type="primary" @click="onSubmit">{{ form.id ? '立即保存' : '立即创建' }}</el-button>
           <el-button @click="addAttributeState=false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -88,7 +91,14 @@
 <script>
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
-import {add, del, edit, areaServiceList,distributCompany} from "@/api/DeliveryManage/DeliverySettings/AreaMaintenance";
+import {
+  add,
+  del,
+  edit,
+  areaServiceList,
+  distributCompany,
+  chStatus
+} from "@/api/DeliveryManage/DeliverySettings/AreaMaintenance";
 import {searchKdManageList} from "@/api/DeliveryManage/DeliverySettings/ExpressManage";
 import {
   // provinceAndCityData,
@@ -98,52 +108,90 @@ import {
   // CodeToText,
   // TextToCode,
 } from "element-china-area-data";
+
 export default {
-name: "AreaMaintenance",
-  components:{
+  name: "AreaMaintenance",
+  components: {
     ldlTablePagination,
     buttonBox,
   },
-  data(){
-    return{
-      isShow:false,
-      value:[],
+  data() {
+    return {
+      isShow: false,
+      value: [],
       cityList: regionDataPlus,
-      props:{
-        value:'label'
+      props: {
+        value: 'label'
       },
-      addAttributeState:false,
-      form:{},
-      loading:false,//控制搜索加载的
-      companyId_arr:[],//配送数组
-      ps_id_arr:[],//快递公司数组
+      addAttributeState: false,
+      form: {},
+      loading: false,//控制搜索加载的
+      companyId_arr: [],//配送数组
+      ps_id_arr: [],//快递公司数组
       /**必要参数*/
-      selectRow:undefined, //选中行
-      pagingData:undefined,//getList的传参
+      selectRow: undefined, //选中行
+      pagingData: undefined,//getList的传参
       bottomHeight: '0%',//底部高度
-      buttonBoxState:true,//开启按钮行的状态
-      tableDataInfo:{ //表格信息
-        dataListInfo:[
-          {prop:'companyName',label:'配送名称',},
-          {prop:'kdname',label:'快递公司名称',},
-          {prop:'province',label:'省份',},
-          {prop:'city',label:'城市',},
-          {prop:'district',label:'区县',},
-          {prop:'issend',type:'tag',label:'是否送达',data:[{type:'success',key:1,name:'已送达'}],},
-          {prop:'remark',label:'备注',},
-          {prop:'createTime',label:'创建时间',type:"date",sortable:"custom"},
+      buttonBoxState: true,//开启按钮行的状态
+      tableDataInfo: { //表格信息
+        dataListInfo: [
+          {prop: 'companyName', label: '配送名称',},
+          {prop: 'kdname', label: '快递公司名称',},
+          {prop: 'province', label: '省份',},
+          {prop: 'city', label: '城市',},
+          {prop: 'district', label: '区县',},
+          {prop: 'issend', type: 'tag', label: '是否送达', data: [{type: 'danger', key: 2, name: '不可送达'}],},
+          {prop: 'remark', label: '备注',},
+          {prop: 'createTime', label: '创建时间', type: "date", sortable: "custom"},
         ],//表格列信息
-        dataList:[]//表格行信息
+        dataList: []//表格行信息
       },
       /**必要参数*/
     }
   },
   mounted() {
-    this.$nextTick(()=>{
+    this.$nextTick(() => {
       this.getList()
     })
   },
-  methods:{
+  methods: {
+
+    changeState(e) {
+      if (this.selectRow) {
+        this.$confirm(`该地区当前状态为${
+                this.selectRow[e] == 1 ? "可达" : "不可达"
+            }, 是否修改为${this.selectRow[e] == 1 ? "不可达" : "可达"}?`,
+            {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning",
+            }
+        )
+            .then(() => {
+              let data = {id: this.selectRow.id, issend: this.selectRow[e] == 2 ? 1 : 2};
+              // console.log(data)
+              chStatus(data)
+                  .then(() => {
+                    this.getList();
+                    this.$message.success("状态修改成功");
+                  })
+                  .catch((err) => {
+                    this.$message({
+                      message: err,
+                      type: "error",
+                    });
+                  });
+            })
+            .catch(() => {
+              this.$message({
+                type: "info",
+                message: "取消输入",
+              });
+            });
+      } else {
+        this.$message.error('请选中一行')
+      }
+    },
 
     // 选择地区
     addressChange(arr) {
@@ -156,32 +204,32 @@ name: "AreaMaintenance",
     },
 
     // 配送搜索
-    brandMethod(e){
-      this.loading=true
-      distributCompany({name:e,type:5}).then(res=>{
-        this.companyId_arr=res.data
-        this.loading=false
+    brandMethod(e) {
+      this.loading = true
+      distributCompany({name: e, type: 5}).then(res => {
+        this.companyId_arr = res.data
+        this.loading = false
       })
     },
 
     // 快递公司搜索
-    brandMethod_kd(e){
-      this.loading=true
-      searchKdManageList({kdname:e}).then(res=>{
-        this.ps_id_arr=res.data
-        this.loading=false
+    brandMethod_kd(e) {
+      this.loading = true
+      searchKdManageList({kdname: e}).then(res => {
+        this.ps_id_arr = res.data
+        this.loading = false
       })
     },
 
     // 删除
-    delAttribute(){
-      if(this.selectRow){
+    delAttribute() {
+      if (this.selectRow) {
         this.$confirm('此操作将永久删除--该条配送记录--, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          del({id:this.selectRow.id}).then(()=>{
+          del({id: this.selectRow.id}).then(() => {
             this.getList()
             this.$message.success('删除成功')
           })
@@ -191,64 +239,64 @@ name: "AreaMaintenance",
             message: '已取消删除'
           });
         });
-      }else{
+      } else {
         this.$message.error('请选中一行')
       }
     },
 
     //新增还是修改
-    changeAttribute(e){
+    changeAttribute(e) {
       //重新加载组件，使数据重新赋值
       this.isShow = false;
       setTimeout(() => {
         this.isShow = true;
       }, 0);
-      if(e==='edit'){
-        if(this.selectRow){
+      if (e === 'edit') {
+        if (this.selectRow) {
           var arr = []
-              arr.push(this.selectRow.province,this.selectRow.city,this.selectRow.district)
+          arr.push(this.selectRow.province, this.selectRow.city, this.selectRow.district)
           this.value = arr
-          this.form={
-            id:this.selectRow.id,
-            companyId:this.selectRow.companyId,
-            ps_id:this.selectRow.ps_id,
-            province:this.selectRow.province,
-            city:this.selectRow.city,
-            district:this.selectRow.district,
-            issend:this.selectRow.issend,
-            remark:this.selectRow.remark,
+          this.form = {
+            id: this.selectRow.id,
+            companyId: this.selectRow.companyId,
+            ps_id: this.selectRow.ps_id,
+            province: this.selectRow.province,
+            city: this.selectRow.city,
+            district: this.selectRow.district,
+            issend: this.selectRow.issend,
+            remark: this.selectRow.remark,
           }
-          this.addAttributeState=true
-        }else{
+          this.addAttributeState = true
+        } else {
           this.$message.error('请选中一行')
         }
-      }else{
+      } else {
         this.value = [],
-        this.form={
-          issend: 2,
-        }
+            this.form = {
+              issend: 2,
+            }
         this.$nextTick(function () {
           this.$refs.form.clearValidate();
         });
-        this.addAttributeState=true
+        this.addAttributeState = true
       }
       this.brandMethod()
       this.brandMethod_kd()
     },
 
     //新增修改的保存
-    onSubmit(){
+    onSubmit() {
       this.$refs.form.validate((valid) => {
-        if(valid){
-          if(this.form.id){
-            edit(this.form).then(()=>{
-              this.addAttributeState=false
+        if (valid) {
+          if (this.form.id) {
+            edit(this.form).then(() => {
+              this.addAttributeState = false
               this.$message.success('修改成功')
               this.getList()
             })
-          }else{
-            add(this.form).then(()=>{
-              this.addAttributeState=false
+          } else {
+            add(this.form).then(() => {
+              this.addAttributeState = false
               this.$message.success('添加成功')
               this.getList()
             })
@@ -268,16 +316,17 @@ name: "AreaMaintenance",
     },
     /**这是按钮方法调用*/
 
-    getList(){
-      areaServiceList(this.pagingData).then(res=>{
-        this.pagingData={...
+    getList() {
+      areaServiceList(this.pagingData).then(res => {
+        this.pagingData = {
+          ...
               this.pagingData,
-          page:res.data.current_page,
-          limit:res.data.per_page,
-          total:res.data.total,
+          page: res.data.current_page,
+          limit: res.data.per_page,
+          total: res.data.total,
         }
-        let tableDataInfo={... this.tableDataInfo,dataList:res.data.data}
-        this.tableDataInfo=tableDataInfo
+        let tableDataInfo = {...this.tableDataInfo, dataList: res.data.data}
+        this.tableDataInfo = tableDataInfo
       })
     }
   },
