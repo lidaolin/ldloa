@@ -50,9 +50,9 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="菜鸟物流编号:" prop="kdn_num" :rules="{ required: true, message: '菜鸟物流编号不能为空', trigger: 'blur' }">
-          <el-input v-model="form.kdn_num" placeholder="请输入菜鸟物流编号"></el-input>
-        </el-form-item>
+<!--        <el-form-item label="菜鸟物流编号:" prop="kdn_num" :rules="{ required: true, message: '菜鸟物流编号不能为空', trigger: 'blur' }">-->
+<!--          <el-input v-model="form.kdn_num" placeholder="请输入菜鸟物流编号"></el-input>-->
+<!--        </el-form-item>-->
         <el-form-item label="状态">
           <el-switch
               v-model="form.status"
@@ -245,7 +245,6 @@ export default {
           {prop:'kdn_num',label:'菜鸟物流编号',},
           {prop:'total',label:'总订单数',sortable:"custom"},
           {prop:'ps_fee',label:'总快递费用',sortable:"custom"},
-          {prop:'count',label:'电子面单余量',sortable:"custom"},
           {prop:'status',type:'tag',label:'状态',data:[{type:'success',key:1,name:'启用'},{type:'danger',key:2,name:'禁用'}],},
           {prop:'isappoint',type:'tag',label:'是否可指定',data:[{type:'success',key:1,name:'指定'},],},
           {prop:'sort',label:'排序',sortable:"custom",},

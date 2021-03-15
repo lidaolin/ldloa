@@ -106,7 +106,7 @@
             <el-option
                 v-for="item in kd_id_arr"
                 :key="item.id"
-                :label="item.name"
+                :label="item.kdname"
                 :value="item.id">
             </el-option>
           </el-select>
@@ -438,7 +438,7 @@ import {
   manual_product_list,
   manual_split
 } from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
-import {searchKdList} from "@/api/DeliveryManage/DeliverySettings/ExpressCompany";
+import {searchKdManageList} from "@/api/DeliveryManage/DeliverySettings/ExpressManage";
 import {p_footer} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
 
 export default {
@@ -739,7 +739,6 @@ export default {
     Audit() {
       if (this.selectionList) {
         this.AuditState = true
-        console.log(this.selectionList, '这是什么')
         let data = []
         for (let i = 0; i < this.selectionList.length; i++) {
           data.push(this.selectionList[i].id)
@@ -755,7 +754,10 @@ export default {
     // 快递公司搜索
     brandMethod_kd(e) {
       this.loading = true
-      searchKdList({name: e}).then(res => {
+      let data = {
+        kdname: e ? e : ''
+      }
+      searchKdManageList(data).then(res => {
         this.kd_id_arr = res.data
         this.loading = false
       })
