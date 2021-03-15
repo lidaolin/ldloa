@@ -461,6 +461,8 @@ export default {
             width: 100,
             data: [{type: 'info', key: 1, name: '未打印'}, {type: '', key: 2, name: '打印成功'}],
           },
+          {prop: 'kdname', label: '快递公司',},
+          {prop: 'express_code', label: '快递单号',width: 140},
           {prop: 'k_dy_time', label: '快递单打印时间', type: "date", sortable: "custom", width: 140},
           {prop: 'qd_dy_time', label: '清单打印时间', type: "date", sortable: "custom", width: 140},
           {prop: 'examine_time', label: '审单时间', type: "date", sortable: "custom", width: 140},
