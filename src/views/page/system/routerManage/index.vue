@@ -73,7 +73,7 @@
         :close-on-click-modal='false'
         width="560px"
         center>
-      <el-form ref="form" :model="form" label-width="120px" label-position='left' size="small">
+      <el-form ref="form" :model="form" label-width="220px" label-position='right' size="small">
         <el-form-item prop="title" label="菜单名称" :rules="[{ required: true, message: '菜单名称不能为空'},]">
           <el-input v-model="form.title"></el-input>
         </el-form-item>
@@ -103,7 +103,7 @@
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item prop="isHidden" label="前端控制显示" :rules="[{ required: true, message: '控制显示不能为空'},]">
+        <el-form-item prop="isHidden" label="前端控制显示(menuy是否隐藏)" :rules="[{ required: true, message: '控制显示不能为空'},]">
           <el-radio-group v-model="form.isHidden">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
@@ -719,7 +719,7 @@ export default {
         id:data.id,
         affix:data.affix == false ? 0 : 1,
         keepAlive:data.keepAlive == false ? 0 : 1,
-        isHidden:data.keepAlive == false ? 0 : 1,
+        isHidden:data.isHidden == false ? 0 : 1,
         title:data.title,
         name:data.name,
         icon:data.icon,
