@@ -110,3 +110,13 @@ export function manual_product_list(data) {
         data: data
     })
 }
+/** 手动拆分时选择商品列表
+ * id	是	int	发货单id
+ */
+export function p_back(data) {
+    return request({
+        url: '/admin/Plfahuo/p_back',
+        method: 'post',
+        data: data
+    })
+}
