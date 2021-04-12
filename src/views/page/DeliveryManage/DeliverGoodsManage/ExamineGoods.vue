@@ -135,7 +135,6 @@ export default {
     /**扫码收尾*/
     submit(){
       examine_product({product:this.newList,product_card:[],plfahuo_id:this.requireList.id}).then(res=>{
-        console.log(res)
         this.$message.success(res.msg)
         this.overSubmit()
       })
