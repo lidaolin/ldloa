@@ -457,7 +457,12 @@ export default {
       let that = this
       let view_text=[]
       fileList.forEach(function (item) {
-        view_text.push({name:'图片'+item.name,url:item.response.data.url})
+        if (item.response){
+          view_text.push({name:'图片'+item.name,url:item.response.data.url})
+        }else{
+          view_text.push(item)
+        }
+
       });
       that.view_text=view_text
       // this.view_text.push({name:'图片'+fileList.length+1,url:response.data.url})
@@ -472,7 +477,11 @@ export default {
       let that = this
       let view_textTwo=[]
       fileList.forEach(function (item) {
-        view_textTwo.push({name:'图片'+item.name,url:item.response.data.url})
+        if (item.response){
+          view_textTwo.push({name:'图片'+item.name,url:item.response.data.url})
+        }else{
+          view_textTwo.push(item)
+        }
       });
       that.view_textTwo=view_textTwo
       // this.view_textTwo.push({name:'图片'+fileList.length+1,url:response.data.url})

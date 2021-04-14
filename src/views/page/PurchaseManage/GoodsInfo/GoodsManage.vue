@@ -132,6 +132,8 @@
 <!--              inactive-text="下架">-->
 <!--          </el-switch>-->
 <!--        </el-form-item>-->
+
+        <br>
         <el-form-item label="商品封面图:" prop="cover_link_img" :rules="{ required: true, message: '请上传商品封面图', trigger: 'blur' }">
           <el-upload
               class="avatar-uploader"
@@ -144,6 +146,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
+        <br>
         <el-form-item label="商品视频:" prop="video_link" :rules="{ message: '请上传商品视频', trigger: 'blur' }">
           <el-upload
               class="avatar-uploader"
@@ -641,8 +644,11 @@ export default {
       let that = this
       let view_text=[]
       fileList.forEach(function (item) {
-        view_text.push({name:'图片'+item.name,url:item.response.data.url})
-
+        if (item.response){
+          view_text.push({name:'图片'+item.name,url:item.response.data.url})
+        }else{
+          view_text.push(item)
+        }
       });
       that.view_text=view_text
       // this.view_text.push({name:'图片'+fileList.length+1,url:response.data.url})
@@ -658,7 +664,11 @@ export default {
       let that = this
       let view_textTwo=[]
       fileList.forEach(function (item) {
-        view_textTwo.push({name:'图片'+item.name,url:item.response.data.url})
+        if (item.response){
+          view_textTwo.push({name:'图片'+item.name,url:item.response.data.url})
+        }else{
+          view_textTwo.push(item)
+        }
       });
       that.view_textTwo=view_textTwo
       // this.view_textTwo.push({name:'图片'+fileList.length+1,url:response.data.url})
@@ -743,12 +753,13 @@ export default {
             form.view_text.push(view_text[i].url)
           }
           let view_textTwo=[... this.view_textTwo]
+
+          console.log(view_textTwo)
           form.product_carousel_img=[]
           for (let i = 0; i < view_textTwo.length; i++) {
             form.product_carousel_img.push(view_textTwo[i].url)
           }
           if (this.form.id){
-
             edit(form).then(res=>{
               console.log(res)
               this.$message.success(res.msg)
