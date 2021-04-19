@@ -156,8 +156,9 @@
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'video_link')}"
               :before-upload="beforeUpload">
-            <video v-if="form.video_link" :src="form.video_link" class="avatar" controls/>
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <video v-if="form.video_link" :src="form.video_link" class="avatar" controls/>
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+
           </el-upload>
         </el-form-item>
         <br>
