@@ -151,7 +151,7 @@
           <el-upload
               class="avatar-uploader"
               accept="video/*"
-              action="/admin/upload_image/upload"
+              action="/admin/upload_image/uploadvedio"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'video_link')}"
