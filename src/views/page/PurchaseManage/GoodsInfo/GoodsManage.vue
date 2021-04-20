@@ -1,8 +1,7 @@
 <template>
   <div class="pageWrap">
     <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
-    <ldl-table-pagination @listClick="listClick" :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
-
+    <ldl-table-pagination width :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
     <el-dialog
         v-el-drag-dialog
         top="2.5%"
@@ -71,6 +70,7 @@
         <el-button type="primary" @click="onSubmitPrice">确 定</el-button>
       </div>
     </el-dialog>
+<!--  新增商品弹窗  -->
     <el-dialog
         v-el-drag-dialog
         top="2.5%"
@@ -137,7 +137,7 @@
         <el-form-item label="商品封面图:" prop="cover_link_img" :rules="{ required: true, message: '请上传商品封面图', trigger: 'blur' }">
           <el-upload
               class="avatar-uploader"
-              action="/admin/upload_image/upload"
+              action="/api/admin/upload_image/upload"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'cover_link_img')}"
@@ -148,18 +148,24 @@
         </el-form-item>
         <br>
         <el-form-item label="商品视频:" prop="video_link" :rules="{ message: '请上传商品视频', trigger: 'blur' }">
-          <el-upload
-              class="avatar-uploader"
+          <el-upload class="avatar-uploader"
               accept="video/*"
-              action="/admin/upload_image/uploadvedio"
+              action="/api/admin/upload_image/uploadvedio"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'video_link')}"
-              :before-upload="beforeUpload">
-              <video v-if="form.video_link" :src="form.video_link" class="avatar" controls/>
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-
+              :before-upload="beforeUpload"
+              list-type="picture-card"
+              :on-progress="handlePictureCardProgress">
+            <video v-if="form.video_link" :src="form.video_link" class="avatar" controls/>
+            <!--     下面一行删除了avatar-uploader-icon属性       -->
+            <el-progress v-else-if="percentNum!=0" :width="160" style="margin: 9px" type="circle" :percentage="percentNum" ></el-progress>
+            <i v-else class="el-icon-plus  avatar-uploader-icon"></i>
           </el-upload>
+          <div style="width: 178px;display: flex;align-items: center;justify-content: center" v-if="form.video_link">
+            <el-link type="danger" @click="DeleteProgress"  icon="el-icon-delete" >删除</el-link>
+          </div>
+<!--          <el-button type="danger" size="mini" icon="el-icon-delete"  style="margin-top: 10px;">删除</el-button>-->
         </el-form-item>
         <br>
         <el-form-item class="elFormItemFlex" label="产品说明:" prop="explain" :rules="{ required: true, message: '请填写产品说明', trigger: 'blur' }">
@@ -168,12 +174,11 @@
         <br>
         <el-form-item label="产品详情图:" class="elFormItemFlex" prop="view_text" >
           <el-upload
-              action="/admin/upload_image/upload"
+              action="/api/admin/upload_image/upload"
               list-type="picture-card"
               multiple
               show-file-list
               accept="image/*"
-
               :file-list.sync="view_text"
               :on-success="uploadSuccess"
               :on-preview="handlePreview"
@@ -187,7 +192,7 @@
         <br>
         <el-form-item label="产品橱窗图:" class="product_carousel_img" prop="product_carousel_img" >
           <el-upload
-              action="/admin/upload_image/upload"
+              action="/api/admin/upload_image/upload"
               list-type="picture-card"
               multiple
               show-file-list
@@ -195,7 +200,7 @@
               :file-list.sync="view_textTwo"
               :on-success="uploadSuccessTwo"
               :on-preview="handlePreviewTwo"
-              :on-remove="handleRemoveTwo">
+              :on-remove="handleRemove">
             <i class="el-icon-plus"></i>
           </el-upload>
           <el-dialog :visible.sync="dialogVisibleTwo" append-to-body>
@@ -406,6 +411,8 @@ export default {
   name: "GoodsManage",
   data(){
     return{
+      // 上传视频进度条
+      percentNum:0,
       price:0,
       getSku:[],
       delSkuList:[],
@@ -475,6 +482,20 @@ export default {
     }
   },
   methods:{
+    //删除视频按钮
+    DeleteProgress(){
+      this.percentNum=0
+      let form = {...this.form}
+      form.video_link=undefined
+      this.form={... form}
+    },
+    // 视频加载
+    handlePictureCardProgress(event, file, fileList) {
+      console.log(event, file, fileList)
+      this.percentNum=Math.round(event.percent)
+      console.log(this.percentNum)
+    },
+
     delGoods(){
       if(this.selectRow){
         this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
@@ -678,11 +699,13 @@ export default {
     handlePreviewTwo(file) {
       this.dialogImageUrlTwo = file.url;
       this.dialogVisibleTwo = true;
+      console.log(file.url)
     },
     //图片上传成功
     handleSuccess(e,name){
       let form= {... this.form}
       form[name]=e.data.url
+      console.log(form[name])
       this.form={... form}
     },
     //限制图片上传的限制
@@ -848,6 +871,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+.avatar-uploader{
+  width:178px;
+  height:178px;
+}
+.avatar-uploader .el-upload--picture-card{
+  width:178px;
+  height:178px;
+}
 
 </style>

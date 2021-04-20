@@ -81,7 +81,7 @@
                   </template>
                 </div>
                 <div v-if="item.type=='video'">
-                  <video :src="scope.row[item.prop]" controls :style="item.imgStyle"></video>
+                  <video :src="scope.row[item.prop]" v-if="scope.row[item.prop]" controls :style="item.imgStyle"></video>
                 </div>
                 <div v-if="item.type=='avatar'" class="tableAvatarBox">
                   <el-avatar icon="el-icon-user-solid" style="display: block" :size="item.size" :src="scope.row[item.prop]"></el-avatar>

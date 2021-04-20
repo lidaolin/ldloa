@@ -37,6 +37,7 @@
         </el-tab-pane>
       </el-tabs>
     </ldlControlWindow>
+<!--新增弹窗-->
     <el-dialog
         v-el-drag-dialog
         top="2.5%"
@@ -115,14 +116,19 @@
           <el-upload
               class="avatar-uploader"
               accept="video/*"
-              action="/admin/upload_image/uploadvedio"
+              action="/api/admin/upload_image/uploadvedio"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'video_link')}"
-              :before-upload="beforeUpload">
+              :before-upload="beforeUpload"
+              :on-progress="handlePictureProgress">
             <video v-if="form.video_link" :src="form.video_link" class="avatar" controls/>
+            <el-progress v-else-if="percentNum!=0" :width="160" style="margin: 9px" type="circle" :percentage="percentNum" ></el-progress>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
+          <div style="width: 178px;display: flex;align-items: center;justify-content: center" v-if="form.video_link">
+            <el-link type="danger" @click="DeleteProgress"  icon="el-icon-delete" >删除</el-link>
+          </div>
         </el-form-item>
         <br>
         <el-form-item class="elFormItemFlex" label="产品说明:" prop="explain" :rules="{ required: true, message: '请填写产品说明', trigger: 'blur' }">
@@ -230,6 +236,8 @@ export default {
   name: "GoodsSuit",
   data(){
     return{
+      //上传视频加载进度条
+      percentNum:0,
       selectGoods:'',
       view_text:[],
       view_textTwo:[],
@@ -244,7 +252,7 @@ export default {
       addGoodsSuitState:false,
       bottomList: {},
       tabPaneValue:'product_combination',
-      form:{},
+      form:{product_combination:[]},
       /**必要参数*/
       selectRow:undefined, //选中行
       pagingData:undefined,//getList的传参
@@ -294,6 +302,20 @@ export default {
     }
   },
   methods:{
+    // 视频加载
+    handlePictureProgress(event, file, fileList) {
+      console.log(event, file, fileList)
+      this.percentNum=Math.round(event.percent)
+      console.log(this.percentNum)
+    },
+    //删除视频按钮
+    DeleteProgress(){
+      this.percentNum=0
+      let form = {...this.form}
+      form.video_link=undefined
+      this.form={... form}
+      console.log(this.form.video_link)
+    },
     onSubmit(){
       this.$refs.form.validate((valid) => {
         if(valid){
