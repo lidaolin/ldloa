@@ -1,7 +1,7 @@
 <template>
   <div class="pageWrap">
     <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
-    <ldl-table-pagination width :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+    <ldl-table-pagination width @listClick="listClick" :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
     <el-dialog
         v-el-drag-dialog
         top="2.5%"
@@ -137,7 +137,7 @@
         <el-form-item label="商品封面图:" prop="cover_link_img" :rules="{ required: true, message: '请上传商品封面图', trigger: 'blur' }">
           <el-upload
               class="avatar-uploader"
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'cover_link_img')}"
@@ -150,7 +150,7 @@
         <el-form-item label="商品视频:" prop="video_link" :rules="{ message: '请上传商品视频', trigger: 'blur' }">
           <el-upload class="avatar-uploader"
               accept="video/*"
-              action="/api/admin/upload_image/uploadvedio"
+              action="/admin/upload_image/uploadvedio"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'video_link')}"
@@ -174,7 +174,7 @@
         <br>
         <el-form-item label="产品详情图:" class="elFormItemFlex" prop="view_text" >
           <el-upload
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               list-type="picture-card"
               multiple
               show-file-list
@@ -192,7 +192,7 @@
         <br>
         <el-form-item label="产品橱窗图:" class="product_carousel_img" prop="product_carousel_img" >
           <el-upload
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               list-type="picture-card"
               multiple
               show-file-list
@@ -452,9 +452,9 @@ export default {
           {prop:'brand_name',label:'品牌名称',},
           {prop:'classify_name',label:'商品分类名称',},
           {prop: 'cover_link_img',label: '封面图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
-          {prop: 'video_link',label: '视频',type:'video',imgStyle:{width:'50px',height:'50px'}},
-          {prop: 'view_text',label: '详情图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
-          {prop: 'product_carousel_img',label: '轮播图',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
+          // {prop: 'video_link',label: '视频',type:'video',imgStyle:{width:'50px',height:'50px'}},
+          // {prop: 'view_text',label: '详情图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
+          // {prop: 'product_carousel_img',label: '轮播图',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
           {prop:'explain',label:'商品说明',width:250,showOverflowTooltip:true,},
           {prop:'weight',label:'商品重量',sortable:"custom"},
           {prop:'long_size',label:'商品长度',unit:'cm',sortable:"custom"},

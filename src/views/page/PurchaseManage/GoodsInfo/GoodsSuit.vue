@@ -116,7 +116,7 @@
           <el-upload
               class="avatar-uploader"
               accept="video/*"
-              action="/api/admin/upload_image/uploadvedio"
+              action="/admin/upload_image/uploadvedio"
               name="file"
               :show-file-list="false"
               :on-success="(e)=>{handleSuccess(e,'video_link')}"
@@ -264,10 +264,10 @@ export default {
           {prop:'brand_name',label:'品牌名称',},
           {prop:'classify_name',label:'商品分类名称',},
           {prop:'status',type:'tag',label:'状态',data:[{type:'success',key:1,name:'在售'},{type:'danger',key:2,name:'下架'}],},
-          {prop: 'video_link',label: '视频',type:'video',imgStyle:{width:'50px',height:'50px'}},
+          // {prop: 'video_link',label: '视频',type:'video',imgStyle:{width:'50px',height:'50px'}},
           {prop: 'cover_link_img',label: '封面图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
-          {prop: 'view_text',label: '详情图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
-          {prop: 'product_carousel_img',label: '轮播图',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
+          // {prop: 'view_text',label: '详情图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
+          // {prop: 'product_carousel_img',label: '轮播图',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
           {prop:'explain',label:'商品说明',width:250,showOverflowTooltip:true,},
           {prop:'weight',label:'商品重量',sortable:"custom"},
           {prop:'long_size',label:'商品长度',unit:'cm',sortable:"custom"},
