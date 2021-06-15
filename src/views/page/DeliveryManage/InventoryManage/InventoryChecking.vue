@@ -314,6 +314,7 @@ export default {
       if(e==='edit'){
         if(this.selectRow){
           this.form = {
+            id:this.editFrom.id,
             company_id:this.editFrom.company_id,
             product_id:this.editFrom.product_id,
             product_sku_id:this.editFrom.product_sku_id,
