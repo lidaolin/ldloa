@@ -211,8 +211,9 @@
           <template slot-scope="{row}">
             <span v-if="row.search_way == 1">精确搜索</span>
             <span v-if="row.search_way == 2">范围搜索</span>
-            <span v-if="row.search_way == 3">模糊搜索</span>
-            <span v-if="row.search_way == 4">order分组</span>
+            <span v-if="row.search_way == 3">时间范围搜索</span>
+            <span v-if="row.search_way == 4">模糊搜索</span>
+            <span v-if="row.search_way == 5">order分组</span>
           </template>
         </el-table-column>
         <el-table-column property="frame_type" label="搜索框类型" align='center' width="110"></el-table-column>
@@ -344,10 +345,13 @@ export default {
         },
         {
           value: 3,
+          label: "时间范围搜索"
+        },{
+          value: 4,
           label: "模糊搜索"
         },
         {
-          value: 4,
+          value: 5,
           label: "order分组"
         }
       ],
