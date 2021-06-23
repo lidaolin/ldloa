@@ -205,19 +205,21 @@ export default {
       buttonBoxState:true,//开启按钮行的状态
       tableDataInfo:{ //表格信息
         dataListInfo:[
-          {prop:'refund_code',label:'退换货编号',width: 160,},
-          {prop:'order_code',label:'订单编号',},
+          {prop:'refund_code',label:'退换货编号',width: 150,},
+          {prop:'order_code',label:'订单编号',width: 150,},
           {prop:'apply_type',type:'tag',label:'申请类型',data:[{type:'warning',key:1,name:'退款'},{type:'danger',key:2,name:'退款退货'},{type:'info',key:3,name:'换货'}],},
           {prop:'apply_status',type:'tag',label:'申请状态',data:[{type:'warning',key:1,name:'客服审核'},{type:'danger',key:2,name:'客服受理'},{type:'info',key:3,name:'客服驳回'},{type:'',key:4,name:'退款成功'},{type:'success',key:5,name:'换货成功'},],},
           {prop:'receipt_status',label:'客户收货状态',type:'tag',data:[{type:'danger',key:1,name:'未收到货'},{type:'success',key:2,name:'已收到货'},],},
           {prop:'refund_reason_mark',label:'退款说明',},
           {prop:"refund_reason_image",label:"退款凭证图片",type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
-          {prop:'refund_money',label:'退款总金额',sortable:"custom",width: 140,},
+          {prop:'refund_money',label:'退款总金额',sortable:"custom",width: 100,},
           {prop:'nickName',label:'用户昵称',},
           {prop:'headPortrait',label:'用户头像',type:'image',fit:'',imgStyle:{width:'50px',height:'50px'}},
           {prop:'reason_name',label:'申请原因',},
-          {prop:'create_time',label:'申请时间',type:"date",sortable:"custom",width:'140'},
-          {prop:'refund_time',label:'退款时间',type:"date",sortable:"custom",width:'140'},
+          {prop:'refund_express_no',label:'退换货买家回寄快递单号',width: 150,},
+          {prop:'express_no',label:'退换货商家回寄物流单号',width: 150,},
+          {prop:'create_time',label:'申请时间',type:"date",sortable:"custom",width:130},
+          {prop:'refund_time',label:'退款时间',type:"date",sortable:"custom",width:130},
         ],//表格列信息
         dataList:[]//表格行信息
       },
@@ -234,20 +236,34 @@ export default {
     //确认退款(refund)/确认退换(return)
     confirmOperation(e){
       if(this.selectRow){
-        this.$confirm('是否确认' + (e == 'refund'?' 退款 ':' 退换 '), '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          if (e == 'refund'){
-            refund({id:this.selectRow.id}).then((res)=>{
-              this.$message({
-                type: 'success',
-                message: res.msg
+        if (e == 'return'){
+          this.$prompt('请输入快递单号', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+          }).then(({ value }) => {
+            if(value){
+              refund({id:this.selectRow.id,back_order_code:value}).then((res)=>{
+                this.$message({
+                  type: 'success',
+                  message: res.msg
+                })
+                this.getList()
               })
-              this.getList()
-            })
-          }else {
+            }else {
+              this.$message.error('快递单号不能为空')
+            }
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '取消输入'
+            });
+          });
+        }else{
+          this.$confirm('是否确认退款', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
             replace({id:this.selectRow.id}).then((res)=>{
               this.$message({
                 type: 'success',
@@ -255,13 +271,13 @@ export default {
               })
               this.getList()
             })
-          }
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
           });
-        });
+        }
       }else{
         this.$message.error('请选中一行')
       }
