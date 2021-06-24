@@ -208,7 +208,7 @@ export default {
           {prop:'refund_code',label:'退换货编号',width: 150,},
           {prop:'order_code',label:'订单编号',width: 150,},
           {prop:'apply_type',type:'tag',label:'申请类型',data:[{type:'warning',key:1,name:'退款'},{type:'danger',key:2,name:'退款退货'},{type:'info',key:3,name:'换货'}],},
-          {prop:'apply_status',type:'tag',label:'申请状态',data:[{type:'warning',key:1,name:'客服审核'},{type:'danger',key:2,name:'客服受理'},{type:'info',key:3,name:'客服驳回'},{type:'',key:4,name:'退款成功'},{type:'success',key:5,name:'换货成功'},],},
+          {prop:'apply_status',type:'tag',label:'申请状态',data:[{type:'warning',key:1,name:'客服审核'},{type:'danger',key:2,name:'客服受理'},{type:'info',key:3,name:'客服驳回'},{type:'',key:4,name:'退款成功'},{type:'success',key:5,name:'换货成功'},{type:'success',key:6,name:'申请撤销'},{type:'info',key:7,name:'填写物流'},{type:'success',key:8,name:'填写物流超时'},],},
           {prop:'receipt_status',label:'客户收货状态',type:'tag',data:[{type:'danger',key:1,name:'未收到货'},{type:'success',key:2,name:'已收到货'},],},
           {prop:'refund_reason_mark',label:'退款说明',},
           {prop:"refund_reason_image",label:"退款凭证图片",type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
@@ -242,7 +242,7 @@ export default {
             cancelButtonText: '取消',
           }).then(({ value }) => {
             if(value){
-              refund({id:this.selectRow.id,back_order_code:value}).then((res)=>{
+              replace({id:this.selectRow.id,back_order_code:value}).then((res)=>{
                 this.$message({
                   type: 'success',
                   message: res.msg
@@ -264,7 +264,7 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            replace({id:this.selectRow.id}).then((res)=>{
+            refund({id:this.selectRow.id}).then((res)=>{
               this.$message({
                 type: 'success',
                 message: res.msg
