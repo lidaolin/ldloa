@@ -657,7 +657,6 @@ export default {
         this.$message.warning('请选择一条列表进行操作')
       }
     },
-
     //打印
     onSocket() {
       let that = this
