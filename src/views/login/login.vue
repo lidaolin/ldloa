@@ -66,7 +66,7 @@ export default {
       form: {},
       otherQuery:{},
       redirect:false,
-      checkPassSrc: "https://xoa.smxos.com/admin/login/checkVerify",
+      checkPassSrc: "https://erp.sportqx.com/admin/login/checkVerify",
     };
   },
   computed:{
@@ -100,7 +100,7 @@ export default {
     getcheckPassSrc() {
       const id = Math.random() * 10;
       this.checkPassSrc =
-        "https://erp.sportqx.com/api/login/checkVerify?" + id;
+        "https://erp.sportqx.com/admin/login/checkVerify?" + id;
     },
   },
 };

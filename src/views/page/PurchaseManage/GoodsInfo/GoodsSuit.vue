@@ -194,7 +194,7 @@
         <el-table
             :data="form.product_combination"
             border
-            style="width: 100%">
+            style="width: 100%;margin-bottom: 15px">
           <el-table-column
               prop="product_name"
               label="商品名字">
@@ -216,6 +216,35 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-form-item label="组合的商品:" prop="product_combination_sku">
+          <el-button type="primary" size="small" @click="openInitializeGoods">{{form.product_combination_sku?'重置商品规格':'生成商品规格'}}</el-button>
+          <span style="font-size: 12px;color: red;margin-left: 20px">*如果要修改数目或者增加商品请重置商品规格</span>
+        </el-form-item>
+        <el-table
+            :data="form.product_combination_sku"
+            border
+            style="width: 100%">
+          <el-table-column
+              prop="sku_name"
+              label="商品名字">
+          </el-table-column>
+          <el-table-column
+              prop="price"
+              label="价格"
+              width="180">
+            <template slot-scope="{row}">
+              <el-input-number size="mini"  v-model="row.price" :precision="2" :step="1" :min="1"></el-input-number>
+            </template>
+          </el-table-column>
+          <el-table-column
+              prop="id"
+              label="操作"
+              width="180">
+            <template slot-scope="scope">
+              <el-button type="danger"  icon="el-icon-delete" size="mini" @click="delGoodsSuitRow(scope.$index)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addGoodsSuitState = false">取 消</el-button>
@@ -228,7 +257,7 @@
 <script>
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
-import {index,del,status,edit,add} from "@/api/PurchaseManage/GoodsInfo/GoodsSuit";
+import {index,del,status,edit,add,getSku,getSkuByCombination} from "@/api/PurchaseManage/GoodsInfo/GoodsSuit";
 import ldlControlWindow from "@/components/ldlControlWindow";
 import {brandList, simpleIndex,simpleList} from "@/api/PurchaseManage/GoodsInfo/GoodsManage";
 
@@ -236,6 +265,9 @@ export default {
   name: "GoodsSuit",
   data(){
     return{
+      newArr:[],
+      result:[],
+      product_combination_sku_list:[],
       //上传视频加载进度条
       percentNum:0,
       selectGoods:'',
@@ -302,6 +334,81 @@ export default {
     }
   },
   methods:{
+    getProduct_combination_sku_list(){
+      let that=this
+      let form={... that.form}
+      let product_combination_sku=[]
+      for (let i = 0; i < that.result.length; i++) {
+        let item=that.result[i]
+        let Product_combination_sku_item={}
+        for (let j = 0; j < item.length; j++) {
+          let item_item=item[j]
+          if (j==0){
+            Product_combination_sku_item={
+              price:Number(item_item.price*item_item.number).toFixed(2),
+              sku_name:item_item.number+'x'+item_item.sku_name,
+              product_attr_val_pash:item_item.sku,
+            }
+          }else{
+            Product_combination_sku_item.price=(Number(Product_combination_sku_item.price)+Number(item_item.price*item_item.number)).toFixed(2)
+            Product_combination_sku_item.sku_name+=item_item.number+'x'+item_item.sku_name
+            Product_combination_sku_item.product_attr_val_pash+='#'+item_item.sku
+          }
+          console.log(Product_combination_sku_item)
+        }
+        product_combination_sku.push(Product_combination_sku_item)
+      }
+      form.product_combination_sku=product_combination_sku
+      this.form ={... form}
+      console.log(that.result,'88888')
+    },
+    resultToArr(arr, index){
+      let that=this
+      console.log(arr,index,'这是函授')
+      // return new Promise((resolve) => {
+        for (var i = 0; i<arr[index].length; i++) {
+          that.newArr[index] = arr[index][i];
+          if (index != arr.length - 1) {
+            that.resultToArr(arr, index + 1)
+                // .then(()=>{
+              // let newArr=[... that.newArr]
+              // return resolve(newArr)
+            // })
+          } else {
+            // resolve(that.newArr)
+            let newArr=[... that.newArr]
+            that.result.push(newArr)
+            that.getProduct_combination_sku_list()
+            // resolve(that.result)
+          }
+        }
+      // })
+    },
+    openInitializeGoods(e){
+      if (this.form.product_combination_sku){
+        let form={... this.form }
+        form.product_combination_sku=[]
+        this.form = {...form}
+      }
+      this.newArr=[]
+      this.result=[]
+      this.product_combination_sku_list=[]
+      this.initializeGoods(e)
+    },
+    initializeGoods(e){
+      let form={... this.form}
+      let product_combination=[... form.product_combination]
+      let j=e>0?e:0
+      getSku({product_id:product_combination[j].relate_product_id,number:product_combination[j].number }).then(res=>{
+        this.product_combination_sku_list[j]=res.data
+        if(product_combination.length-1==j){
+          console.log(this.product_combination_sku_list,'-----------------')
+          this.resultToArr(this.product_combination_sku_list,0)
+        }else{
+          this.initializeGoods(j+1)
+        }
+      })
+    },
     // 视频加载
     handlePictureProgress(event, file, fileList) {
       console.log(event, file, fileList)
@@ -331,6 +438,12 @@ export default {
           for (let i = 0; i < view_textTwo.length; i++) {
             form.product_carousel_img.push(view_textTwo[i].url)
           }
+          form.product_combination_sku.forEach(item=>{
+            delete item.sku_name
+            if(this.form.id){
+              delete item.product_name
+            }
+          })
           if (this.form.id){
             edit(form).then(res=>{
               console.log(res)
@@ -359,6 +472,11 @@ export default {
     delGoodsRow(e){
       let form = {... this.form }
       form.product_combination.splice(e,1)
+      this.form = form
+    },
+    delGoodsSuitRow(e){
+      let form = {... this.form }
+      form.product_combination_sku.splice(e,1)
       this.form = form
     },
     //添加商品进入列表
@@ -399,13 +517,25 @@ export default {
           for (let i = 0; i < this.selectRow.product_carousel_img.length; i++) {
             this.view_textTwo.push({name:'图片'+i,url:this.selectRow.product_carousel_img[i]})
           }
-          this.addGoodsSuitState=true
+          // for (let i = 0; i < this.selectRow.product_combination.length; i++) {
+          //   this.selectRow.product_combination[i].product_id=this.selectRow.product_combination[i].relate_product_id
+          // }
           this.form = this.selectRow
-
+          this.getComposeSku(this.selectRow.id)
         }else{
           this.$message.error('求你选一条操作吧')
         }
       }
+    },
+    //编辑前获取组合的sku
+    getComposeSku(e){
+      let form={... this.form}
+      getSkuByCombination({product_id:e}).then(res=>{
+        console.log(res)
+        form.product_combination_sku=res.data
+        this.form= {... form}
+        this.addGoodsSuitState=true
+      })
     },
     //上架下架
     changeGoodsSuitState(){

@@ -344,6 +344,10 @@ export default {
           limit:res.data.per_page,
           total:res.data.total,
         }
+        // let dataList=[... res.data.data]
+        // dataList.forEach(item=>{
+        //   if(item.)
+        // })
         let tableDataInfo={... this.tableDataInfo,dataList:res.data.data}
         this.tableDataInfo=tableDataInfo
       })

@@ -75,3 +75,25 @@ export function add(data) {
         data: data
     })
 }
+/** 查看商品规格
+ * product_id	是	int	商品id
+ * type	否	int	1查询当前可售 2查询所有包括已删除
+ */
+export function getSku(data) {
+    return request({
+        url: '/admin/product_sku/getSku',
+        method: 'post',
+        data: data
+    })
+}
+/** 查看组合商品规格
+ * product_id	是	int	商品id
+ * type	否	int	1查询当前可售 2查询所有包括已删除
+ */
+export function getSkuByCombination(data) {
+    return request({
+        url: '/admin/product_sku/getSkuByCombination',
+        method: 'post',
+        data: data
+    })
+}
