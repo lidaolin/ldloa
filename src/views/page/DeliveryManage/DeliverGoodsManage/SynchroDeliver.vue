@@ -682,7 +682,7 @@ export default {
             changePlhuoStatus({data: overData.printStatus, type: that.type}).then(res => {
               that.$message.success(res.msg)
               that.getList()
-              this.loading.close();
+              that.loading.close();
             })
           }
           console.log('Client received a message', event);
