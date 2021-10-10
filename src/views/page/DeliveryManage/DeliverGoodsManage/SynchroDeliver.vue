@@ -514,6 +514,8 @@ export default {
       // 批量操作成功
       successData: {}, // 批量操作成功返回数据
       successModal: false,
+      fullscreenLoading: false,
+      loading:null,
       // 批量操作成功
     }
   },
@@ -543,8 +545,6 @@ export default {
     orderBackSave(data) {
       p_back({type:data.back_type,remarks:data.remarks,id:data.mianId})
           .then(res => {
-            console.log(data.back_type, data.remarks, data.mianId)
-            console.log(res)
             this.$message({
               message: '订单返回成功',
               type: 'success'
@@ -561,11 +561,9 @@ export default {
     },
     //订单返回
     listClick() {
-      console.log(this.tabPaneValue)
       let tabPaneValue = this.tabPaneValue
       let index = tabPaneValue.charAt(9)
       p_footer({id: this.selectRow.id, type: index}).then(res => {
-        console.log(res)
         let bottomList = {...this.bottomList}
         bottomList[this.tabPaneValue] = [...res.data]
         this.bottomList = {...bottomList}
@@ -622,11 +620,16 @@ export default {
     Printing() {
       if (this.selectionList) {
         if (this.selectionList.length > 0) {
-          console.log(this.selectionList)
           let plfahuo_code = []
           for (let i = 0; i < this.selectionList.length; i++) {
             plfahuo_code.push(this.selectionList[i].plfahuo_code)
           }
+          this.loading = this.$loading({
+            lock: true,
+            text: '打印中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           getCloudNumber({plfahuo_code: plfahuo_code}).then(res => {
             this.type = 1
             this.socket.send(JSON.stringify(res.data));
@@ -651,7 +654,6 @@ export default {
           // this.socket.send(JSON.stringify(res.data));
           this.type = 2
           this.socket.send(JSON.stringify(res.data));
-          console.log(res.data)
         })
       } else {
         this.$message.warning('请选择一条列表进行操作')
@@ -661,7 +663,6 @@ export default {
     onSocket() {
       let that = this
       this.cc = this.cc + 1
-      console.log(this.cc)
       that.socket = new WebSocket('ws://localhost:13528');
       that.socket.onopen = function () {
         // 监听消息
@@ -681,6 +682,7 @@ export default {
             changePlhuoStatus({data: overData.printStatus, type: that.type}).then(res => {
               that.$message.success(res.msg)
               that.getList()
+              this.loading.close();
             })
           }
           console.log('Client received a message', event);
@@ -763,7 +765,6 @@ export default {
 
     //实重聚焦
     getInputFocus(event) {
-      console.log("event", event)
       event.currentTarget.select();
     },
     /**这是按钮方法调用*/

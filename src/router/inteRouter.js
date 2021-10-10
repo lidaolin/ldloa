@@ -7,7 +7,7 @@ export function inteRouter(){
         if(store.getters.token){
             get_menu().then(res=>{
                 // let newRouterList=[]
-                let intRouterList=res.data
+                let intRouterList= res.data
                 addInteRouter(intRouterList,0).then(resd=>{
                     // newRouterList.push(res)
                     return resolve(resd)
