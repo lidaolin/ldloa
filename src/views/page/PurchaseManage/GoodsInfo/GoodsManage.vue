@@ -369,11 +369,10 @@
             <el-table-column
                 prop="product_name"
                 align="center"
-                width="220"
+                width="320"
                 label="商品名称">
             </el-table-column>
             <el-table-column
-                width="450"
                 prop="product_attr_val_pash"
                 label="修改内容">
               <template slot-scope="scope">
