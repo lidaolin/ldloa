@@ -202,7 +202,8 @@
           <el-table-column
               prop="number"
               label="数量"
-              width="180">
+              align="center"
+              width="160">
             <template slot-scope="{row}">
               <el-input-number size="mini"  v-model="row.number" :precision="0" :step="1" :min="1"></el-input-number>
             </template>
@@ -210,7 +211,8 @@
           <el-table-column
               prop="id"
               label="操作"
-              width="180">
+              align="center"
+              width="120">
             <template slot-scope="scope">
               <el-button type="danger"  icon="el-icon-delete" size="mini" @click="delGoodsRow(scope.$index)">删除</el-button>
             </template>
@@ -229,9 +231,19 @@
               label="商品名字">
           </el-table-column>
           <el-table-column
+              prop="cost"
+              label="成本价"
+              align="center"
+              width="160">
+            <template slot-scope="{row}">
+              <el-input-number size="mini"  v-model="row.cost" :precision="2" :step="1" :min="0"></el-input-number>
+            </template>
+          </el-table-column>
+          <el-table-column
               prop="price"
               label="价格"
-              width="180">
+              align="center"
+              width="160">
             <template slot-scope="{row}">
               <el-input-number size="mini"  v-model="row.price" :precision="2" :step="1" :min="1"></el-input-number>
             </template>
@@ -239,7 +251,8 @@
           <el-table-column
               prop="id"
               label="操作"
-              width="180">
+              align="center"
+              width="120">
             <template slot-scope="scope">
               <el-button type="danger"  icon="el-icon-delete" size="mini" @click="delGoodsSuitRow(scope.$index)">删除</el-button>
             </template>
