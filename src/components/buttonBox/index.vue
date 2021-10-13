@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import {bu_list} from '@/api'
+import {get_bu_list} from '@/api'
 export default {
   name: "buttonBox",
   data(){
@@ -43,7 +43,7 @@ export default {
       this.widthWrap=this.$refs.buttonBoxWrap.clientWidth
     })
     const routerData = this.$route.path.split('/')
-    bu_list({name:routerData[routerData.length-1]}).then(res=>{
+    get_bu_list({name:routerData[routerData.length-1]}).then(res=>{
       if(res.data.length>0){
         this.buttonData=res.data
       }else{

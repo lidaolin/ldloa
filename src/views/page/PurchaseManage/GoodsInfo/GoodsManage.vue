@@ -222,8 +222,8 @@
             <template slot="append">cm</template>
           </el-input-number>
         </el-form-item>
-        <el-form-item label="商品进货锁定价格:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">
-          <el-input-number size="mini" v-model="form.product_lock_fee" placeholder="锁定价" :precision="2" :step="0.1"></el-input-number>
+        <el-form-item label="商品成本价:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">
+          <el-input-number size="mini" v-model="form.product_lock_fee" placeholder="商品成本价" :precision="2" :step="0.1"></el-input-number>
         </el-form-item>
         <el-form-item label="商品属性:" prop="attr" >
           <el-button size="mini" @click="addAttribute" type="primary">添加属性</el-button>
@@ -461,7 +461,7 @@ export default {
           {prop:'wide_size',label:'商品宽度',unit:'cm',sortable:"custom"},
           {prop:'high_size',label:'商品高度',unit:'cm',sortable:"custom"},
           {prop:'volume_size',label:'商品体积',unit:'cm³',sortable:"custom"},
-          {prop:'product_lock_fee',label:'进货锁定价格',unit:'￥',width:100,},
+          {prop:'product_lock_fee',label:'商品成本价',unit:'￥',width:100,},
           {prop:'status',type:'tag',label:'状态',data:[{type:'success',key:1,name:'在售'},{type:'danger',key:2,name:'下架'}],},
           {prop:'is_delete',type:'tag',label:'是否删除',data:[{type:'danger',key:2,name:'已删除'}],width:'80'},
           {prop:'create_time',label:'创建时间',type:"date",sortable:"custom",width:'140'},

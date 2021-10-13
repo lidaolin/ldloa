@@ -306,7 +306,7 @@ export default {
           {prop:'wide_size',label:'商品宽度',unit:'cm',sortable:"custom"},
           {prop:'high_size',label:'商品高度',unit:'cm',sortable:"custom"},
           {prop:'volume_size',label:'商品体积',unit:'cm³',sortable:"custom"},
-          {prop:'product_lock_fee',label:'进货锁定价格',unit:'￥',width:100,sortable:"custom"},
+          {prop:'product_lock_fee',label:'商品成本价',unit:'￥',width:100,sortable:"custom"},
           {prop:'is_delete',type:'tag',label:'是否删除',data:[{type:'danger',key:2,name:'已删除'}],width:'80'},
           {prop:'create_time',label:'创建时间',type:"date",sortable:"custom",width:'140'},
           {prop:'update_time',label:'更新时间',type:"date",sortable:"custom",width:'140'},
