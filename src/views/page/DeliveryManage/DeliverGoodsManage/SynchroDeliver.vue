@@ -544,7 +544,7 @@ export default {
     },
     orderBackSave(data) {
       p_back({type:data.back_type,remarks:data.remarks,id:data.mianId})
-          .then(res => {
+          .then(() => {
             this.$message({
               message: '订单返回成功',
               type: 'success'
