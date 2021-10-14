@@ -18,7 +18,7 @@ export function index(data) {
  */
 export function del(data) {
     return request({
-        url: '/admin/product_combination/index',
+        url: '/admin/product_combination/del',
         method: 'post',
         data: data
     })
