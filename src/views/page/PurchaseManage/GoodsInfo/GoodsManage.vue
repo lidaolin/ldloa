@@ -172,7 +172,11 @@
           <el-input type="textarea" v-model="form.explain" placeholder="请填写产品说明"></el-input>
         </el-form-item>
         <br>
-        <el-form-item label="产品详情图:" class="elFormItemFlex" prop="view_text" >
+        <el-form-item label="产品详情图:" class="elFormItemFlex" prop="view_text" :rules="{ required: true, message: '请上传产品详情图', trigger: 'blur' }">
+          <el-checkbox-group v-if="1==2" v-model="form.view_text">
+            <el-checkbox label=""></el-checkbox>
+            <el-checkbox label=""></el-checkbox>
+          </el-checkbox-group>
           <el-upload
               action="/admin/upload_image/upload"
               list-type="picture-card"
@@ -190,9 +194,13 @@
           </el-dialog>
         </el-form-item>
         <br>
-        <el-form-item label="产品橱窗图:" class="product_carousel_img" prop="product_carousel_img" >
+        <el-form-item label="产品橱窗图:" class="product_carousel_img" prop="product_carousel_img" :rules="{ required: true, message: '请上传产品橱窗图', trigger: 'blur' }">
+          <el-checkbox-group v-if="1==2" v-model="form.product_carousel_img">
+            <el-checkbox label=""></el-checkbox>
+            <el-checkbox label=""></el-checkbox>
+          </el-checkbox-group>
           <el-upload
-              action="/admin/upload_image/upload"
+              action="/api/admin/upload_image/upload"
               list-type="picture-card"
               multiple
               show-file-list
@@ -200,7 +208,7 @@
               :file-list.sync="view_textTwo"
               :on-success="uploadSuccessTwo"
               :on-preview="handlePreviewTwo"
-              :on-remove="handleRemove">
+              :on-remove="handleRemoveTwo">
             <i class="el-icon-plus"></i>
           </el-upload>
           <el-dialog :visible.sync="dialogVisibleTwo" append-to-body>
@@ -738,10 +746,9 @@ export default {
       if(e==='add'){
         this.brandMethod()
         this.classifyMethod()
-
         this.view_text=[]
         this.view_textTwo=[]
-        this.form={attr:[],status:1}
+        this.form={attr:[],status:1,product_carousel_img:[],view_text:[]}
         this.changeGoodsState=true
       }else{
         if(this.selectRow){
