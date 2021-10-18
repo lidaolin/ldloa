@@ -470,8 +470,8 @@ export default {
           {prop: 'sj_phone', label: '收件人手机',},
           {prop: 'province', label: '省',},
           {prop: 'city', label: '市',},
-          {prop: 'district', label: '区',},
-          {prop: 'detail_address', label: '详细地址',},
+          {prop: 'area', label: '区',},
+          {prop: 'address', label: '详细地址',},
           {
             prop: 'plfahuo_characteristic',
             type: 'tag',
