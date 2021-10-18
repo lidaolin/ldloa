@@ -10,7 +10,7 @@
         :visible.sync="changePriceState"
         :destroy-on-close="false"
         :close-on-click-modal="false"
-        title="批量修改价格"
+        title="批量修改价格及参数信息"
         size="mini"
         center
     >
@@ -22,7 +22,8 @@
           height="100%">
         <el-table-column
             prop="product_attr_val_pash"
-            label="商品规格">
+            label="商品规格"
+            width="200">
           <template slot-scope="scope">
             <span v-for="(item,index) in scope.row.product_attr_val_pash" :key="index">{{item.attr_name}}:{{item.val_name}}</span>
           </template>
@@ -41,6 +42,66 @@
                 active-color="#13ce66"
                 inactive-color="#ff4949">
             </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="long_size"
+            align="center"
+            width="160">
+          <template slot="header" slot-scope="scope">
+            统一修改商品长度（cm）
+            <el-input-number  v-if="scope" v-model="long_size" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+          <template slot-scope="{row}">
+            <el-input-number v-model="row.long_size" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="wide_size"
+            align="center"
+            width="160">
+          <template slot="header" slot-scope="scope">
+            统一修改商品宽度（cm）
+            <el-input-number  v-if="scope" v-model="wide_size" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+          <template slot-scope="{row}">
+            <el-input-number v-model="row.wide_size" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="high_size"
+            align="center"
+            width="160">
+          <template slot="header" slot-scope="scope">
+            统一修改商品高度（cm）
+            <el-input-number  v-if="scope" v-model="high_size" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+          <template slot-scope="{row}">
+            <el-input-number v-model="row.high_size" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="weight"
+            align="center"
+            width="160">
+          <template slot="header" slot-scope="scope">
+            统一修改商品重量
+            <el-input-number  v-if="scope" v-model="weight" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+          <template slot-scope="{row}">
+            <el-input-number v-model="row.weight" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="product_lock_fee"
+            align="center"
+            width="160">
+          <template slot="header" slot-scope="scope">
+            统一修改商品成本价格
+            <el-input-number  v-if="scope" v-model="product_lock_fee" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
+          </template>
+          <template slot-scope="{row}">
+            <el-input-number v-model="row.product_lock_fee" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
           </template>
         </el-table-column>
         <el-table-column
@@ -200,7 +261,7 @@
             <el-checkbox label=""></el-checkbox>
           </el-checkbox-group>
           <el-upload
-              action="/api/admin/upload_image/upload"
+              action="/admin/upload_image/upload"
               list-type="picture-card"
               multiple
               show-file-list
@@ -216,23 +277,23 @@
           </el-dialog>
         </el-form-item>
         <br>
-        <el-form-item label="商品重量:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">
-          <el-input-number size="mini" v-model="form.weight" placeholder="商品重量g" :precision="2" :step="0.1"></el-input-number>
-        </el-form-item>
-        <el-form-item label="商品长:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">
-          <el-input-number size="mini" v-model="form.long_size" placeholder="商品长cm" :precision="2" :step="0.1"></el-input-number>
-        </el-form-item>
-        <el-form-item label="商品宽:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">
-          <el-input-number size="mini"  v-model="form.wide_size" placeholder="商品宽cm" :precision="2" :step="0.1"></el-input-number>
-        </el-form-item>
-        <el-form-item label="商品高:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">
-          <el-input-number size="mini" v-model="form.high_size" placeholder="商品高cm" :precision="2" :step="0.1">
-            <template slot="append">cm</template>
-          </el-input-number>
-        </el-form-item>
-        <el-form-item label="商品成本价:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">
-          <el-input-number size="mini" v-model="form.product_lock_fee" placeholder="商品成本价" :precision="2" :step="0.1"></el-input-number>
-        </el-form-item>
+<!--        <el-form-item label="商品重量:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">-->
+<!--          <el-input-number size="mini" v-model="form.weight" placeholder="商品重量g" :precision="2" :step="0.1"></el-input-number>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="商品长:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">-->
+<!--          <el-input-number size="mini" v-model="form.long_size" placeholder="商品长cm" :precision="2" :step="0.1"></el-input-number>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="商品宽:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">-->
+<!--          <el-input-number size="mini"  v-model="form.wide_size" placeholder="商品宽cm" :precision="2" :step="0.1"></el-input-number>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="商品高:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">-->
+<!--          <el-input-number size="mini" v-model="form.high_size" placeholder="商品高cm" :precision="2" :step="0.1">-->
+<!--            <template slot="append">cm</template>-->
+<!--          </el-input-number>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="商品成本价:" prop="weight" :rules="{ required: true, message: '请填写商品重量', trigger: 'blur' }">-->
+<!--          <el-input-number size="mini" v-model="form.product_lock_fee" placeholder="商品成本价" :precision="2" :step="0.1"></el-input-number>-->
+<!--        </el-form-item>-->
         <el-form-item label="商品属性:" prop="attr" >
           <el-button size="mini" @click="addAttribute" type="primary">添加属性</el-button>
           <el-dialog
@@ -333,10 +394,41 @@
               style="width: 100%;">
             <el-table-column
                 prop="product_attr_val_pash"
+                min-width="150"
                 label="商品规格">
               <template slot-scope="scope">
                 <span v-for="(item,index) in scope.row.product_attr_val_pash" :key="index">{{item.attr_name}}:{{item.val_name}}</span>
               </template>
+            </el-table-column>
+            <el-table-column
+                prop="long_size"
+                align="center"
+                min-width="100"
+                label="商品长（cm）">
+            </el-table-column>
+            <el-table-column
+                prop="wide_size"
+                align="center"
+                min-width="100"
+                label="商品宽（cm）">
+            </el-table-column>
+            <el-table-column
+                prop="high_size"
+                align="center"
+                min-width="100"
+                label="商品高（cm）">
+            </el-table-column>
+            <el-table-column
+                prop="volume_size"
+                align="center"
+                min-width="120"
+                label="商品体积（cm³）">
+            </el-table-column>
+            <el-table-column
+                prop="weight"
+                align="center"
+                min-width="100"
+                label="商品重量">
             </el-table-column>
             <el-table-column
                 prop="p_status"
@@ -347,6 +439,12 @@
                 <el-tag type="success" size="mini" v-if="row.p_status===1">正常</el-tag>
                 <el-tag type="danger" size="mini" v-if="row.p_status!==1">禁售</el-tag>
               </template>
+            </el-table-column>
+            <el-table-column
+                prop="product_lock_fee"
+                width="120"
+                align="center"
+                label="商品成本价">
             </el-table-column>
             <el-table-column
                 prop="price"
@@ -421,6 +519,11 @@ export default {
       // 上传视频进度条
       percentNum:0,
       price:0,
+      long_size:0,
+      wide_size:0,
+      high_size:0,
+      weight:0,
+      product_lock_fee:0,
       getSku:[],
       delSkuList:[],
       changePriceState:false,
@@ -455,20 +558,20 @@ export default {
       buttonBoxState:true,//开启按钮行的状态
       tableDataInfo:{ //表格信息
         dataListInfo:[
-          {prop:'product_name',label:'商品名称',width:'180'},
+          {prop:'product_name',label:'商品名称',width:'280'},
           {prop:'brand_name',label:'品牌名称',},
           {prop:'classify_name',label:'商品分类名称',},
           {prop: 'cover_link_img',label: '封面图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
           // {prop: 'video_link',label: '视频',type:'video',imgStyle:{width:'50px',height:'50px'}},
           // {prop: 'view_text',label: '详情图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
           // {prop: 'product_carousel_img',label: '轮播图',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
-          {prop:'explain',label:'商品说明',width:250,showOverflowTooltip:true,},
-          {prop:'weight',label:'商品重量',sortable:"custom"},
-          {prop:'long_size',label:'商品长度',unit:'cm',sortable:"custom"},
-          {prop:'wide_size',label:'商品宽度',unit:'cm',sortable:"custom"},
-          {prop:'high_size',label:'商品高度',unit:'cm',sortable:"custom"},
-          {prop:'volume_size',label:'商品体积',unit:'cm³',sortable:"custom"},
-          {prop:'product_lock_fee',label:'商品成本价',unit:'￥',width:100,},
+          {prop:'explain',label:'商品说明',width:450,showOverflowTooltip:true,},
+          // {prop:'weight',label:'商品重量',sortable:"custom"},
+          // {prop:'long_size',label:'商品长度',unit:'cm',sortable:"custom"},
+          // {prop:'wide_size',label:'商品宽度',unit:'cm',sortable:"custom"},
+          // {prop:'high_size',label:'商品高度',unit:'cm',sortable:"custom"},
+          // {prop:'volume_size',label:'商品体积',unit:'cm³',sortable:"custom"},
+          // {prop:'product_lock_fee',label:'商品成本价',unit:'￥',width:100,},
           {prop:'status',type:'tag',label:'状态',data:[{type:'success',key:1,name:'在售'},{type:'danger',key:2,name:'下架'}],},
           {prop:'is_delete',type:'tag',label:'是否删除',data:[{type:'danger',key:2,name:'已删除'}],width:'80'},
           {prop:'create_time',label:'创建时间',type:"date",sortable:"custom",width:'140'},
@@ -480,6 +583,47 @@ export default {
     }
   },
   watch:{
+    //统一修改长度
+    long_size(){
+      for (let i = 0; i < this.getSku.length; i++) {
+        let getSku=[... this.getSku]
+        getSku[i].long_size=this.long_size
+        this.getSku=[... getSku]
+      }
+    },
+    //统一修改宽度
+    wide_size(){
+      for (let i = 0; i < this.getSku.length; i++) {
+        let getSku=[... this.getSku]
+        getSku[i].wide_size=this.wide_size
+        this.getSku=[... getSku]
+      }
+    },
+    //统一修改高度
+    high_size(){
+      for (let i = 0; i < this.getSku.length; i++) {
+        let getSku=[... this.getSku]
+        getSku[i].high_size=this.high_size
+        this.getSku=[... getSku]
+      }
+    },
+    //统一修改重量
+    weight(){
+      for (let i = 0; i < this.getSku.length; i++) {
+        let getSku=[... this.getSku]
+        getSku[i].weight=this.weight
+        this.getSku=[... getSku]
+      }
+    },
+    //统一修改成本价
+    product_lock_fee(){
+      for (let i = 0; i < this.getSku.length; i++) {
+        let getSku=[... this.getSku]
+        getSku[i].product_lock_fee=this.product_lock_fee
+        this.getSku=[... getSku]
+      }
+    },
+    //统一修改价格
     price(){
       for (let i = 0; i < this.getSku.length; i++) {
         let getSku=[... this.getSku]
@@ -544,7 +688,7 @@ export default {
     //打开价格弹窗
     changePrice(){
       this.delSkuList=[]
-      if(this.selectRow){
+      if(this.bottomList.getSku.length>0){
         this.getSku=[... this.bottomList.getSku]
         this.changePriceState=true
       }else{
@@ -554,7 +698,6 @@ export default {
     listClick(e){
       if(this.tabPaneValue==='getSku'){
         getSku({product_id:e.id}).then(res=>{
-          console.log(res)
           this.bottomList.getSku=res.data
         })
       }else{
@@ -566,7 +709,7 @@ export default {
       let e = this.selectRow
       if(this.tabPaneValue==='getSku'){
         getSku({product_id:e.id}).then(res=>{
-          console.log(res)
+          console.log(res,'点击获取到的信息')
           this.bottomList.getSku=res.data
         })
       }else{
@@ -680,6 +823,7 @@ export default {
         }
       });
       that.view_text=view_text
+      this.form.view_text = view_text
       // this.view_text.push({name:'图片'+fileList.length+1,url:response.data.url})
     },
     //多图的上传完成点击图片的钩子
@@ -700,6 +844,7 @@ export default {
         }
       });
       that.view_textTwo=view_textTwo
+      this.form.product_carousel_img = view_textTwo
       // this.view_textTwo.push({name:'图片'+fileList.length+1,url:response.data.url})
     },
     //多图的上传完成点击图片的钩子
