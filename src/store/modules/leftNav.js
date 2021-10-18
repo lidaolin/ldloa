@@ -5,7 +5,7 @@ const nav = {
         openLogo:true,
         routesList:router.options.routes,
         //是否开启头部一级导航
-        navHead:true,
+        navHead:false,
         //当前的页面
         pageData:false
     },

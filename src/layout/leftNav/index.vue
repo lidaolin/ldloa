@@ -12,6 +12,7 @@
             :active-text-color="cssConfig.menuActiveText"
             :popper-append-to-body="true"
             mode="vertical"
+            @select="changeOver"
         >
           <subNavItem v-for="(item,index) in routesListTwo" :routesListTwo="routesListTwo" :key="index" :item="item" :pageData="pageData.path?pageData.path:''" />
         </el-menu>
@@ -57,6 +58,11 @@ export default {
         return meta.activeMenu
       }
       return path
+    }
+  },
+  methods:{
+    changeOver(e){
+      console.log(e,'8****')
     }
   }
 

@@ -1,6 +1,7 @@
 <template>
   <div class="subNavItem" v-if="!item.meta.isHidden">
-    <el-menu-item :index="toIndex(item)=='/'?'/index':toIndex(item)" v-if="(item.children?item.children.length===1:true)">
+<!--    item.children.length===1-->
+    <el-menu-item :index="toIndex(item)=='/'?'/index':toIndex(item)" v-if="(item.children?item.children[0].path==='index':true)">
       <div class="navDiv" v-if="stretchNavState">
         <i :class="classFun(item.meta.icon)"></i>
         <span>{{item.meta.title}}</span>
@@ -49,6 +50,10 @@ export default {
     toIndex(){
       return function (e){
         let indexInfo=e.path
+        // if (e.children){
+        //   indexInfo+=(e.children.length==1?('/'+e.children[0].path):'')
+        // }
+        // console.log(e,'99999',indexInfo,((this.pageData?this.pageData+'/':'')+indexInfo).replace(/\/\//g, "/"))
         return  ((this.pageData?this.pageData+'/':'')+indexInfo).replace(/\/\//g, "/")
       }
     },

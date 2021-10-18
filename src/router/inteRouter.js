@@ -26,7 +26,7 @@ export function addInteRouter(data,pagePath){
             if (data[i].children&&data[i].children.length>0){
                 if(data[i].children.length===1&&pagePath===0){
                     if (data[i].children[0].children.length>0){
-                        addInteRouter(data[i].children,pagePath+data[i].name).then(res=>{
+                        addInteRouter(data[i].children,pagePath==0?data[i].name:pagePath+data[i].name).then(res=>{
                             newRouterList.push({
                                 path: '/'+data[i].name,
                                 name:data[i].name,
@@ -78,6 +78,7 @@ export function addInteRouter(data,pagePath){
                 }
             }else{
                 if (pagePath!==0){
+                    console.log(pagePath)
                     newRouterList.push({
                         path:data[i].name,
                         component:resolve => require([`@/views/page/${pagePath+'/'+data[i].name}`], resolve),
