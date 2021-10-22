@@ -124,3 +124,15 @@ export function batchSign(data) {
         data: data
     })
 }
+
+/** 判断电子卡是否重复扫码
+ 参数名	必选	类型	说明
+ card_id	是	array	发货单id [2,3,4]
+ */
+export function is_cart_scaning(data) {
+    return request({
+        url: '/admin/Deliver_Plfahuo/is_cart_scaning',
+        method: 'post',
+        data: data
+    })
+}

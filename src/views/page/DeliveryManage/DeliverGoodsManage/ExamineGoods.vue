@@ -86,10 +86,46 @@
     <div class="ExamineGoodsContrast ExamineGoodsContrastTwo">
       <div class="ExamineGoodsContrastLeft ExamineGoodsContrastBox">
         <div class="ExamineGoodsContrastTitle">未验电子卡</div>
+        <el-table
+            :show-header="false"
+            height="152px"
+            :data="oldCardList"
+            style="width: 100%">
+          <el-table-column
+              prop="product_name"
+              label="卡名">
+            <template slot-scope="scope">
+              {{scope.row.product_name}}
+            </template>
+          </el-table-column>
+          <el-table-column
+              prop="number"
+              label="数目"
+              width="100">
+          </el-table-column>
+        </el-table>
       </div>
       <!--      <div class="ExamineGoodsContrastCenter"></div>-->
       <div class="ExamineGoodsContrastRight ExamineGoodsContrastBox">
         <div class="ExamineGoodsContrastTitle">已验电子卡</div>
+        <el-table
+            :show-header="false"
+            height="152px"
+            :data="newCardList"
+            style="width: 100%">
+          <el-table-column
+              prop="product_name"
+              label="卡名">
+            <template slot-scope="scope">
+              {{scope.row.product_name}}
+            </template>
+          </el-table-column>
+          <el-table-column
+              prop="number"
+              label="数目"
+              width="100">
+          </el-table-column>
+        </el-table>
       </div>
     </div>
     <div class="bottomButtonRow">
@@ -101,7 +137,7 @@
 </template>
 
 <script>
-import {security_express_code,is_repeat_scanning,examine_product} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
+import {security_express_code,is_repeat_scanning,examine_product,is_cart_scaning} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
 
 export default {
   name: "ExamineGoods",
@@ -111,6 +147,8 @@ export default {
       requireList:{},
       oldList:[],
       newList:[],
+      oldCardList:[],
+      newCardList:[],
       delList:[],
     }
   },
@@ -118,7 +156,19 @@ export default {
     oldList:{
       handler(newName, oldName) {
         if (newName!==oldName){
-          if(newName.length==0){
+          if(newName.length==0&&this.oldCardList.length==0){
+            if(this.requireList.id){
+              this.submit()
+            }
+          }
+        }
+      },
+      deep: true
+    },
+    oldCardList:{
+      handler(newName, oldName) {
+        if (newName!==oldName){
+          if(newName.length==0&&this.oldList.length==0){
             if(this.requireList.id){
               this.submit()
             }
@@ -132,11 +182,25 @@ export default {
     this.getcode()
   },
   methods:{
+
+    palyAudio(e){
+      let mp = 'http://m.smxos.com/admin/mp3/'+e+'.mp3'
+      let mp3 = new Audio(mp)
+      mp3.play() //
+    },
     /**扫码收尾*/
     submit(){
+      let that=this
       examine_product({product:this.newList,product_card:[],plfahuo_id:this.requireList.id}).then(res=>{
-        this.$message.success(res.msg)
-        this.overSubmit()
+        that.palyAudio(1)
+        that.$message.success(res.msg)
+        that.overSubmit()
+      }).catch(err => {
+        that.palyAudio(2)
+        that.$message({
+          message: err,
+          type: 'error'
+        })
       })
     },
     overSubmit(){
@@ -144,18 +208,20 @@ export default {
       this.searchCode=''
       this.oldList=[]
       this.newList=[]
+      this.oldCardList=[]
+      this.newCardList=[]
       this.delList=[]
       this.$refs.search.focus()
     },
     toSubmit(){
-      if(this.oldList.length>0){
+      if(this.oldList.length>0&&this.oldCardList.length>0){
+        this.palyAudio(5)
         this.$message.error('需要验完所有商品')
       }else{
         this.submit()
       }
     },
     backTo(){
-
       this.$router.push({path: '/DeliveryManage/DeliverGoodsManage/SynchroDeliver'})
     },
     /**扫码收尾*/
@@ -166,6 +232,7 @@ export default {
       if(reg.test(code)){
         //验证是否是电子卡
         if (code.indexOf('nest.smxos.com') != -1){
+          this.cardJudge(code)
           console.log('含有')
         }else{
           //商品处理
@@ -195,6 +262,7 @@ export default {
         if (haveGoods>=0){
           that.overGoodsJudge(getCode,haveGoods)
         }else{
+          that.palyAudio(12)
           that.$message.error('这个订单无需验此商品')
         }
       })
@@ -202,7 +270,6 @@ export default {
     //扫描完的左侧商品处理
     //扫描完的右侧商品处理
     overGoodsJudge(code,index){
-      console.log('code,index',code,index)
       let that=this
       let oldList=[... that.oldList]
       let newList=[... that.newList]
@@ -220,6 +287,7 @@ export default {
         }
       }
       if (haveListJudge>=0){
+        that.palyAudio(10)
         that.$message.error('此防伪码已经在此订单')
       }else{
         if(that.oldList[index].number>1){
@@ -241,6 +309,72 @@ export default {
       }
     },
     //扫描完的右侧商品处理
+
+    //扫描左侧的电子卡
+    cardJudge(code){
+      let that=this
+      let getCode=that.getUrlParam('exchangeCode', code)
+      console.log(getCode,88989898)
+      let haveGoods=-1
+      // //请求接口拿到商品id且判断有没有用过
+      is_cart_scaning({card_id:getCode}).then(res=>{
+        for (let i = 0; i < that.oldCardList.length; i++) {
+          let item=that.oldCardList[i]
+          if(item.product_sku_id===res.data){
+            haveGoods=i
+          }
+        }
+        if (haveGoods>=0){
+          that.overCardJudge(getCode,haveGoods)
+        }else{
+          that.palyAudio(12)
+          that.$message.error('这个订单无需验此商品')
+        }
+      })
+    },
+    //扫描左侧的电子卡
+    //扫描右侧的电子卡
+    overCardJudge(code,index){
+      let that=this
+      let oldCardList=[... that.oldCardList]
+      let newCardList=[... that.newCardList]
+      let haveList=-1
+      let haveListJudge=-1
+      let oldToNew= {... that.oldCardList[index]}
+      for (let i = 0; i < that.newCardList.length; i++) {
+        let newListData=that.newCardList[i]
+        if (oldCardList[index].product_sku_id==newCardList[i].product_sku_id){
+          haveList=i
+          if (JSON.stringify(newListData.card_id).indexOf(code)!=-1){
+            haveListJudge=i
+          }
+        }
+      }
+      if (haveListJudge>=0){
+        that.palyAudio(7)
+        that.$message({
+          message: '你扫描的电子卡已添加过了',
+          type: 'error'
+        })
+      }else{
+        if(that.oldList[index].number>1){
+          oldCardList[index].number-=1
+        }else{
+          oldCardList.splice(index,1)
+        }
+        if(haveList>=0){
+          newCardList[haveList].number+=1
+          newCardList[haveList].card_id.push(code)
+        }else{
+          oldToNew.number=1
+          oldToNew.card_id=[code]
+          newCardList.push(oldToNew)
+        }
+        that.newCardList=[... newCardList]
+        that.oldCardList=[... oldCardList]
+      }
+    },
+    //扫描右侧的电子卡
     //获取url
     getUrlParam(name, e) {
       // a标签跳转获取参数
@@ -312,12 +446,16 @@ export default {
         console.log(res)
         this.$refs.search.blur()
         this.requireList=res.data
-        let oldList=[]
+        let oldList=[],oldCardList=[];
         res.data.product.forEach(function (value) {
-          console.log(value);
           value.maxNumber=value.number
           oldList.push(value)
         });
+        res.data.card.forEach(function (value) {
+          value.maxNumber=value.number
+          oldCardList.push(value)
+        });
+        this.oldCardList=oldCardList
         this.oldList=oldList
       }).catch((err)=>{
         console.log(err)

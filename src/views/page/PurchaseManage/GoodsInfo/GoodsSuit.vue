@@ -524,6 +524,9 @@ export default {
           this.goodsMethod()
           this.brandMethod()
           this.classifyMethod()
+
+          this.view_text=[]
+          this.view_textTwo=[]
           for (let i = 0; i < this.selectRow.view_text.length; i++) {
             this.view_text.push({name:'图片'+i,url:this.selectRow.view_text[i]})
           }
