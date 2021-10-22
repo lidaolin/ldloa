@@ -137,6 +137,16 @@
         <el-button type="primary" @click="onAuditSubmit">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+        title="审核结果"
+        :visible.sync="dialogVisible"
+        width="50%">
+      <el-alert style="margin-top: 10px" v-for="item of examineResult" :title="item.msg" :type="item.code?'success':'error'"></el-alert>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
     <ldlControlWindow class="ldlTab" :bottomHeight.sync="bottomHeight" ref="bottomHeight">
       <el-tabs type="border-card" v-model="tabPaneValue" class="ldlTab" @tab-click="changeTab"
                style="height: calc(100% - 4px)">
@@ -439,12 +449,14 @@ import {
   manual_split
 } from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
 import {searchKdManageList} from "@/api/DeliveryManage/DeliverySettings/ExpressManage";
-import {p_footer} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
+import {code_deliver, p_footer} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
 
 export default {
   name: "OrderManage",
   data() {
     return {
+      examineResult:[],
+      dialogVisible:false,
       bz_xin: '',
       remarks: '',
       bottomList: {},
@@ -506,7 +518,7 @@ export default {
             width: 100,
             data: [{type: 'info', key: 1, name: '未打印'}, {type: '', key: 2, name: '打印成功'}, {
               type: 'danger',
-              key: 2,
+              key: 3,
               name: '打印失败'
             }],
           },
@@ -674,37 +686,20 @@ export default {
 
     //多个提示
     MultipleTips(res) {
-      let that = this
-      for (let i = 0; i < res.data.length; i++) {
-        if (res.data[i].code) {
-          setTimeout(function () {
-            that.$message({
-              showClose: true,
-              message: res.data[i].msg,
-              duration: 0,
-              type: 'success'
-            });
-          }, 500);
-        } else {
-          setTimeout(function () {
-            // 这里就是处理的事件
-            that.$message({
-              showClose: true,
-              message: res.data[i].msg,
-              duration: 0,
-              type: 'error'
-            });
-          }, 500);
-        }
-      }
+      this.examineResult = res.data
+      this.dialogVisible = true
     },
 
     //提交审核弹窗
     onAuditSubmit() {
-      batch_review(this.AuditForm).then(res => {
-        this.MultipleTips(res)
-        this.AuditState = false
-        this.getList()
+      this.$refs.AuditForm.validate(valid => {
+        if (valid) {
+          batch_review(this.AuditForm).then(res => {
+            this.MultipleTips(res)
+            this.AuditState = false
+            this.getList()
+          }).catch(()=>{})
+        }
       })
     },
 
@@ -737,6 +732,7 @@ export default {
 
     //打开审核弹窗
     Audit() {
+      console.log(this.selectionList,'888888888888888')
       if (this.selectionList) {
         this.AuditState = true
         let data = []
@@ -745,7 +741,7 @@ export default {
         }
         this.boxMethod()
         this.brandMethod_kd()
-        this.AuditForm = {...this.selectionList[0], ids: data}
+        this.AuditForm = {...this.selectionList[0], ids: data, express_id:this.selectionList[0].express_id==0?null:this.selectionList[0].express_id}
       } else {
         this.$message.error('请在左侧多选选择')
       }
