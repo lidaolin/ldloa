@@ -449,7 +449,7 @@ import {
   manual_split
 } from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
 import {searchKdManageList} from "@/api/DeliveryManage/DeliverySettings/ExpressManage";
-import {code_deliver, p_footer} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
+import {p_footer} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
 
 export default {
   name: "OrderManage",
