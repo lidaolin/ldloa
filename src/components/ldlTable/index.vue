@@ -67,6 +67,11 @@
                     </template>
                   </template>
                 </div>
+                <div v-if="item.type=='tags'" class="">
+                  <template v-for="(tagItem,tagIndex) in (scope.row[item.prop] instanceof Array? scope.row[item.prop]:[scope.row[item.prop]])">
+                      <el-tag size="mini" :key="tagIndex+','+tagItem[item.data.key]">{{ tagItem[item.data.nameKey]}}</el-tag>
+                  </template>
+                </div>
                 <div v-if="item.type=='image'" class="tableAvatarBox">
                   <template v-for="(imgItem,imgIndex) in (scope.row[item.prop] instanceof Array? scope.row[item.prop]:[scope.row[item.prop]])">
                     <el-image

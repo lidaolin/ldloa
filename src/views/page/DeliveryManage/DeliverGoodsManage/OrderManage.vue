@@ -141,7 +141,7 @@
         title="审核结果"
         :visible.sync="dialogVisible"
         width="50%">
-      <el-alert style="margin-top: 10px" v-for="item of examineResult" :title="item.msg" :type="item.code?'success':'error'"></el-alert>
+      <el-alert style="margin-top: 10px" v-for="(item,index) of examineResult" :key="index" :title="item.msg" :type="item.code?'success':'error'"></el-alert>
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>

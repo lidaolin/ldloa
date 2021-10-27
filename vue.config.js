@@ -5,7 +5,7 @@ module.exports = {
       // proxy:'https://qx.erp.sportqx.com'
       proxy: {
         '/api': {
-          target: 'https://erp.sportqx.com',
+          target: 'https://testerp.sportqx.net',
           changeOrigin: true,
           ws: true,
           pathRewrite: {
