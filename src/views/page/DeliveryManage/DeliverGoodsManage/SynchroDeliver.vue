@@ -624,13 +624,13 @@ export default {
           for (let i = 0; i < this.selectionList.length; i++) {
             plfahuo_code.push(this.selectionList[i].plfahuo_code)
           }
-          this.loading = this.$loading({
-            lock: true,
-            text: '打印中...',
-            spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.7)'
-          });
           getCloudNumber({plfahuo_code: plfahuo_code}).then(res => {
+            this.loading = this.$loading({
+              lock: true,
+              text: '打印中...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.type = 1
             this.socket.send(JSON.stringify(res.data));
           })

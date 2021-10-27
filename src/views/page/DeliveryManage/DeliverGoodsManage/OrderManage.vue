@@ -512,6 +512,10 @@ export default {
             data: [{type: 'danger', key: 2, name: '拆分单'}, {type: 'success', key: 3, name: '合并单'}],
           },
           {
+            prop: 'express_code',
+            label: '快递单号',
+          },
+          {
             prop: 'express_status',
             type: 'tag',
             label: '快递单打印状态',

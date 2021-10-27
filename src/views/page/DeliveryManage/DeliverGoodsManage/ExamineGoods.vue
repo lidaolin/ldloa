@@ -184,19 +184,19 @@ export default {
   methods:{
 
     palyAudio(e){
-      let mp = 'http://m.smxos.com/admin/mp3/'+e+'.mp3'
+      let mp = 'https://erp.sportqx.com/goodsErp/mp3/'+e+'.mp3'
       let mp3 = new Audio(mp)
       mp3.play() //
     },
     /**扫码收尾*/
     submit(){
       let that=this
-      examine_product({product:this.newList,product_card:[],plfahuo_id:this.requireList.id}).then(res=>{
-        that.palyAudio(1)
+      examine_product({product:this.newList,product_card:this.newCardList,plfahuo_id:this.requireList.id}).then(res=>{
+        that.palyAudio(3)
         that.$message.success(res.msg)
         that.overSubmit()
       }).catch(err => {
-        that.palyAudio(2)
+        that.palyAudio(4)
         that.$message({
           message: err,
           type: 'error'

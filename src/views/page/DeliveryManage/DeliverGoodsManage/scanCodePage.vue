@@ -116,6 +116,11 @@ export default {
     })
   },
   methods:{
+    palyAudio(e){
+      let mp = 'https://erp.sportqx.com/goodsErp/mp3/'+e+'.mp3'
+      let mp3 = new Audio(mp)
+      mp3.play() //
+    },
     //根据单号请求数据
     coedSearch() {
       this.getGoodsInfo(this.code)
@@ -138,6 +143,7 @@ export default {
 
     //提交
     syncdevFormSave(){
+      let that=this
       this.$refs.syncdevForm.validate((valid) => {
         if(valid){
           code_deliver({...this.syncdevForm,id:this.infoData.id}).then(res => {
@@ -145,13 +151,17 @@ export default {
               message: res.msg,
               type: 'success'
             })
+            that.palyAudio(1)
+            window.setTimeout(function (){
+              that.resetForm()
+            },2000)
           }).catch(err => {
+            that.palyAudio(2)
             this.$message({
               message: err,
               type: 'error'
             })
           })
-          this.resetForm()
         }
       })
     },
