@@ -72,7 +72,34 @@
           <el-input v-model="form.product_name" placeholder="请输入商品组合名称"></el-input>
         </el-form-item>
         <el-form-item label="商品组合分类:" prop="product_classify_id" :rules="{ required: true, message: '请选择商品组合分类', trigger: 'blur' }">
-          <el-select
+        <el-select v-model="form.product_classify_id" multiple v-show="1==2"></el-select>
+        <el-select
+            v-model="labelValue"
+            filterable
+            :filter-method="classifyMethod"
+            @change="changeLable"
+            placeholder="请选择商品分类"
+          >
+            <el-option
+              v-for="(item,index) in simpleIndexArray"
+              :key="index"
+              :label="item.classify_name"
+              :value="index">
+            </el-option>
+          </el-select>
+        </el-form-item>
+          <div>
+            <el-tag
+              style="marginRight:5px"
+              v-for="(item,index) in selectlabel"
+              :key="index.name"
+              size="mini"
+              @close="handleCloseSelectTag(index)"
+              :type="tagArr[item.id%4].type"
+              closable
+            >{{item.classify_name}}</el-tag>
+          </div>
+          <!--<el-select
               v-model="form.product_classify_id"
               filterable
               remote
@@ -86,8 +113,7 @@
                 :label="item.classify_name"
                 :value="item.id">
             </el-option>
-          </el-select>
-        </el-form-item>
+          </el-select>-->
         <el-form-item label="商品状态:" prop="status">
           <el-switch
               v-model="form.status"
@@ -278,6 +304,14 @@ export default {
   name: "GoodsSuit",
   data(){
     return{
+      tagArr: [
+        { name: "标签一", type: "" },
+        { name: "标签二", type: "success" },
+        { name: "标签三", type: "warning" },
+        { name: "标签四", type: "danger" },
+      ],
+      selectlabel: [],
+      labelValue: "",
       newArr:[],
       result:[],
       product_combination_sku_list:[],
@@ -307,7 +341,7 @@ export default {
         dataListInfo:[
           {prop:'product_name',label:'商品名称',width:'180'},
           {prop:'brand_name',label:'品牌名称',},
-          {prop:'classify_name',label:'商品分类名称',},
+          {prop:'classify_data',label:'商品分类名称',type:'tags',data:{key:'id',nameKey:'classify_name'}},
           {prop:'status',type:'tag',label:'状态',data:[{type:'success',key:1,name:'在售'},{type:'danger',key:2,name:'下架'}],},
           // {prop: 'video_link',label: '视频',type:'video',imgStyle:{width:'50px',height:'50px'}},
           {prop: 'cover_link_img',label: '封面图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
@@ -347,6 +381,51 @@ export default {
     }
   },
   methods:{
+        //去除重复选择的标签
+    delRepeat(e) {
+      console.log(e,'99999999999999')
+      var that = this;
+      return new Promise((resolve, reject) => {
+        var j = false;
+        for (let i = 0; i < that.selectlabel.length; i++) {
+          if (that.selectlabel[i].id == that.simpleIndexArray[e].id) {
+            j = true;
+          }
+        }
+        if (j) {
+          this.$message({
+            message: "您已经选过此标签",
+            type: "warning",
+          });
+          reject();
+        } else {
+          resolve();
+        }
+      });
+    },
+
+    //选择后添加到数组
+    changeLable(e) {
+      this.delRepeat(e)
+        .then(() => {
+          this.selectlabel.push(this.simpleIndexArray[e]);
+          var form = {
+            ...this.form,
+          };
+          form.product_classify_id.push(this.simpleIndexArray[e].id);
+          this.labelValue = "";
+          this.form = form;
+        })
+        .catch(() => {
+          this.labelValue = "";
+        });
+    },
+
+    //去除标签
+    handleCloseSelectTag(e) {
+      this.selectlabel.splice(e, 1);
+      this.form.product_classify_id.splice(e, 1);
+    },
     getProduct_combination_sku_list(){
       let that=this
       let form={... that.form}
@@ -465,6 +544,7 @@ export default {
               this.view_textTwo=[]
               this.form={product_combination:[],status:1}
               this.addGoodsSuitState=false
+              this.selectRow = undefined
               this.getList()
             })
           }else{
@@ -510,6 +590,8 @@ export default {
     },
     //新增还是编辑
     changeGoodsSuit(e){
+      this.selectlabel = [];
+      this.labelValue = "";
       if(e==='add'){
         this.goodsMethod()
         this.brandMethod()
@@ -517,7 +599,7 @@ export default {
         this.view_text=[]
         this.view_textTwo=[]
         this.addGoodsSuitState=true
-        this.form={status:1,product_combination:[]}
+        this.form={status:1,product_combination:[],product_classify_id:[]}
         console.log('新增')
       }else{
         if (this.selectRow){
@@ -536,7 +618,13 @@ export default {
           // for (let i = 0; i < this.selectRow.product_combination.length; i++) {
           //   this.selectRow.product_combination[i].product_id=this.selectRow.product_combination[i].relate_product_id
           // }
-          this.form = this.selectRow
+          this.form = {... this.selectRow,product_classify_id:[]}
+          if (this.selectRow.classify_data.length > 0) {
+            for (let i = 0; i < this.selectRow.classify_data.length; i++) {
+              this.form.product_classify_id.push(this.selectRow.classify_data[i].id);
+              this.selectlabel.push(this.selectRow.classify_data[i]);
+            }
+          }
           this.getComposeSku(this.selectRow.id)
         }else{
           this.$message.error('求你选一条操作吧')
@@ -680,10 +768,8 @@ export default {
     },
     // 分类搜索
     classifyMethod(e){
-      this.loading=true
-      simpleIndex({classify_name:e}).then(res=>{
+      simpleIndex({classify_name:e?e:''}).then(res=>{
         this.simpleIndexArray=res.data
-        this.loading=false
       })
     },
     // 商品搜索
