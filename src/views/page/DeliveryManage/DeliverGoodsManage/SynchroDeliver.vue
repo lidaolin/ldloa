@@ -673,6 +673,10 @@ export default {
               background: 'rgba(0, 0, 0, 0.7)'
             });
             this.type = 1
+            if(res.data.length==0){
+              this.ApprovalTF=false;
+              this.loading.close();
+            }
             this.socket.send(JSON.stringify(res.data));
           }).catch(()=>{})
     },
