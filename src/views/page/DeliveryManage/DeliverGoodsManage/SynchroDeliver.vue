@@ -286,6 +286,28 @@
         </el-tab-pane>
       </el-tabs>
     </ldlControlWindow>
+    <!-- 批量打印 -->
+    <el-dialog title="订单打印" :visible.sync="ApprovalTF" width="450px" :close-on-click-modal="false">
+      <el-form
+        ref="orderSignForm"
+        label-position="right"
+        label-width="80px"
+        :model="orderSignForm"
+        size="mini"
+      >
+        <el-form-item label="快递单号">
+          <el-input v-model="orderSignForm.express_code" />
+        </el-form-item>
+        <el-form-item label="打印备注">
+          <el-input v-model="orderSignForm.remark" type="textarea" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="ApprovalTF = false">取 消</el-button>
+        <el-button type="primary" size="mini" @click="onApproval(orderSignForm)">保 存</el-button>
+      </span>
+    </el-dialog>
+    <!-- 批量打印 -->
     <!-- 同步发货 -->
     <el-dialog title="同步发货" :visible.sync="syncDev" width="500px" :close-on-click-modal="false">
       <el-form
@@ -517,6 +539,10 @@ export default {
       fullscreenLoading: false,
       loading:null,
       // 批量操作成功
+      //订单打印
+      ApprovalTF: false,
+      orderSignForm:{},
+      //订单打印
     }
   },
   methods: {
@@ -624,7 +650,22 @@ export default {
           for (let i = 0; i < this.selectionList.length; i++) {
             plfahuo_code.push(this.selectionList[i].plfahuo_code)
           }
-          getCloudNumber({plfahuo_code: plfahuo_code}).then(res => {
+          this.orderSignForm = {
+            plfahuo_code: plfahuo_code,
+            remark: null,
+            express_code: null,
+          }
+        this.ApprovalTF = true
+        } else {
+          this.$message.error('请在左侧选择一个或者多个进行打印')
+        }
+      } else {
+        this.$message.error('请在左侧选择一个或者多个进行打印')
+      }
+    },
+
+    onApproval(data) {
+      getCloudNumber(data).then(res => {
             this.loading = this.$loading({
               lock: true,
               text: '打印中...',
@@ -633,13 +674,7 @@ export default {
             });
             this.type = 1
             this.socket.send(JSON.stringify(res.data));
-          })
-        } else {
-          this.$message.error('请在左侧选择一个或者多个进行打印')
-        }
-      } else {
-        this.$message.error('请在左侧选择一个或者多个进行打印')
-      }
+          }).catch(()=>{})
     },
 
     //打印发货清单
