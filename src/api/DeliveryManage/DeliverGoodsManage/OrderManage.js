@@ -120,3 +120,20 @@ export function p_back(data) {
         data: data
     })
 }
+/** 修改收件信息
+    参数名	必选	类型	说明
+    id	是	int	发货单id
+    province	否	string	省份
+    city	否	string	城市
+    area	否	string	地区
+    address	否	string	详细地址
+    sj_name	否	string	收件人名称
+    sj_phone	否	string	收件人手机
+ */
+export function up_address(data) {
+    return request({
+        url: '/admin/Plfahuo/up_address',
+        method: 'post',
+        data: data
+    })
+}

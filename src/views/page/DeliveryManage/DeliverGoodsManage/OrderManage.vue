@@ -147,6 +147,47 @@
     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
   </span>
     </el-dialog>
+    <!--修改发货信息-->
+        <el-dialog
+        v-el-drag-dialog
+        width="40%"
+        custom-class="minWidth400"
+        :visible.sync="receivingInfoVisible"
+        :destroy-on-close="false"
+        :close-on-click-modal="false"
+        title="修改发货信息"
+        size="mini"
+        center
+    >
+      <el-form ref="receivingForm" :model="receivingForm" label-width="100px" size="mini">
+        <el-form-item label="收件人名称:" prop="sj_name" :rules="{ required: true, message: '请填写收件人名称', trigger: 'blur' }">
+          <el-input v-model="receivingForm.sj_name" placeholder="请填写收件人名称"></el-input>
+        </el-form-item>
+        <el-form-item label="收件人手机:" prop="sj_phone" :rules="{ required: true, message: '请填写收件人手机', trigger: 'blur' }">
+          <el-input v-model="receivingForm.sj_phone" placeholder="请填写收件人手机"></el-input>
+        </el-form-item>
+        <el-form-item label="省市区" prop="province" :rules="[{ required: true, message: '省市区不能为空'}]">
+          <el-input v-model="form.province" v-show="1==2"></el-input>
+          <el-cascader
+              style="width:360px"
+              size="mini"
+              v-model="areaValue"
+              :props="props"
+              :options="cityList"
+              @change="addressChange"
+              clearable
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item label="详细地址:" prop="address" :rules="{ required: true, message: '请填写详细地址', trigger: 'blur' }">
+          <el-input type="textarea" v-model="receivingForm.address" placeholder="请填写详细地址"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="receivingInfoVisible = false">取 消</el-button>
+        <el-button type="primary" @click="receivingSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!--修改发货信息-->
     <ldlControlWindow class="ldlTab" :bottomHeight.sync="bottomHeight" ref="bottomHeight">
       <el-tabs type="border-card" v-model="tabPaneValue" class="ldlTab" @tab-click="changeTab"
                style="height: calc(100% - 4px)">
@@ -446,15 +487,28 @@ import {
   intercept,
   orderShipping,
   manual_product_list,
-  manual_split
+  manual_split,
+  up_address
 } from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
 import {searchKdManageList} from "@/api/DeliveryManage/DeliverySettings/ExpressManage";
 import {p_footer} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
+import {
+  regionDataPlus,
+} from "element-china-area-data";
 
 export default {
   name: "OrderManage",
   data() {
     return {
+      //修改发货信息
+      receivingInfoVisible:false,
+      receivingForm:{},
+      areaValue: [],
+      cityList: regionDataPlus,
+      props: {
+        value: 'label'
+      },
+      //修改发货信息
       examineResult:[],
       dialogVisible:false,
       bz_xin: '',
@@ -545,6 +599,53 @@ export default {
     }
   },
   methods: {
+    
+    // 选择地区
+    addressChange(arr) {
+      this.receivingForm = {
+        ...this.receivingForm,
+        province: arr[0],
+        city: arr[1],
+        area: arr[2],
+      };
+    },
+
+    //修改收货信息--打开弹框
+    receivingOpen(){
+      if (this.selectionList) {
+        var arr = [],index=this.selectionList.length-1
+        arr.push(this.selectionList[index].province, this.selectionList[index].city, this.selectionList[index].area)
+        this.areaValue = arr
+        console.log(this.areaValue,'999999999999')
+        this.receivingForm = {
+          id: this.selectionList[index].id,
+          province: this.selectionList[index].province,
+          city: this.selectionList[index].city,
+          area: this.selectionList[index].area,
+          address: this.selectionList[index].address,
+          sj_name: this.selectionList[index].sj_name,
+          sj_phone: this.selectionList[index].sj_phone,
+        }
+        this.receivingInfoVisible = true
+      } else {
+        this.$message.error('请在左侧多选选择')
+      }
+    },
+
+    //修改收货信息--确认
+    receivingSubmit(){
+      this.$refs.receivingForm.validate((valid) => {
+        if (valid) {
+          let data = {...this.receivingForm}
+          up_address(data).then(()=>{
+            this.receivingInfoVisible = false
+            this.$message.success('修改成功')
+            this.getList()
+          }).catch(()=>{})
+        }
+      })
+    },
+
     listClick() {
       console.log(this.tabPaneValue)
       let tabPaneValue = this.tabPaneValue
