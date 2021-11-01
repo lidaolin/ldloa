@@ -716,12 +716,11 @@ export default {
     //取消拦截
     removeIntercept() {
       if (this.selectRow) {
-        this.$confirm('是否取消拦截?', '提示', {
+        this.$prompt('是否取消拦截?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          cancel_intercept({id: this.selectRow.id}).then(res => {
+        }).then(({value}) => {
+          cancel_intercept({id: this.selectRow.id,remarks: value}).then(res => {
             this.getList()
             this.$message.success(res.msg)
           })
@@ -735,12 +734,11 @@ export default {
     //订单拦截
     orderIntercept() {
       if (this.selectRow) {
-        this.$confirm('是否拦截此订单?', '提示', {
+        this.$prompt('是否拦截此订单?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          intercept({id: this.selectRow.id}).then(res => {
+        }).then(({value}) => {
+          intercept({id: this.selectRow.id,remarks: value}).then(res => {
             this.getList()
             this.$message.success(res.msg)
           })
