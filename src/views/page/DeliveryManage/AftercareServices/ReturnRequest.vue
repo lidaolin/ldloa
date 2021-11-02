@@ -182,7 +182,7 @@
 import ldlTablePagination from '@/components/ldlTablePagination'
 import ldlControlWindow from '@/components/ldlControlWindow'
 import buttonBox from '@/components/buttonBox'
-import {index, customerInfo, orderInfo, toExamine, log, refund, replace} from "@/api/DeliveryManage/AftercareServices/ReturnRequest";
+import {index, customerInfo, orderInfo, toExamine, log, refund, replace, cancelRefund} from "@/api/DeliveryManage/AftercareServices/ReturnRequest";
 export default {
   name: "ReturnRequest",
   components:{
@@ -310,6 +310,34 @@ export default {
           })
         }
       })
+    },
+
+    //客服撤销
+    customerServiceCancellation(){
+      if(this.selectRow){
+        this.$prompt('备注信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+          let data = {
+            id: this.selectRow.id,
+            remark:value
+          }
+          cancelRefund(data).then(()=>{
+            this.$message({
+              type: 'success',
+              message: '操作成功'
+            });
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });       
+        });
+      }else{
+        this.$message.error('请选中一行')
+      }
     },
 
     //点击查看详情

@@ -86,3 +86,17 @@ export function replace(data) {
         data: data
     })
 }
+
+
+/** 客服撤销
+参数名	必选	类型	说明
+id	是	int	退货单id
+remark	否	string	备注信息
+ */
+export function cancelRefund(data) {
+    return request({
+        url: '/admin/order_refund/cancelRefund',
+        method: 'post',
+        data: data
+    })
+}
