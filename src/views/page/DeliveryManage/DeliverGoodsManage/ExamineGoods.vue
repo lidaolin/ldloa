@@ -357,7 +357,7 @@ export default {
           type: 'error'
         })
       }else{
-        if(that.oldList[index].number>1){
+        if(that.oldCardList[index].number>1){
           oldCardList[index].number-=1
         }else{
           oldCardList.splice(index,1)
