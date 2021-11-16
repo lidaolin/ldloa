@@ -54,7 +54,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-          <el-form-item label="商品规格名称:" prop="product_sku_id" :rules="{ required: true, message: '商品规格名称不能为空', trigger: 'blur' }">
+          <el-form-item label="商品规格名称:" ref="product_sku_id" prop="product_sku_id" :rules="{ required: true, message: '商品规格名称不能为空', trigger: 'blur' }">
             <el-select
                 style="width: 100%"
                 size="mini"
@@ -152,10 +152,10 @@ export default {
       buttonBoxState:true,//开启按钮行的状态
       tableDataInfo:{ //表格信息
         dataListInfo:[
-          {prop:'pandian_code',label:'单号',},
+          {prop:'pandian_code',label:'单号',width:160,},
           {prop:'pandian_status',type:'tag',label:'状态',data:[{type:'warning',key:1,name:'录入'},{type:'success',key:2,name:'提交'},{type:'primary',key:3,name:'确认'}],},
-          {prop:'product_id',label:'商品名称',},
-          {prop:'product_sku_name',label:'商品规格名称',},
+          {prop:'product_id',label:'商品名称',width:160,},
+          {prop:'product_sku_name',label:'商品规格名称',width:160,},
           {prop:'company_id',label:'单位名称',},
           {prop:'manyorless',label:'多或少',},
           {prop:'number',label:'数量',sortable:"custom"},
@@ -298,7 +298,8 @@ export default {
           this.product_sku_id_arr=res.data
         })
       }
-
+      this.form.product_sku_id = ''
+      // this.$refs.form.resetFielld('product_sku_id')
     },
 
     // 商品规格名称搜索
@@ -332,6 +333,7 @@ export default {
 
         this.form={
           responsible:1,
+          product_sku_id:''
         }
         this.$nextTick(function () {
           this.$refs.form.clearValidate();
