@@ -59,7 +59,7 @@ export default {
 
     //导出
     getExport() {
-      exports({key:this.pagingData})
+      exports(this.pagingData)
         .then(res => {
           const a = document.createElement('a')
           a.setAttribute('href', `${res.data.url}`)
