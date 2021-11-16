@@ -9,7 +9,7 @@
 <script>
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
-import {stockSummaryList,} from "@/api/DeliveryManage/InventoryManage/InventorySummary";
+import {stockSummaryList,exports} from "@/api/DeliveryManage/InventoryManage/InventorySummary";
 
 export default {
   name: "InventorySummary",
@@ -56,6 +56,21 @@ export default {
     })
   },
   methods:{
+
+    //导出
+    getExport() {
+      exports({key:this.pagingData})
+        .then(res => {
+          const a = document.createElement('a')
+          a.setAttribute('href', `${res.data.url}`)
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a) // 下载后移除a标签
+        })
+        .catch(err => this.$message.error(err))
+    },
+
+
 
     /**这是按钮方法调用*/
     functionCall(name) {

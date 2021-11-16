@@ -16,3 +16,10 @@ export function stockSummaryList(data) {
     })
 }
 
+export function exports(data) {
+    return request({
+        url: '/stock/Summary/daochu_s_list',
+        method: 'post',
+        data: data
+    })
+}
