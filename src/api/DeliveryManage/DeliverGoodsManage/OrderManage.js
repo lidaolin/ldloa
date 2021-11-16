@@ -120,6 +120,7 @@ export function p_back(data) {
         data: data
     })
 }
+
 /** 修改收件信息
     参数名	必选	类型	说明
     id	是	int	发货单id
@@ -133,6 +134,18 @@ export function p_back(data) {
 export function up_address(data) {
     return request({
         url: '/admin/Plfahuo/up_address',
+        method: 'post',
+        data: data
+    })
+}
+
+/** 清除验货信息
+    参数名	必选	类型	说明
+    id	是	int	发货单id
+ */
+export function clearInfo(data) {
+    return request({
+        url: '/admin/Plfahuo/eliminate_security',
         method: 'post',
         data: data
     })

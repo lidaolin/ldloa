@@ -488,7 +488,8 @@ import {
   orderShipping,
   manual_product_list,
   manual_split,
-  up_address
+  up_address,
+  clearInfo,
 } from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
 import {searchKdManageList} from "@/api/DeliveryManage/DeliverySettings/ExpressManage";
 import {p_footer} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
@@ -599,6 +600,23 @@ export default {
     }
   },
   methods: {
+    
+    //清除验货信息
+    clearInspectionMsg(){
+      if (this.selectRow) {
+        this.$confirm('是否清除此订单的验货信息?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(() => {
+          clearInfo({id: this.selectRow.id}).then(() => {
+            this.getList()
+            this.$message.success('操作成功')
+          })
+        }).catch(() => {});
+      } else {
+        this.$message.error('请点击选中一行')
+      }
+    },
     
     // 选择地区
     addressChange(arr) {
