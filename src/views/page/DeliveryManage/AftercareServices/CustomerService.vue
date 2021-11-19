@@ -78,6 +78,7 @@ export default {
           {prop:'order_code',label:'订单编号',},
           {prop:'product_name',label:'商品名称'},
           {prop:'sku_name',label:'商品规格'},
+          {prop: 'remarks_img',label: '图片',type:'image',fit:'',imgStyle:{width:'100px',height:'50px'}},
           {prop:'remarks',label:'备注信息'},
           {prop:'produce_date',label:'生产时间', type: "date",sortable:"custom"},
           {prop:'the_date',label:'订单创建时间', type: "date",sortable:"custom"},
