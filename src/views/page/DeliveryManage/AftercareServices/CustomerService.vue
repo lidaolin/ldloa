@@ -31,7 +31,7 @@
         <el-form-item label="上传图片:" prop="remarks_img">
         <el-upload
             class="avatar-uploader"
-            action="/api/admin/upload_image/upload"
+            action="/admin/upload_image/upload"
             name="file"
             :show-file-list="false"
             :on-success="(e)=>{handleSuccess(e,'remarks_img')}">
