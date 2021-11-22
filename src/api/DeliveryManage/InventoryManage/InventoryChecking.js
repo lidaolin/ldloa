@@ -93,6 +93,17 @@ export function stockCheckConfirm(data) {
     })
 }
 
+/** 操作日志
+ 参数名	必选	类型	说明
+ id	是	int	盘点单id
+ */
+export function pd_log(data) {
+    return request({
+        url: '/stock/pandian/pd_log',
+        method: 'post',
+        data: data
+    })
+}
 
 
 

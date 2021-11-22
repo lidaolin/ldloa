@@ -93,6 +93,16 @@
             <el-radio :label="2">总部</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="申购部门" prop="department" :rules="[{ required: true, message: '申购部门不能为空'}]">
+          <el-select v-model="form.department">
+            <el-option
+              v-for="(item,index) in departmentArr"
+              :key="index"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="原因" prop="reason" :rules="[{ required: true, message: '原因不能为空'}]">
           <el-select v-model="form.reason" placeholder="请选择">
             <el-option
@@ -112,24 +122,68 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <ldlControlWindow :bottomHeight.sync="bottomHeight" ref="bottomHeight">
+      <el-tabs type="border-card" v-model="tabPaneValue" class="ldlTab" @tab-click="changeTab" style="height: calc(100% - 4px)">
+        <el-tab-pane label="操作日志" name="getStockLog" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="type"
+                width="100"
+                align="center"
+                label="操作类型">
+            </el-table-column>
+            <el-table-column
+                prop="remark"
+                align="center"
+                label="备注信息">
+            </el-table-column>
+            <el-table-column
+                prop="user_id"
+                align="center"
+                width="140"
+                label="操作人">
+            </el-table-column>
+            <el-table-column
+                prop="create_time"
+                align="center"
+                width="140"
+                label="时间">
+              <template slot-scope="{row}">
+                {{row.create_time | parseTime('')}}
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
+    </ldlControlWindow>
   </div>
 </template>
 
 <script>
 import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
-import {stockCheckList, add, edit, getDetails, stockCheckSubmit, stockCheckConfirm} from "@/api/DeliveryManage/InventoryManage/InventoryChecking";
+import {stockCheckList, add, edit, getDetails, stockCheckSubmit, stockCheckConfirm, pd_log} from "@/api/DeliveryManage/InventoryManage/InventoryChecking";
 import {distributCompany} from "@/api/DeliveryManage/DeliverySettings/AreaMaintenance";
 import {getSku, simpleList} from "@/api/PurchaseManage/GoodsInfo/GoodsManage";
+import ldlControlWindow from "@/components/ldlControlWindow";
 
 export default {
   name: "InventoryChecking",
   components:{
     ldlTablePagination,
     buttonBox,
+    ldlControlWindow,
   },
   data(){
     return{
+      getStockLog:[],
+      bottomList:{getStockLog:[]},
+      tabPaneValue:'getStockLog',
       addAttributeState:false,
       form:{},
       editFrom:{},
@@ -137,6 +191,16 @@ export default {
       companyId_arr:[],//配送数组
       product_id_arr:[],//商品数组
       product_sku_id_arr:[],//商品规格
+      departmentArr: [
+        "品牌运营部",
+        "市场运营部",
+        "产品部",
+        "总部客服部",
+        "合肥配送",
+        "人事部",
+        "财务部",
+        "其他",
+      ],
       options:[
           {value:1,label:"产品过期"},
           {value:2,label:"产品损坏"},
@@ -148,7 +212,7 @@ export default {
       /**必要参数*/
       selectRow:undefined, //选中行
       pagingData:undefined,//getList的传参
-      bottomHeight: '0%',//底部高度
+      bottomHeight: '30%',//底部高度
       buttonBoxState:true,//开启按钮行的状态
       tableDataInfo:{ //表格信息
         dataListInfo:[
@@ -162,8 +226,9 @@ export default {
           {prop:'release_money',label:'释放金额',},
           {prop:'zeren_money',label:'责任金额',sortable:"custom"},
           {prop:'reason',label:'盘点原因'},
-          // {prop:'remarks',label:'备注信息'},
+          {prop:'remark',label:'备注信息'},
           {prop:'responsible',label:'责任方',data:[{key:1,name:'本单位'},{key:2,name:'总部'}],},
+          {prop:'department',label:'申购部门',},
           {prop:'submit_time',label:'提交时间',type:"date",sortable:"custom"},
           {prop:'affirm_time',label:'确认时间',type:"date",sortable:"custom"},
           {prop:'create_time',label:'录入时间',type:"date",sortable:"custom"},
@@ -264,6 +329,7 @@ export default {
 
     listClick(val){
       this.getAllinfo(val.id)
+      this.changeTab()
     },
 
     //获取详情
@@ -272,6 +338,23 @@ export default {
         this.editFrom = res.data
       })
     },
+
+    //获取操作日志
+    getPdLog(id){
+      pd_log({id:id}).then((res)=>{
+        this.editFrom = res.data
+      })
+    },
+
+    changeTab(){
+      let e = this.selectRow
+      if(this.tabPaneValue==='getStockLog'){
+        pd_log({id:e.id}).then(res=>{
+          this.bottomList.getStockLog=res.data
+        })
+      }
+    },
+
 
     // 配送公司搜索
     brandMethod(e){
@@ -323,6 +406,7 @@ export default {
             number:this.editFrom.number,
             responsible:this.editFrom.responsible,
             reason:this.editFrom.reason,
+            department:this.editFrom.department
           }
           this.brandMethod_goodsSku(this.form.product_id)
           this.addAttributeState=true
