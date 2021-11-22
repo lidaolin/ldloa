@@ -326,6 +326,8 @@ export default {
       tableDataInfo: { //表格信息
         dataListInfo: [
           {prop: 'purchase_code', label: '进货单号',},
+          {prop: 'company_id', label: '进货单位',},
+          {prop: 'b_company_id', label: '发货单位',},
           {
             prop: 'purchase_status',
             type: 'tag',
