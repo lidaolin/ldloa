@@ -503,6 +503,7 @@ export default {
             this.inputDialogVisible=false
             this.$message.success('录入成功')
             this.view_text=[]
+            this.orderInfo = {}
             this.selectRow = undefined
             this.getList()
           }).catch(()=>{})
