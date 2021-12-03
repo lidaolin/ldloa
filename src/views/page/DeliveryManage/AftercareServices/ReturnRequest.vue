@@ -175,6 +175,167 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog
+        v-el-drag-dialog
+        top="3%"
+        width="60%"
+        custom-class="minWidth700"
+        :visible.sync="inputDialogVisible"
+        :destroy-on-close="false"
+        :close-on-click-modal="false"
+        title="售后录入"
+        size="mini"
+        center
+    >
+      <el-form style="padding-right:5px;" ref="inputForm" label-position="left" :model="inputForm" label-width="100px" size="mini" >
+        <el-form-item label="订单编号:" prop="order_code" :rules="{ required: true, message: '退货原因不能为空', trigger: 'blur' }">
+          <el-input placeholder="请输入订单号" v-model="inputForm.order_code" clearable>
+            <el-button slot="append" icon="el-icon-search" @click="searchOrder"></el-button>
+          </el-input>
+        </el-form-item>
+        <div v-if="orderInfo.order_code">
+        <el-form-item label="申请类型" prop="apply_type" :rules="{ required: true, message: '申请类型不能为空', trigger: 'blur' }">
+          <el-radio-group v-model="inputForm.apply_type">
+            <el-radio :label="1">退款（无须退货）</el-radio>
+            <el-radio :label="2">退款退货</el-radio>
+            <el-radio :label="3">换货</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="收货状态" prop="receipt_status" :rules="{ required: true, message: '收货状态不能为空', trigger: 'blur' }">
+          <el-radio-group v-model="inputForm.receipt_status">
+            <el-radio :label="1">未收到货</el-radio>
+            <el-radio :label="2">已收到货（仅针对退款）</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="申请原因" prop="refund_reason_id" :rules="{ required: true, message: '申请原因不能为空', trigger: 'blur' }">
+           <el-select v-model="inputForm.refund_reason_id" clearable filterable :filter-method="getRefund" placeholder="请选择">
+            <el-option
+              v-for="item in refund_reason_id_arr"
+              :key="item.reason_id"
+              :label="item.name"
+              :value="item.reason_id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="退款责任" prop="return_reason_id" :rules="{ required: true, message: '退款责任不能为空', trigger: 'blur' }">
+           <el-select v-model="inputForm.return_reason_id" clearable filterable :filter-method="getReturn" placeholder="请选择">
+            <el-option
+              v-for="item in return_reason_id_arr"
+              :key="item.cause_id"
+              :label="item.cause_name"
+              :value="item.cause_id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="退货责任金" prop="liability_amount" :rules="{ required: true, message: '退货责任金不能为空', trigger: 'blur' }">
+           <el-input-number style="width: 193px;" v-model="inputForm.liability_amount" controls-position="right" :precision="2" :step="0.01" :min="0" />
+        </el-form-item>
+        <el-form-item label="售后商品">
+          <div style="margin-bottom: 20px;" v-if="orderInfo.product">
+            <el-table
+            :data="orderInfo.product"
+            border
+            height="300px"
+            size='mini'
+            style="width: 100%">
+            <el-table-column
+              prop="product_name"
+              label="商品名称"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              prop="val_name"
+              label="商品规格"
+              align="center">
+                <template slot-scope="scope">
+                  <div v-for="(item,index) of scope.row.val_name" :key="index">{{item}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column
+              prop="price"
+              label="价格"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              prop="val_name"
+              label="商品规格"
+              align="center">
+                <template slot-scope="scope">
+                  <span>{{scope.row.shop_type==1?'普通商品':'加购商品'}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+              prop="number"
+              label="购买数量"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              label="操作" 
+              align="center">
+                <template slot-scope="scope">
+                  <el-button @click="handleDle(scope.$index,orderInfo.product)" size="small">删除</el-button>
+                </template>
+            </el-table-column>
+            </el-table>
+          </div> 
+        </el-form-item>
+        <el-form-item label="退款金额" prop="refund_money" :rules="{ required: true, message: '退款金额不能为空', trigger: 'blur' }">
+           <el-input-number style="width: 193px;" v-model="inputForm.refund_money" controls-position="right" :precision="2" :step="0.01" :min="0" />
+        </el-form-item>
+        <el-form-item label="退款凭证图片">
+           <el-upload
+              action="/api/admin/upload_image/upload"
+              list-type="picture-card"
+              multiple
+              show-file-list
+              accept="image/*"
+              :file-list.sync="view_text"
+              :on-success="uploadSuccess"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible" append-to-body>
+            <img width="100%" :src="dialogImageUrl" alt="">
+          </el-dialog>
+        </el-form-item>
+        <el-form-item label="备注">
+           <el-input v-model="inputForm.refund_reason_mark" type="textarea" />
+        </el-form-item>
+        <div>
+          <div style="border: 1px dashed #EBEEF5; padding:5px; margin-bottom: 20px;">
+            <h4>订单信息：</h4>
+            <el-row style="margin-bottom: 20px;">
+              <el-col :span="8">订单编号：{{orderInfo.order_code}}</el-col>
+              <el-col :span="8">优惠金额：{{orderInfo.discount_fee}}</el-col>
+              <el-col :span="8">商品金额：{{orderInfo.product_fee}}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">运费：{{orderInfo.ke_zf_freight}}</el-col>
+              <el-col :span="8">支付金额：{{orderInfo.ke_zf_fee}}</el-col>
+            </el-row>
+          </div>
+          <div style="border: 1px dashed #EBEEF5; padding:5px; margin-bottom: 20px;" v-if="orderInfo.address">
+            <h4>收货信息：</h4>
+            <el-row style="margin-bottom: 20px;">
+              <el-col :span="8">收件人：{{orderInfo.address.sj_name}}</el-col>
+              <el-col :span="8">手机号：{{orderInfo.address.sj_phone}}</el-col>
+              <el-col :span="8">省市区：{{orderInfo.address.province+'/'+orderInfo.address.city+'/'+orderInfo.address.area}}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">详细地址：{{orderInfo.address.address}}</el-col>
+            </el-row>
+          </div>
+        </div>
+        <el-form-item>
+          <div style="text-align: right;">
+            <el-button @click="inputDialogVisible=false">取 消</el-button>
+            <el-button type="primary" @click="onInput">录 入</el-button>
+          </div>
+        </el-form-item>
+        </div>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -182,7 +343,7 @@
 import ldlTablePagination from '@/components/ldlTablePagination'
 import ldlControlWindow from '@/components/ldlControlWindow'
 import buttonBox from '@/components/buttonBox'
-import {index, customerInfo, orderInfo, toExamine, log, refund, replace, cancelRefund} from "@/api/DeliveryManage/AftercareServices/ReturnRequest";
+import {index, customerInfo, orderInfo, toExamine, log, refund, replace, cancelRefund, addRefund, searchOrder, refundReason, returnReason} from "@/api/DeliveryManage/AftercareServices/ReturnRequest";
 export default {
   name: "ReturnRequest",
   components:{
@@ -192,6 +353,16 @@ export default {
   },
   data(){
     return{
+      //售后录入
+      inputDialogVisible: false,
+      inputForm:{},
+      orderInfo:{},
+      refund_reason_id_arr:[],
+      return_reason_id_arr:[],
+      view_text:[],
+      dialogImageUrl: '',
+      dialogVisible: false,
+      //售后录入
       addAttributeState:false,
       form:{},
       applyGoodsArr:[],
@@ -233,6 +404,112 @@ export default {
   },
   methods:{
 
+    //上传成功
+    uploadSuccess(response, file, fileList){
+      let that = this
+      let view_text=[]
+      fileList.forEach(function (item) {
+        if (item.response){
+          view_text.push({name:'图片'+item.name,url:item.response.data.url})
+        }else{
+          view_text.push(item)
+        }
+      });
+      that.view_text=view_text
+    },
+
+    //多图的上传完成点击图片的钩子
+    handlePreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+
+    //多图的删除
+    handleRemove(file, fileList) {
+      this.view_text=fileList
+    },
+
+    //搜索订单
+    searchOrder(){
+      let data = {
+        order_code:this.inputForm.order_code
+      }
+      if(data.order_code){
+        searchOrder(data).then(res=>{
+          this.orderInfo = res.data
+        })
+      }else{
+        this.$message({
+          type: 'warning',
+          message: '请输入订单编号'
+        });
+      }
+
+    },
+
+    //获取申请原因
+    getRefund(){
+      refundReason().then(res=>{
+        this.refund_reason_id_arr = res.data
+      })
+    },
+
+    //获取退款责任
+    getReturn(){
+      returnReason().then(res=>{
+        this.return_reason_id_arr = res.data
+      })
+    },
+
+    //删除商品
+    handleDle(index, rows){
+      rows.splice(index, 1)
+    },
+
+    //售后录入
+    afterSalesEntry(){
+      this.view_text=[]
+      this.inputForm={}
+      this.$nextTick(function () {
+        this.$refs.inputForm.clearValidate();
+      });
+      this.getRefund()
+      this.getReturn()
+      this.inputDialogVisible = true
+    },
+
+    onInput(){
+      this.$refs.inputForm.validate((valid) => {
+        if(valid){
+          let inputForm ={... this.inputForm}
+          let view_text=[... this.view_text]
+          inputForm.view_text=[]
+          for (let i = 0; i < view_text.length; i++) {
+            inputForm.view_text.push(view_text[i].url)
+          }
+          let data = {
+            order_code: inputForm.order_code,
+            apply_type: inputForm.apply_type,
+            receipt_status: inputForm.receipt_status,
+            refund_reason_id: inputForm.refund_reason_id,
+            return_reason_id: inputForm.return_reason_id,
+            liability_amount: inputForm.liability_amount,
+            refund_product: this.orderInfo.product,
+            refund_money: inputForm.refund_money,
+            refund_reason_mark: inputForm.refund_reason_mark,
+            refund_reason_image: inputForm.view_text,
+          }
+          addRefund(data).then(()=>{
+            this.inputDialogVisible=false
+            this.$message.success('录入成功')
+            this.view_text=[]
+            this.selectRow = undefined
+            this.getList()
+          }).catch(()=>{})
+        }
+      })
+    },
+
     //确认退款(refund)/确认退换(return)
     confirmOperation(e){
       if(this.selectRow){
@@ -247,6 +524,7 @@ export default {
                   type: 'success',
                   message: res.msg
                 })
+                this.selectRow = undefined
                 this.getList()
               })
             }else {
@@ -269,6 +547,7 @@ export default {
                 type: 'success',
                 message: res.msg
               })
+              this.selectRow = undefined
               this.getList()
             })
           }).catch(() => {
@@ -306,6 +585,7 @@ export default {
           toExamine(data).then(()=>{
             this.addAttributeState=false
             this.$message.success('审核成功')
+            this.selectRow = undefined
             this.getList()
           })
         }
@@ -328,6 +608,8 @@ export default {
               type: 'success',
               message: '操作成功'
             });
+            this.selectRow = undefined
+            this.getList();
           })
         }).catch(() => {
           this.$message({

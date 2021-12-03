@@ -100,3 +100,67 @@ export function cancelRefund(data) {
         data: data
     })
 }
+
+/** 搜索订单
+参数名	必选	类型	说明
+order_code	是	string	订单号
+ */
+export function searchOrder(data) {
+    return request({
+        url: '/admin/order_refund/searchOrder',
+        method: 'post',
+        data: data
+    })
+}
+
+/** 申请原因列表
+参数名	必选	类型	说明
+order_code	是	string	订单号
+ */
+export function refundReason() {
+    return request({
+        url: '/admin/order_refund/refundReason',
+        method: 'post',
+        data: {}
+    })
+}
+
+/** 退款责任列表
+参数名	必选	类型	说明
+order_code	是	string	订单号
+ */
+export function returnReason() {
+    return request({
+        url: '/admin/order_refund/returnReason',
+        method: 'post',
+        data: {}
+    })
+}
+
+/** 录入售后
+参数名	必选	类型	说明
+order_code	是	string	订单号
+apply_type	是	int	申请类型 1退款（无须退货） 2退款退货 3换货
+receipt_status	是	int	收货状态 1未收到货 2已收到货（仅针对退款）
+refund_reason_id	是	int	申请原因id
+return_reason_id	是	int	退款原因id
+liability_amount	是	float	退货责任金
+refund_product	是	array	售后商品
+refund_money	可选	float	退款金额 用户可修改
+refund_reason_mark	可选	string	售后备注
+refund_reason_image	可选	array	退款凭证图片
+refund_product 参数
+参数名	必选	类型	说明
+id	是	int	订单商品id
+product_id	是	int	商品id
+number	是	int	售后数量
+attr_val_ids	是	array	商品规格 [“519”,”520”,”521”,”522”,”540”]
+shop_type	是	int	商品类型 1-普通商品 2-加购商品
+ */
+export function addRefund(data) {
+    return request({
+        url: '/admin/order_refund/addRefund',
+        method: 'post',
+        data: data
+    })
+}
