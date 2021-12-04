@@ -169,6 +169,7 @@ name: "searchBox",
             db_table: dataInfo[i].db_table,
             search_way: dataInfo[i].search_way,
             frame_type:dataInfo[i].frame_type,
+            search_name:dataInfo[i].search_name,
             a:"",
             b:""
           };
