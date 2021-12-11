@@ -150,3 +150,16 @@ export function clearInfo(data) {
         data: data
     })
 }
+
+/** 邮费修改
+    参数名	必选	类型	说明
+    id	是	int	发货单id
+    ps_fee	是	string	运费
+ */
+export function up_user_freight(data) {
+    return request({
+        url: '/admin/Deliver_Plfahuo/up_user_freight',
+        method: 'post',
+        data: data
+    })
+}

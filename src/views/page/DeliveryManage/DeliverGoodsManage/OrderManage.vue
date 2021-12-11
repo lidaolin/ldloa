@@ -490,6 +490,7 @@ import {
   manual_split,
   up_address,
   clearInfo,
+  up_user_freight,
 } from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
 import {searchKdManageList} from "@/api/DeliveryManage/DeliverySettings/ExpressManage";
 import {p_footer} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
@@ -601,6 +602,28 @@ export default {
   },
   methods: {
     
+    editPostage(){
+      if (this.selectRow) {
+        this.$prompt('', '邮费设置', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPlaceholder:'请输入邮费',
+          type:'Number',
+        }).then(({value}) => {
+          if(value){
+            up_user_freight({id: this.selectRow.id,ps_fee: value}).then(res => {
+              this.getList()
+              this.$message.success(res.msg)
+            })
+          }else{
+            this.$message.warning('邮费不能为空')
+          }
+        }).catch(() => {})
+      } else {
+        this.$message.error('请点击选中一行')
+      }
+    },
+
     //清除验货信息
     clearInspectionMsg(){
       if (this.selectRow) {
@@ -634,7 +657,6 @@ export default {
         var arr = [],index=this.selectionList.length-1
         arr.push(this.selectionList[index].province, this.selectionList[index].city, this.selectionList[index].area)
         this.areaValue = arr
-        console.log(this.areaValue,'999999999999')
         this.receivingForm = {
           id: this.selectionList[index].id,
           province: this.selectionList[index].province,
@@ -669,7 +691,6 @@ export default {
       let tabPaneValue = this.tabPaneValue
       let index = tabPaneValue.charAt(9)
       p_footer({id: this.selectRow.id, type: index}).then(res => {
-        console.log(res)
         let bottomList = {...this.bottomList}
         bottomList[this.tabPaneValue] = [...res.data]
         this.bottomList = {...bottomList}
