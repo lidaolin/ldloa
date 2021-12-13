@@ -199,6 +199,7 @@ export default {
         "合肥配送",
         "人事部",
         "财务部",
+        "APP运营",
         "其他",
       ],
       options:[
