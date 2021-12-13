@@ -208,7 +208,7 @@
 <!--        </el-form-item>-->
 
         <br>
-        <el-form-item label="商品封面图:" prop="cover_link_img" :rules="{ required: true, message: '请上传商品封面图', trigger: 'blur' }">
+        <el-form-item label="商品封面:" prop="cover_link_img" :rules="{ required: true, message: '请上传商品封面图', trigger: 'blur' }">
           <el-upload
               class="avatar-uploader"
               action="/admin/upload_image/upload"
@@ -219,6 +219,12 @@
             <img v-if="form.cover_link_img" alt="" :src="form.cover_link_img" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
+        </el-form-item>
+        <el-form-item label="是否在APP显示:" prop="is_show" :rules="{ required: true, message: '请选择是或者否', trigger: 'blur' }">
+          <el-radio-group v-model="form.is_show">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="2">否</el-radio>
+          </el-radio-group>
         </el-form-item>
         <br>
         <el-form-item label="商品视频:" prop="video_link" :rules="{ message: '请上传商品视频', trigger: 'blur' }">
@@ -593,6 +599,7 @@ export default {
           // {prop:'high_size',label:'商品高度',unit:'cm',sortable:"custom"},
           // {prop:'volume_size',label:'商品体积',unit:'cm³',sortable:"custom"},
           // {prop:'product_lock_fee',label:'商品成本价',unit:'￥',width:100,},
+          {prop:'is_show',type:'tag',label:'是否在APP显示',data:[{type:'',key:1,name:'是'},{type:'danger',key:2,name:'否'}],},
           {prop:'status',type:'tag',label:'状态',data:[{type:'success',key:1,name:'在售'},{type:'danger',key:2,name:'下架'}],},
           {prop:'is_delete',type:'tag',label:'是否删除',data:[{type:'danger',key:2,name:'已删除'}],width:'80'},
           {prop:'create_time',label:'创建时间',type:"date",sortable:"custom",width:'140'},
@@ -963,7 +970,7 @@ export default {
         this.classifyMethod()
         this.view_text=[]
         this.view_textTwo=[]
-        this.form={attr:[],status:1,product_carousel_img:[],view_text:[],product_classify_id:[]}
+        this.form={attr:[],status:1,product_carousel_img:[],view_text:[],product_classify_id:[],is_show:1}
         this.changeGoodsState=true
       }else{
         if(this.selectRow){
