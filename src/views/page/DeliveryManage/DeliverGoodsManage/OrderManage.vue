@@ -324,13 +324,18 @@
                 label="客户支付金额">
             </el-table-column>
             <el-table-column
+                width="120"
                 prop="order_type"
                 align="center"
                 label="订单来源">
               <template slot-scope="scope">
-                <!--                 2021年2月25日17:35:52 吴老板说的和文档相反-->
+                <!--2021年2月25日17:35:52 吴老板说的和文档相反-->
+                <!--2021年12月13日13:23:05 吴老板说不需要转义-->
+                <!--<el-tag v-if="scope.row.order_type===4">体验订单</el-tag>
+                <el-tag v-if="scope.row.order_type===3">外部订单</el-tag> 
                 <el-tag v-if="scope.row.order_type===2">小程序订单</el-tag>
-                <el-tag v-if="scope.row.order_type===1" type="success">app订单</el-tag>
+                <el-tag v-if="scope.row.order_type===1" type="success">app订单</el-tag>-->
+                <el-tag size="mini" type="success">{{scope.row.order_type}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column
