@@ -193,146 +193,151 @@
             <el-button slot="append" icon="el-icon-search" @click="searchOrder"></el-button>
           </el-input>
         </el-form-item>
-        <div v-if="orderInfo.order_code">
-        <el-form-item label="申请类型" prop="apply_type" :rules="{ required: true, message: '申请类型不能为空', trigger: 'blur' }">
-          <el-radio-group v-model="inputForm.apply_type">
-            <el-radio :label="1">退款（无须退货）</el-radio>
-            <el-radio :label="2">退款退货</el-radio>
-            <el-radio :label="3">换货</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="收货状态" prop="receipt_status" :rules="{ required: true, message: '收货状态不能为空', trigger: 'blur' }">
-          <el-radio-group v-model="inputForm.receipt_status">
-            <el-radio :label="1">未收到货</el-radio>
-            <el-radio :label="2">已收到货（仅针对退款）</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="申请原因" prop="refund_reason_id" :rules="{ required: true, message: '申请原因不能为空', trigger: 'blur' }">
-           <el-select v-model="inputForm.refund_reason_id" clearable filterable :filter-method="getRefund" placeholder="请选择">
-            <el-option
-              v-for="item in refund_reason_id_arr"
-              :key="item.reason_id"
-              :label="item.name"
-              :value="item.reason_id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="退款责任" prop="return_reason_id" :rules="{ required: true, message: '退款责任不能为空', trigger: 'blur' }">
-           <el-select v-model="inputForm.return_reason_id" clearable filterable :filter-method="getReturn" placeholder="请选择">
-            <el-option
-              v-for="item in return_reason_id_arr"
-              :key="item.cause_id"
-              :label="item.cause_name"
-              :value="item.cause_id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="退货责任金" prop="liability_amount" :rules="{ required: true, message: '退货责任金不能为空', trigger: 'blur' }">
-           <el-input-number style="width: 193px;" v-model="inputForm.liability_amount" controls-position="right" :precision="2" :step="0.01" :min="0" />
-        </el-form-item>
-        <el-form-item label="售后商品">
-          <div style="margin-bottom: 20px;" v-if="orderInfo.product">
-            <el-table
-            :data="orderInfo.product"
-            border
-            height="300px"
-            size='mini'
-            style="width: 100%">
-            <el-table-column
-              prop="product_name"
-              label="商品名称"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="val_name"
-              label="商品规格"
-              align="center">
+        <div v-if="inputForm.order_code">
+          <el-form-item label="申请类型" prop="apply_type" :rules="{ required: true, message: '申请类型不能为空', trigger: 'blur' }">
+            <el-radio-group v-model="inputForm.apply_type">
+              <el-radio :label="1">退款（无须退货）</el-radio>
+              <el-radio :label="2">退款退货</el-radio>
+              <el-radio :label="3">换货</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="收货状态" prop="receipt_status" :rules="{ required: true, message: '收货状态不能为空', trigger: 'blur' }">
+            <el-radio-group v-model="inputForm.receipt_status">
+              <el-radio :label="1">未收到货</el-radio>
+              <el-radio :label="2">已收到货（仅针对退款）</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="申请原因" prop="refund_reason_id" :rules="{ required: true, message: '申请原因不能为空', trigger: 'blur' }">
+            <el-select v-model="inputForm.refund_reason_id" clearable filterable :filter-method="getRefund" placeholder="请选择">
+              <el-option
+                v-for="item in refund_reason_id_arr"
+                :key="item.reason_id"
+                :label="item.name"
+                :value="item.reason_id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="退款责任" prop="return_reason_id" :rules="{ required: true, message: '退款责任不能为空', trigger: 'blur' }">
+            <el-select v-model="inputForm.return_reason_id" clearable filterable :filter-method="getReturn" placeholder="请选择">
+              <el-option
+                v-for="item in return_reason_id_arr"
+                :key="item.cause_id"
+                :label="item.cause_name"
+                :value="item.cause_id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="退货责任金" prop="liability_amount" :rules="{ required: true, message: '退货责任金不能为空', trigger: 'blur' }">
+            <el-input-number style="width: 193px;" v-model="inputForm.liability_amount" controls-position="right" :precision="2" :step="0.01" :min="0" />
+            <span style="margin-left:15px;color:red;">注：退货责任金 = 商品价格（已损坏）* 数量 + 来回运费</span>
+          </el-form-item>
+          <el-form-item label="售后商品">
+            <div style="margin-bottom: 20px;">
+              <el-table
+              :data="orderInfo.product"
+              border
+              height="300px"
+              size='mini'
+              style="width: 100%">
+              <el-table-column
+                prop="product_name"
+                label="商品名称"
+                align="center">
+              </el-table-column>
+              <el-table-column
+                prop="val_name"
+                label="商品规格"
+                align="center">
+                  <template slot-scope="scope">
+                    <div v-for="(item,index) of scope.row.val_name" :key="index">{{item}}</div>
+                  </template>
+              </el-table-column>
+              <el-table-column
+                prop="price"
+                label="价格"
+                align="center">
+              </el-table-column>
+              <el-table-column
+                prop="val_name"
+                label="商品规格"
+                align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.shop_type==1?'普通商品':'加购商品'}}</span>
+                  </template>
+              </el-table-column>
+              <el-table-column
+                prop="number"
+                width="160"
+                label="购买数量"
+                align="center">
                 <template slot-scope="scope">
-                  <div v-for="(item,index) of scope.row.val_name" :key="index">{{item}}</div>
+                  <el-input-number v-model="scope.row.number" size="mini" :min="1" :step="1" :max="scope.row.max_number"/>
                 </template>
-            </el-table-column>
-            <el-table-column
-              prop="price"
-              label="价格"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="val_name"
-              label="商品规格"
-              align="center">
-                <template slot-scope="scope">
-                  <span>{{scope.row.shop_type==1?'普通商品':'加购商品'}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column
-              prop="number"
-              label="购买数量"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              label="操作" 
-              align="center">
-                <template slot-scope="scope">
-                  <el-button @click="handleDle(scope.$index,orderInfo.product)" size="small">删除</el-button>
-                </template>
-            </el-table-column>
-            </el-table>
-          </div> 
-        </el-form-item>
-        <el-form-item label="退款金额" prop="refund_money" :rules="{ required: true, message: '退款金额不能为空', trigger: 'blur' }">
-           <el-input-number style="width: 193px;" v-model="inputForm.refund_money" controls-position="right" :precision="2" :step="0.01" :min="0" />
-        </el-form-item>
-        <el-form-item label="退款凭证图片">
-           <el-upload
-              action="/api/admin/upload_image/upload"
-              list-type="picture-card"
-              multiple
-              show-file-list
-              accept="image/*"
-              :file-list.sync="view_text"
-              :on-success="uploadSuccess"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-          <el-dialog :visible.sync="dialogVisible" append-to-body>
-            <img width="100%" :src="dialogImageUrl" alt="">
-          </el-dialog>
-        </el-form-item>
-        <el-form-item label="备注">
-           <el-input v-model="inputForm.refund_reason_mark" type="textarea" />
-        </el-form-item>
-        <div>
-          <div style="border: 1px dashed #EBEEF5; padding:5px; margin-bottom: 20px;">
-            <h4>订单信息：</h4>
-            <el-row style="margin-bottom: 20px;">
-              <el-col :span="8">订单编号：{{orderInfo.order_code}}</el-col>
-              <el-col :span="8">优惠金额：{{orderInfo.discount_fee}}</el-col>
-              <el-col :span="8">商品金额：{{orderInfo.product_fee}}</el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">运费：{{orderInfo.ke_zf_freight}}</el-col>
-              <el-col :span="8">支付金额：{{orderInfo.ke_zf_fee}}</el-col>
-            </el-row>
+              </el-table-column>
+              <el-table-column
+                label="操作" 
+                align="center">
+                  <template slot-scope="scope">
+                    <el-button @click="handleDle(scope.$index,orderInfo.product)" size="small">删除</el-button>
+                  </template>
+              </el-table-column>
+              </el-table>
+            </div> 
+          </el-form-item>
+          <el-form-item label="退款金额" prop="refund_money" :rules="{ required: true, message: '退款金额不能为空', trigger: 'blur' }">
+            <el-input-number style="width: 193px;" v-model="inputForm.refund_money" controls-position="right" :precision="2" :step="0.01" :min="0" />
+          </el-form-item>
+          <el-form-item label="退款凭证图片">
+            <el-upload
+                action="/api/admin/upload_image/upload"
+                list-type="picture-card"
+                multiple
+                show-file-list
+                accept="image/*"
+                :file-list.sync="view_text"
+                :on-success="uploadSuccess"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove">
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible" append-to-body>
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="inputForm.refund_reason_mark" type="textarea" />
+          </el-form-item>
+          <div>
+            <div style="border: 1px dashed #EBEEF5; padding:5px; margin-bottom: 20px;">
+              <h4>订单信息：</h4>
+              <el-row style="margin-bottom: 20px;">
+                <el-col :span="8">订单编号：{{orderInfo.order_code}}</el-col>
+                <el-col :span="8">优惠金额：{{orderInfo.discount_fee}}</el-col>
+                <el-col :span="8">商品金额：{{orderInfo.product_fee}}</el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="8">运费：{{orderInfo.ke_zf_freight}}</el-col>
+                <el-col :span="8">支付金额：{{orderInfo.ke_zf_fee}}</el-col>
+              </el-row>
+            </div>
+            <div style="border: 1px dashed #EBEEF5; padding:5px; margin-bottom: 20px;" v-if="orderInfo.address">
+              <h4>收货信息：</h4>
+              <el-row style="margin-bottom: 20px;">
+                <el-col :span="8">收件人：{{orderInfo.address.sj_name}}</el-col>
+                <el-col :span="8">手机号：{{orderInfo.address.sj_phone}}</el-col>
+                <el-col :span="8">省市区：{{orderInfo.address.province+'/'+orderInfo.address.city+'/'+orderInfo.address.area}}</el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="8">详细地址：{{orderInfo.address.address}}</el-col>
+              </el-row>
+            </div>
           </div>
-          <div style="border: 1px dashed #EBEEF5; padding:5px; margin-bottom: 20px;" v-if="orderInfo.address">
-            <h4>收货信息：</h4>
-            <el-row style="margin-bottom: 20px;">
-              <el-col :span="8">收件人：{{orderInfo.address.sj_name}}</el-col>
-              <el-col :span="8">手机号：{{orderInfo.address.sj_phone}}</el-col>
-              <el-col :span="8">省市区：{{orderInfo.address.province+'/'+orderInfo.address.city+'/'+orderInfo.address.area}}</el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">详细地址：{{orderInfo.address.address}}</el-col>
-            </el-row>
-          </div>
-        </div>
-        <el-form-item>
-          <div style="text-align: right;">
-            <el-button @click="inputDialogVisible=false">取 消</el-button>
-            <el-button type="primary" @click="onInput">录 入</el-button>
-          </div>
-        </el-form-item>
+          <el-form-item>
+            <div style="text-align: right;">
+              <el-button @click="inputDialogVisible=false">取 消</el-button>
+              <el-button type="primary" @click="onInput">录 入</el-button>
+            </div>
+          </el-form-item>
         </div>
       </el-form>
     </el-dialog>
@@ -402,6 +407,7 @@ export default {
       this.getList()
     })
   },
+
   methods:{
 
     //上传成功
@@ -431,6 +437,7 @@ export default {
 
     //搜索订单
     searchOrder(){
+      this.orderInfo={}
       let data = {
         order_code:this.inputForm.order_code
       }
@@ -469,7 +476,10 @@ export default {
     //售后录入
     afterSalesEntry(){
       this.view_text=[]
-      this.inputForm={}
+      this.inputForm={
+        order_code:'D211217094241516450'
+      }
+      this.orderInfo={}
       this.$nextTick(function () {
         this.$refs.inputForm.clearValidate();
       });

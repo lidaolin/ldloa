@@ -415,7 +415,6 @@ export default {
           this.$message.error('请选中一行')
         }
       }else{
-
         this.form={
           responsible:1,
           product_sku_id:''
