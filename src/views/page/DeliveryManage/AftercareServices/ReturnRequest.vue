@@ -189,11 +189,11 @@
     >
       <el-form style="padding-right:5px;" ref="inputForm" label-position="left" :model="inputForm" label-width="100px" size="mini" >
         <el-form-item label="订单编号:" prop="order_code" :rules="{ required: true, message: '退货原因不能为空', trigger: 'blur' }">
-          <el-input placeholder="请输入订单号" v-model="inputForm.order_code" clearable>
+          <el-input placeholder="请输入订单号" v-model="inputForm.order_code" @input="searchChange" clearable>
             <el-button slot="append" icon="el-icon-search" @click="searchOrder"></el-button>
           </el-input>
         </el-form-item>
-        <div v-if="inputForm.order_code">
+        <div v-if="orderInfo">
           <el-form-item label="申请类型" prop="apply_type" :rules="{ required: true, message: '申请类型不能为空', trigger: 'blur' }">
             <el-radio-group v-model="inputForm.apply_type">
               <el-radio :label="1">退款（无须退货）</el-radio>
@@ -273,7 +273,7 @@
                 <template slot-scope="scope">
                   <el-input-number v-model="scope.row.number" size="mini" :min="1" :step="1" :max="scope.row.max_number"/>
                 </template>
-              </el-table-column>
+              </el-table-column> 
               <el-table-column
                 label="操作" 
                 align="center">
@@ -312,12 +312,17 @@
               <h4>订单信息：</h4>
               <el-row style="margin-bottom: 20px;">
                 <el-col :span="8">订单编号：{{orderInfo.order_code}}</el-col>
-                <el-col :span="8">优惠金额：{{orderInfo.discount_fee}}</el-col>
+                <el-col :span="8">订单优惠金额：{{orderInfo.discount_fee}}</el-col>
                 <el-col :span="8">商品金额：{{orderInfo.product_fee}}</el-col>
               </el-row>
-              <el-row>
+              <el-row style="margin-bottom: 20px;">
                 <el-col :span="8">运费：{{orderInfo.ke_zf_freight}}</el-col>
                 <el-col :span="8">支付金额：{{orderInfo.ke_zf_fee}}</el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="8">津贴优惠：{{orderInfo.allowance_fee}}</el-col>
+                <el-col :span="8">加价购优惠：{{orderInfo.additional_purchase_fee}}</el-col>
+                <el-col :span="8">优惠券优惠：{{orderInfo.coupon_price}}</el-col>
               </el-row>
             </div>
             <div style="border: 1px dashed #EBEEF5; padding:5px; margin-bottom: 20px;" v-if="orderInfo.address">
@@ -361,7 +366,7 @@ export default {
       //售后录入
       inputDialogVisible: false,
       inputForm:{},
-      orderInfo:{},
+      orderInfo:undefined,
       refund_reason_id_arr:[],
       return_reason_id_arr:[],
       view_text:[],
@@ -435,9 +440,14 @@ export default {
       this.view_text=fileList
     },
 
+    searchChange(e){
+      if(!e){
+        this.orderInfo=undefined
+      }
+    },
+
     //搜索订单
     searchOrder(){
-      this.orderInfo={}
       let data = {
         order_code:this.inputForm.order_code
       }
@@ -477,9 +487,8 @@ export default {
     afterSalesEntry(){
       this.view_text=[]
       this.inputForm={
-        order_code:'D211217094241516450'
+        order_code:''
       }
-      this.orderInfo={}
       this.$nextTick(function () {
         this.$refs.inputForm.clearValidate();
       });
@@ -513,7 +522,7 @@ export default {
             this.inputDialogVisible=false
             this.$message.success('录入成功')
             this.view_text=[]
-            this.orderInfo = {}
+            this.orderInfo = undefined
             this.selectRow = undefined
             this.getList()
           }).catch(()=>{})
