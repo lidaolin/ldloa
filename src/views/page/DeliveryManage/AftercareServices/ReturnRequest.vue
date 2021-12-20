@@ -282,7 +282,7 @@
                   </template>
               </el-table-column>
               </el-table>
-              <p>售后商品总价：{{'￥'+addGoodsPrice}}<span style="margin-left:15px;">( 注:该价格仅作为退款金额参考 )</span></p>
+              <p>售后商品总价：{{'￥'+addGoodsPrice.toFixed(2)}}<span style="margin-left:15px;">( 注:该价格仅作为退款金额参考 )</span></p>
             </div> 
           </el-form-item>
           <el-form-item label="退款金额" prop="refund_money" :rules="{ required: true, message: '退款金额不能为空', trigger: 'blur' }">
