@@ -503,7 +503,7 @@ export default {
     afterSalesEntry(){
       this.view_text=[]
       this.inputForm={
-        order_code:'D211217094241516450'
+        order_code:''
       }
       this.$nextTick(function () {
         this.$refs.inputForm.clearValidate();
