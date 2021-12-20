@@ -259,7 +259,7 @@
               </el-table-column>
               <el-table-column
                 prop="val_name"
-                label="商品规格"
+                label="商品类型"
                 align="center">
                   <template slot-scope="scope">
                     <span>{{scope.row.shop_type==1?'普通商品':'加购商品'}}</span>
@@ -282,6 +282,7 @@
                   </template>
               </el-table-column>
               </el-table>
+              <p>售后商品总价：{{'￥'+addGoodsPrice}}<span style="margin-left:15px;">( 注:该价格仅作为退款金额参考 )</span></p>
             </div> 
           </el-form-item>
           <el-form-item label="退款金额" prop="refund_money" :rules="{ required: true, message: '退款金额不能为空', trigger: 'blur' }">
@@ -407,6 +408,21 @@ export default {
       /**必要参数*/
     }
   },
+  computed:{
+    addGoodsPrice(){
+      let num = 0
+      if(this.orderInfo&&this.orderInfo.product){
+        let arr = [... this.orderInfo.product]
+        for (let i = 0; i < arr.length; i++) {
+          num += Number(arr[i].number)*Number(arr[i].price)
+        }
+        return num
+      }else{
+        return num
+      }
+    }
+  },
+
   mounted() {
     this.$nextTick(()=>{
       this.getList()
@@ -487,7 +503,7 @@ export default {
     afterSalesEntry(){
       this.view_text=[]
       this.inputForm={
-        order_code:''
+        order_code:'D211217094241516450'
       }
       this.$nextTick(function () {
         this.$refs.inputForm.clearValidate();
