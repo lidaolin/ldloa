@@ -109,7 +109,7 @@
             align="center"
             width="160">
           <template slot="header" slot-scope="scope">
-            统一修改价格
+            统一修改销售价格
             <el-input-number  v-if="scope" v-model="price" size="mini" :precision="2" :min="0" :step="0.1"></el-input-number>
           </template>
           <template slot-scope="{row}">
@@ -651,7 +651,7 @@ export default {
         this.getSku=[... getSku]
       }
     },
-    //统一修改价格
+    //统一修改销售价格
     price(){
       for (let i = 0; i < this.getSku.length; i++) {
         let getSku=[... this.getSku]
