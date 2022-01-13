@@ -1,12 +1,12 @@
 <template>
   <div class="pageWrap">
     <button-box :buttonBoxState.sync="buttonBoxState" @Callback="functionCall"></button-box>
-    <ldl-table-pagination :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
+    <ldl-table-pagination @listClick="listClick" :selectRow.sync="selectRow" :style="{height:'calc(100% - '+ bottomHeight + (buttonBoxState?' - 35px':' - 15px')+')'}" @getList="getList" :tableDataInfo="tableDataInfo" :pagingData.sync="pagingData"></ldl-table-pagination>
     <ldlControlWindow  class="ldlTab" :bottomHeight.sync="bottomHeight" ref="bottomHeight">
-      <el-tabs type="border-card" style="height: calc(100% - 4px)">
-        <el-tab-pane label="入库商品规格明细" style="height: calc(100% - 4px)">
+      <el-tabs type="border-card" v-model="tabPaneValue" @tab-click="changeTab" style="height: calc(100% - 4px)">
+        <el-tab-pane label="入库商品规格明细" name="skuDetailed" :disabled="!selectRow" style="height: calc(100% - 4px)">
           <el-table
-              :data="selectRow?selectRow.ruku_product:[]"
+              :data="bottomList[tabPaneValue]"
               border
               size="mini"
               height="100%"
@@ -17,7 +17,6 @@
             </el-table-column>
             <el-table-column
                 prop="product_attr_val_pash_array"
-                width="120"
                 align="center"
                 label="商品规格状态">
               <template slot-scope="{row}">
@@ -31,6 +30,39 @@
                 width="120"
                 align="center"
                 label="入库数量">
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="操作日志" name="getLog" :disabled="!selectRow" style="height:calc(100% - 4px)">
+          <el-table
+              :data="bottomList[tabPaneValue]"
+              border
+              size="mini"
+              height="100%"
+              style="width: 100%;">
+            <el-table-column
+                prop="type"
+                align="center"
+                label="操作类型">
+            </el-table-column>
+            <el-table-column
+                prop="remark"
+                align="center"
+                label="备注">
+            </el-table-column>
+            <el-table-column
+                prop="user_id"
+                align="center"
+                label="操作人">
+            </el-table-column>
+            <el-table-column
+                prop="create_time"
+                align="center"
+                width="140"
+                label="时间">
+              <template slot-scope="{row}">
+                {{row.create_time | parseTime('')}}
+              </template>
             </el-table-column>
           </el-table>
         </el-tab-pane>
@@ -163,7 +195,8 @@
             :data="form.ruku_product"
             border
             size="mini"
-            height="500px">
+            height="400px"
+            style="margin-bottom:18px;">
           <el-table-column
               prop="product_attr_val_pash"
               label="商品规格">
@@ -192,6 +225,9 @@
           </el-table-column>
 
         </el-table>
+        <el-form-item v-if="!this.form.id" label="备注信息:" style="width:100%;">
+          <el-input style="width:293px" v-model="form.remark" type="textarea"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="changeStoreState = false">取 消</el-button>
@@ -241,6 +277,8 @@ export default {
         dataList:[]//表格行信息
       },
       /**必要参数*/
+      bottomList:{skuDetailed:[],getLog:[]},
+      tabPaneValue:'skuDetailed',
     }
   },
   watch:{
@@ -271,6 +309,21 @@ export default {
   //
   // },
   methods:{
+    listClick(e){
+      if(this.tabPaneValue==='skuDetailed'){
+        this.bottomList.skuDetailed=e.ruku_product
+      }else{
+        this.bottomList.getLog=e.ruku_log
+      }
+    },
+    changeTab(){
+      let e = this.selectRow
+      if(this.tabPaneValue==='skuDetailed'){
+        this.bottomList.skuDetailed=e.ruku_product
+      }else{
+        this.bottomList.getLog=e.ruku_log
+      }
+    },
     delProductRow(){
 
       let ruku_product=[... this.form.ruku_product]
@@ -332,13 +385,13 @@ export default {
     },
     //上传
     upSubmit(){
-
       if (this.selectRow){
-        this.$confirm('是否提交此条申请?', '提示', {
+        this.$prompt('备注信息：', '是否提交此条申请？', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-        }).then(() => {
-          status({id:this.selectRow.id}).then(res=>{
+          inputPlaceholder:'请输入备注'
+        }).then(({value}) => {
+          status({id:this.selectRow.id,remark:value,}).then(res=>{
             this.$message({
               type: 'success',
               message: res.msg
