@@ -559,7 +559,7 @@ export default {
           {prop: 'bz_xin', label: '包货箱型',},
           {prop: 'product_number', label: '商品数量', sortable: "custom"},
           {prop: 'ps_fee', label: '配送费用', sortable: "custom"},
-          {prop: 'companyName', label: '配送单位',},
+          {prop: 'kdname', label: '快递公司',},
           {prop: 'sj_name', label: '收件人姓名',},
           {prop: 'sj_phone', label: '收件人手机',},
           {prop: 'province', label: '省',},
@@ -576,6 +576,7 @@ export default {
             prop: 'express_code',
             label: '快递单号',
           },
+          {prop: 'companyName', label: '配送单位',},
           {
             prop: 'express_status',
             type: 'tag',
