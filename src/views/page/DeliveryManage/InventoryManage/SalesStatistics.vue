@@ -11,6 +11,7 @@ import ldlTablePagination from "@/components/ldlTablePagination";
 import buttonBox from "@/components/buttonBox";
 import {countGoods} from "@/api/DeliveryManage/InventoryManage/SalesStatistics";
 
+
 export default {
   name: "SalesStatistics",
   components:{
