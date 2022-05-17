@@ -132,7 +132,7 @@ export default {
           tableDataInfo:{ //表格信息
         dataListInfo:[
           {prop:'addressee',label:'收件人',},
-          {prop:'create_time',label:'创建时间',type:"date",sortable:"custom",width:'140'},
+          {prop:'createTime',label:'创建时间',type:"date",sortable:"custom",width:'140'},
           {prop:'phone',label:'电话',},
           {prop:'tel',label:'固话',},
           {prop:"province",label:"省份"},
