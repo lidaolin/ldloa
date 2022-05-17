@@ -474,6 +474,35 @@
         </el-tab-pane>
       </el-tabs>
     </ldlControlWindow>
+    <!-- 订单返回 -->
+    <el-dialog title="订单返回" :visible.sync="orderBackModal" width="500px">
+      <el-form
+          ref="OrderbackForm"
+          label-position="right"
+          label-width="80px"
+          :model="OrderbackForm"
+          size="mini"
+      >
+        <el-form-item label="返回类型">
+          <el-select v-model="OrderbackForm.back_type" placeholder="请选择">
+            <el-option
+                v-for="(item,index) in orderBackType"
+                :key="index"
+                :label="item.text"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="返回备注">
+          <el-input v-model="OrderbackForm.remarks" type="textarea" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="orderBackModal = false">取 消</el-button>
+        <el-button type="primary" size="mini" @click="orderBackSave(OrderbackForm)">保 存</el-button>
+      </span>
+    </el-dialog>
+    <!-- 订单返回 -->
   </div>
 </template>
 <script>
@@ -499,6 +528,7 @@ import {
 } from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
 import {searchKdManageList} from "@/api/DeliveryManage/DeliverySettings/ExpressManage";
 import {p_footer} from "@/api/DeliveryManage/DeliverGoodsManage/SynchroDeliver";
+import {p_back} from "@/api/DeliveryManage/DeliverGoodsManage/OrderManage";
 import {
   regionDataPlus,
 } from "element-china-area-data";
@@ -507,6 +537,12 @@ export default {
   name: "OrderManage",
   data() {
     return {
+      OrderbackForm:{},
+      orderBackType: [
+        { id: 1, text: '返回到已导入状态 ' },
+        { id: 2, text: '返回到已审核状态' }
+      ],
+      orderBackModal:false,
       //修改发货信息
       receivingInfoVisible:false,
       receivingForm:{},
@@ -607,7 +643,40 @@ export default {
     }
   },
   methods: {
-    
+    //订单返回
+    orderBack() {
+      if(this.selectRow){
+
+        if (this.selectRow.status == 5) {
+          this.$message({
+            message: '已签收的订单不可以返回哦!',
+            type: 'warning'
+          })
+        } else {
+          this.OrderbackForm = {
+            back_type: 2,
+            remarks: null,
+            mianId: this.selectRow.id
+          }
+          this.orderBackModal = true
+        }
+      }else{
+        this.$message.error('请选择一条')
+      }
+    },
+    orderBackSave(data) {
+      p_back({type:data.back_type,remarks:data.remarks,id:data.mianId})
+          .then(() => {
+            this.$message({
+              message: '订单返回成功',
+              type: 'success'
+            })
+            this.orderBackModal = false
+            this.getList()
+          })
+          .catch(() => {})
+    },
+    //订单返回
     editPostage(){
       if (this.selectRow) {
         this.$prompt('', '邮费设置', {
